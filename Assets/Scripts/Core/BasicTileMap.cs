@@ -33,7 +33,6 @@ namespace Infinity.Core
         /// <summary>
         /// Builds a tile map with given radius
         /// </summary>
-        /// <param name="radius"></param>
         public virtual void BuildTileMap(int radius)
         {
             this.Radius = radius;
