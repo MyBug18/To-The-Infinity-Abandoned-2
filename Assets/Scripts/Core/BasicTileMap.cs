@@ -52,7 +52,7 @@ namespace Infinity.Core
                         var sqr3 = Mathf.Sqrt(3);
                         tile.transform.localPosition =
                             new Vector3(sqr3 * q + sqr3 * r / 2, 0, 3f * r / 2) + 
-                            new Vector3(-6 * sqr3, 0, -6f);
+                            new Vector3(-radius * 1.5f * sqr3, 0, -radius * 1.5f);
 
                         tileMap[q].Add(tile);
                     }
