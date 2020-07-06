@@ -35,7 +35,7 @@ namespace Infinity.Core
         /// </summary>
         public virtual void BuildTileMap(int radius)
         {
-            this.Radius = radius;
+            Radius = radius;
             tileMap = new List<HexTile>[2 * radius + 1];
 
             for (var q = 0; q <= 2 * radius; q++)
@@ -43,18 +43,16 @@ namespace Infinity.Core
                 tileMap[q] = new List<HexTile>();
                 for (var r = 0; r <= 2 * radius; r++)
                 {
-                    if (IsValidCoord(q, r))
-                    {
-                        Debug.Log((q, r));
-                        var tile = Instantiate(tilePrefab, transform);
-                        tile.Init(q, r);
-                        var sqr3 = Mathf.Sqrt(3);
-                        tile.transform.localPosition =
-                            new Vector3(sqr3 * q + sqr3 * r / 2, 0, 3f * r / 2) + 
-                            new Vector3(-radius * 1.5f * sqr3, 0, -radius * 1.5f);
+                    if (!IsValidCoord(q, r)) continue;
 
-                        tileMap[q].Add(tile);
-                    }
+                    var tile = Instantiate(tilePrefab, transform);
+                    tile.Init(q, r);
+                    var sqr3 = Mathf.Sqrt(3);
+                    tile.transform.localPosition =
+                        new Vector3(sqr3 * q + sqr3 * r / 2, 0, 3f * r / 2) +
+                        new Vector3(-radius * 1.5f * sqr3, 0, -radius * 1.5f);
+
+                    tileMap[q].Add(tile);
                 }
             }
         }

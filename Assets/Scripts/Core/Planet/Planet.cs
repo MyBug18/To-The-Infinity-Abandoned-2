@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Infinity.Core.Planet
 {
-    public class Planet : MonoBehaviour, IModifierAttachable
+    public class Planet : OnHexTileObject, IModifierAttachable
     {
         public readonly bool IsInhabitable;
 

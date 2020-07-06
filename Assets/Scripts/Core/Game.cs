@@ -17,7 +17,7 @@ namespace Infinity.Core
         public int MonthsPassed { get; private set; } = 0;
 
         /// <summary>
-        /// End this turn
+        /// End this turn and starts an enemy turn
         /// </summary>
         public void EndTurn()
         {

@@ -1,6 +1,8 @@
+using System;
 using Infinity.Core.Modifier;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = System.Object;
 
 namespace Infinity.Core
 {
@@ -14,11 +16,11 @@ namespace Infinity.Core
     {
         public HexTileCoord HexCoordinate { get; private set; }
 
-        public OnHexTileObject ObjectOnIt { get; set; }
+        public readonly List<OnHexTileObject> ObjectsOnIt = new List<OnHexTileObject>();
+
+        public bool IsObjectOnIt => ObjectsOnIt.Count > 0;
 
         private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
-
-
 
         public void OnNextTurn()
         {
