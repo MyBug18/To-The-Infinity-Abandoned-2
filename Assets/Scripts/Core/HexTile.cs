@@ -12,7 +12,7 @@ namespace Infinity.Core
         public int r;
     }
 
-    public class HexTile : MonoBehaviour, IAffectedByNextTurn, IModifierAttachable
+    public class HexTile : MonoBehaviour, IAffectedByNextTurn, IModifierAttachable, IClickable
     {
         public HexTileCoord HexCoordinate { get; private set; }
 
@@ -41,6 +41,11 @@ namespace Infinity.Core
         public void RemoveModifier(BasicModifier modifier)
         {
             modifiers.Remove(modifier);
+        }
+
+        public void OnClick()
+        {
+            Debug.Log($"{HexCoordinate} clicked!");
         }
     }
 }
