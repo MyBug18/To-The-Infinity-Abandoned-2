@@ -9,6 +9,7 @@ namespace Infinity.Core.Modifier
         Game,
         Planet,
         IndividualTile,
+        IndividualPop,
     }
 
     public enum AffectedByModifierType

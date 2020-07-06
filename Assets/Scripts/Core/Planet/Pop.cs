@@ -1,22 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Infinity.Core.Modifier;
 using UnityEngine;
 
 namespace Infinity.Core.Planet
 {
-    public class Planet : MonoBehaviour, IModifierAttachable
+    public class Pop : MonoBehaviour, IModifierAttachable
     {
-        public readonly bool IsInhabitable;
-
-        public readonly List<Pop> pops = new List<Pop>();
-
         private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
-
-        public Planet(bool isInhabitable)
-        {
-            IsInhabitable = isInhabitable;
-        }
 
         public void AddModifier(BasicModifier modifier)
         {
