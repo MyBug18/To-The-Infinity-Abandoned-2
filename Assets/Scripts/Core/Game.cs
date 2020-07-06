@@ -12,9 +12,9 @@ namespace Infinity.Core
         public int GameSpeed { get; private set; } = 2;
 
         /// <summary>
-        /// How many Monthes has passed
+        /// How many Months has passed
         /// </summary>
-        public int MonthesPassed { get; private set; } = 0;
+        public int MonthsPassed { get; private set; } = 0;
 
         /// <summary>
         /// End this turn
@@ -28,7 +28,7 @@ namespace Infinity.Core
         /// </summary>
         public void StartNewTurn()
         {
-            MonthesPassed += GameSpeed;
+            MonthsPassed += GameSpeed;
 
         }
     }
