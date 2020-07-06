@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 namespace Infinity.Core
 {
@@ -19,7 +18,7 @@ namespace Infinity.Core
             get
             {
                 if (!IsValidCoord(coord))
-                    throw new InvalidOperationException("Given coordinate is invalid: " + coord);
+                    return null;
 
                 var q = coord.q;
                 var r = coord.r;
@@ -51,6 +50,7 @@ namespace Infinity.Core
                     tile.transform.localPosition =
                         new Vector3(sqr3 * q + sqr3 * r / 2, 0, 3f * r / 2) +
                         new Vector3(-radius * 1.5f * sqr3, 0, -radius * 1.5f);
+                    tile.OnClicked += OnTileClick;
 
                     tileMap[q].Add(tile);
                 }
@@ -68,6 +68,23 @@ namespace Infinity.Core
         public bool IsValidCoord(int q, int r)
         {
             return q + r >= Radius && q + r <= 3 * Radius;
+        }
+
+        private void OnTileClick(HexTile tile)
+        {
+        }
+
+        public List<HexTileCoord> NeighborCoords(HexTileCoord coord)
+        {
+            return new List<HexTileCoord>
+            {
+                new HexTileCoord(coord.q + 1, coord.r),
+                new HexTileCoord(coord.q + 1, coord.r - 1),
+                new HexTileCoord(coord.q, coord.r - 1),
+                new HexTileCoord(coord.q - 1, coord.r),
+                new HexTileCoord(coord.q - 1, coord.r + 1),
+                new HexTileCoord(coord.q, coord.r + 1)
+            };
         }
     }
 }
