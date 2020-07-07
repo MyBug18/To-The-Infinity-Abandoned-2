@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Infinity.Core
 {
-    public class BasicTileMap : MonoBehaviour
+    public abstract class BasicTileMap : MonoBehaviour
     {
         [SerializeField]
         private HexTile tilePrefab;
@@ -32,15 +32,14 @@ namespace Infinity.Core
         /// <summary>
         /// Builds a tile map with given radius
         /// </summary>
-        public virtual void BuildTileMap(int radius)
+        protected virtual void BuildTileMap()
         {
-            Radius = radius;
-            tileMap = new List<HexTile>[2 * radius + 1];
+            tileMap = new List<HexTile>[2 * Radius + 1];
 
-            for (var q = 0; q <= 2 * radius; q++)
+            for (var q = 0; q <= 2 * Radius; q++)
             {
                 tileMap[q] = new List<HexTile>();
-                for (var r = 0; r <= 2 * radius; r++)
+                for (var r = 0; r <= 2 * Radius; r++)
                 {
                     if (!IsValidCoord(q, r)) continue;
 
@@ -52,6 +51,11 @@ namespace Infinity.Core
                     tileMap[q].Add(tile);
                 }
             }
+        }
+
+        public virtual void Init(int radius)
+        {
+            Radius = radius;
         }
 
         public Vector3 GetActualPosition(HexTileCoord coord)
