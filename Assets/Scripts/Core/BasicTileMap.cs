@@ -46,15 +46,19 @@ namespace Infinity.Core
 
                     var tile = Instantiate(tilePrefab, transform);
                     tile.Init(q, r);
-                    var sqr3 = Mathf.Sqrt(3);
-                    tile.transform.localPosition =
-                        new Vector3(sqr3 * q + sqr3 * r / 2, 0, 3f * r / 2) +
-                        new Vector3(-radius * 1.5f * sqr3, 0, -radius * 1.5f);
+                    tile.transform.localPosition = GetActualPosition(new HexTileCoord {q = q, r = r});
                     tile.OnClicked += OnTileClick;
 
                     tileMap[q].Add(tile);
                 }
             }
+        }
+
+        public Vector3 GetActualPosition(HexTileCoord coord)
+        {
+            var sqr3 = Mathf.Sqrt(3);
+            return new Vector3(sqr3 * coord.q + sqr3 * coord.r / 2, 0, 3f * coord.r / 2) +
+                   new Vector3(-Radius * 1.5f * sqr3, 0, -Radius * 1.5f);
         }
 
         /// <summary>
@@ -70,7 +74,7 @@ namespace Infinity.Core
             return q + r >= Radius && q + r <= 3 * Radius;
         }
 
-        private void OnTileClick(HexTile tile)
+        protected virtual void OnTileClick(HexTile tile)
         {
         }
 

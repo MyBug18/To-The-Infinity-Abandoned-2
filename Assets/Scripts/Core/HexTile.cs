@@ -30,22 +30,19 @@ namespace Infinity.Core
         }
     }
 
-    public class HexTile : MonoBehaviour, IAffectedByNextTurn, IModifierAttachable, IClickable
+    public class HexTile : MonoBehaviour, IModifierAttachable, IClickable
     {
         public HexTileCoord HexCoordinate { get; private set; }
 
-        public readonly List<OnHexTileObject> ObjectsOnIt = new List<OnHexTileObject>();
+        public int WayCost { get; private set; } = 1;
 
-        public bool IsObjectOnIt => ObjectsOnIt.Count > 0;
+        // public readonly List<OnHexTileObject> ObjectsOnIt = new List<OnHexTileObject>();
+        //
+        // public bool IsObjectOnIt => ObjectsOnIt.Count > 0;
 
         private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
 
         public event Action<HexTile> OnClicked;
-
-        public void OnNextTurn()
-        {
-
-        }
 
         public void Init(int q, int r)
         {
