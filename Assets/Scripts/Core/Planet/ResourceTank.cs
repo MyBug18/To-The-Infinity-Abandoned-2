@@ -13,12 +13,31 @@ namespace Infinity.Core.Planet
 
         public float Alloy { get; private set; } = 0;
 
-        public float Money { get; private set; } = 0;
+        public static ResourceTank operator -(ResourceTank a)
+        {
+            return new ResourceTank
+            {
+                Energy = -a.Energy,
+                Mineral = -a.Mineral,
+                Food = -a.Food,
+                Alloy = -a.Alloy,
+            };
+        }
 
-        public float PhysicsResearch { get; private set; } = 0;
+        public static ResourceTank operator +(ResourceTank a, ResourceTank b)
+        {
+            return new ResourceTank
+            {
+                Energy = a.Energy + b.Energy,
+                Mineral = a.Mineral + b.Mineral,
+                Food = a.Food + b.Food,
+                Alloy = a.Alloy + b.Alloy,
+            };
+        }
 
-        public float SocietyResearch { get; private set; } = 0;
-
-        public float EngineerResearch { get; private set; } = 0;
+        public static ResourceTank operator -(ResourceTank a, ResourceTank b)
+        {
+            return a + -b;
+        }
     }
 }
