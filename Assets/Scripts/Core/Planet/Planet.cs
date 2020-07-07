@@ -5,13 +5,15 @@ using UnityEngine;
 
 namespace Infinity.Core.Planet
 {
-    public class Planet : OnHexTileObject, IModifierAttachable
+    public class Planet : OnHexTileObject, IModifierAttachable, IAffectedByNextTurn
     {
         public bool IsInhabitable { get; private set; }
 
         public int Size { get; private set; }
 
         public readonly List<Pop> pops = new List<Pop>();
+
+        public readonly List<Pop> unemployedPops = new List<Pop>();
 
         private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
 
@@ -37,6 +39,11 @@ namespace Infinity.Core.Planet
         public void RemoveModifier(BasicModifier modifier)
         {
             modifiers.Remove(modifier);
+        }
+
+        public void OnNextTurn()
+        {
+
         }
     }
 }

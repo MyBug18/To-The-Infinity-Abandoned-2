@@ -4,9 +4,11 @@ using UnityEngine;
 
 namespace Infinity.Core.Planet
 {
-    public class Pop : MonoBehaviour, IModifierAttachable
+    public class Pop : IModifierAttachable
     {
         private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
+
+        public string Name { get; private set; }
 
         public void AddModifier(BasicModifier modifier)
         {
