@@ -2,7 +2,7 @@
 
 namespace Infinity.Core
 {
-    public abstract class OnHexTileObject : MonoBehaviour
+    public abstract class OnHexTileObject
     {
         public HexTileCoord HexCoord { get; private set; }
 

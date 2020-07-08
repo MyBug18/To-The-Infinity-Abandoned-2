@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Infinity.Core.Modifier;
-using UnityEngine;
 
 namespace Infinity.Core.Planet
 {
@@ -17,18 +16,10 @@ namespace Infinity.Core.Planet
 
         private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
 
-        public PlanetTileMap TileMap { get; private set; }
-
-        [SerializeField]
-        private PlanetTileMap tileMapPrefab;
-
         public void Init(bool isInhabitable, int size)
         {
             IsInhabitable = isInhabitable;
             Size = size;
-
-            TileMap = Instantiate(tileMapPrefab, transform);
-            TileMap.Init(Size);
         }
 
         public void AddModifier(BasicModifier modifier)
