@@ -1,4 +1,4 @@
-﻿namespace Infinity.Modifier
+﻿namespace Infinity.Modifiers
 {
     public enum ModifierHolder
     {

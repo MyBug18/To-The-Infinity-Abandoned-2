@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Infinity.Modifier;
+using Infinity.Modifiers;
 
 namespace Infinity.Planet
 {

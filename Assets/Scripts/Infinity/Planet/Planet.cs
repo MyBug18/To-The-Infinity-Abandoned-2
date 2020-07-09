@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Infinity.HexTileMap;
-using Infinity.Modifier;
+using Infinity.Modifiers;
 
 namespace Infinity.Planet
 {
