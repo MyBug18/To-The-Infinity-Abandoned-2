@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Infinity.Core.Modifier;
+using Infinity.Modifier;
 
-namespace Infinity.Core.HexTileMap
+namespace Infinity.HexTileMap
 {
 
     public struct HexTileCoord

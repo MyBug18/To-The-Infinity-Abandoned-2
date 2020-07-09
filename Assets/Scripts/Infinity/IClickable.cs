@@ -1,4 +1,4 @@
-﻿namespace Infinity.View
+﻿namespace Infinity
 {
     public interface IClickable
     {

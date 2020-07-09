@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Infinity.Core.Modifier
+﻿namespace Infinity.Modifier
 {
     public enum ModifierHolder
     {

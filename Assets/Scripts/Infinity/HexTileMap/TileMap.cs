@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Linq;
 
-namespace Infinity.Core.HexTileMap
+namespace Infinity.HexTileMap
 {
     /// <summary>
     /// Clockwise tile direction

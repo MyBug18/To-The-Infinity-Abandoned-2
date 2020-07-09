@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Infinity.View.TileMap
+namespace Infinity.HexTileMap
 {
     public class TileMapWrapper : MonoBehaviour
     {

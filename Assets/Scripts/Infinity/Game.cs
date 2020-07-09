@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Infinity.Core
+namespace Infinity
 {
     public class Game : MonoBehaviour
     {

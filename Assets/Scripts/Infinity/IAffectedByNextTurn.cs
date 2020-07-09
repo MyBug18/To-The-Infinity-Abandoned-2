@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infinity.Core
+namespace Infinity
 {
     public interface IAffectedByNextTurn
     {

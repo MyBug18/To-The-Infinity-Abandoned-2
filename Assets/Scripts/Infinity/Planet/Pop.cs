@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using Infinity.Core.Modifier;
-using UnityEngine;
+using Infinity.Modifier;
 
-namespace Infinity.Core.Planet
+namespace Infinity.Planet
 {
     public class Pop : IModifierAttachable
     {

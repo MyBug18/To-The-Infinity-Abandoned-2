@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace Infinity.Core.Modifier
+﻿namespace Infinity.Modifier
 {
     public interface IModifierAttachable
     {

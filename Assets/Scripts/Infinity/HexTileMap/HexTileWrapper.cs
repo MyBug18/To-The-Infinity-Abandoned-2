@@ -1,7 +1,6 @@
-﻿using Infinity.Core.HexTileMap;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Infinity.View.TileMap
+namespace Infinity.HexTileMap
 {
     public class HexTileWrapper : MonoBehaviour, IClickable
     {

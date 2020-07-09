@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Infinity.Core.Modifier;
-using Infinity.Core.HexTileMap;
+using Infinity.HexTileMap;
+using Infinity.Modifier;
 
-namespace Infinity.Core.Planet
+namespace Infinity.Planet
 {
     public class Planet : OnHexTileObject, IModifierAttachable, IAffectedByNextTurn
     {

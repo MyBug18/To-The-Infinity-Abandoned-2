@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-
-namespace Infinity.Core.Planet
+namespace Infinity.Planet
 {
     public class ResourceTank
     {
