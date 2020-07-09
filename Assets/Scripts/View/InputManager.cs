@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Infinity.Core
+namespace Infinity.View
 {
     public class InputManager : MonoBehaviour
     {
