@@ -42,7 +42,7 @@ namespace Infinity.HexTileMap
         public TileMap(int radius)
         {
             Radius = radius;
-            tileMap = new HexTile[][radius * 2 + 1];
+            tileMap = new HexTile[radius * 2 + 1][];
             ConstructTileMap();
         }
 
