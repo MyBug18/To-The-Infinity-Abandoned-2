@@ -1,4 +1,4 @@
-﻿namespace Infinity.Core
+﻿namespace Infinity.Core.HexTileMap
 {
     public abstract class OnHexTileObject
     {

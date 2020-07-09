@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Infinity.Core.Modifier;
+using Infinity.Core.HexTileMap;
 
 namespace Infinity.Core.Planet
 {
@@ -9,6 +9,8 @@ namespace Infinity.Core.Planet
         public readonly bool IsInhabitable;
 
         public readonly int Size;
+
+        public readonly TileMap TileMap;
 
         public readonly List<Pop> Pops = new List<Pop>();
 
@@ -20,6 +22,9 @@ namespace Infinity.Core.Planet
         {
             IsInhabitable = isInhabitable;
             Size = size;
+
+            // for test
+            TileMap = new TileMap(4);
         }
 
         public void AddModifier(BasicModifier modifier)

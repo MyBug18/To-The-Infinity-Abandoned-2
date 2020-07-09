@@ -1,20 +1,8 @@
 ﻿using System.Collections.Generic;
 using Infinity.Core.Modifier;
 
-namespace Infinity.Core
+namespace Infinity.Core.HexTileMap
 {
-    /// <summary>
-    /// Clockwise tile direction
-    /// </summary>
-    public enum TileDirection
-    {
-        Up,        // (+1,  0)
-        UpRight,   // (+1, -1)
-        DownRight, // ( 0, -1)
-        Down,      // (-1,  0)
-        DownLeft,  // (-1, +1)
-        UpLeft,    // ( 0, +1)
-    }
 
     public struct HexTileCoord
     {
@@ -41,14 +29,13 @@ namespace Infinity.Core
 
         public TileType TileType { get; private set; }
 
-        public readonly List<OnHexTileObject> Objects = new List<OnHexTileObject>();
+        public readonly List<OnHexTileObject> OnTileObjects = new List<OnHexTileObject>();
 
         private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
 
-        public HexTile(HexTileCoord coord, TileType type)
+        public HexTile(HexTileCoord coord)
         {
             Coord = coord;
-            TileType = type;
         }
 
         public void AddModifier(BasicModifier modifier)
