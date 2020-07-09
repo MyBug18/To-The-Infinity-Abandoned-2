@@ -4,7 +4,7 @@
     {
         public string Name { get; private set; }
 
-        public readonly HexTileCoord HexCoord;
+        public HexTileCoord HexCoord { get; private set; }
 
         public OnHexTileObject(HexTileCoord coord, string name)
         {
