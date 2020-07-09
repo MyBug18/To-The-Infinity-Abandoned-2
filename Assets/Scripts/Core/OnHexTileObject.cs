@@ -1,13 +1,14 @@
-﻿using UnityEngine;
-
-namespace Infinity.Core
+﻿namespace Infinity.Core
 {
     public abstract class OnHexTileObject
     {
-        public HexTileCoord HexCoord { get; private set; }
+        public string Name { get; private set; }
 
-        public virtual void Init(HexTileCoord coord)
+        public readonly HexTileCoord HexCoord;
+
+        public OnHexTileObject(HexTileCoord coord, string name)
         {
+            Name = name;
             HexCoord = coord;
         }
     }

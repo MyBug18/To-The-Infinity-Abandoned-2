@@ -6,17 +6,17 @@ namespace Infinity.Core.Planet
 {
     public class Planet : OnHexTileObject, IModifierAttachable, IAffectedByNextTurn
     {
-        public bool IsInhabitable { get; private set; }
+        public readonly bool IsInhabitable;
 
-        public int Size { get; private set; }
+        public readonly int Size;
 
-        public readonly List<Pop> pops = new List<Pop>();
+        public readonly List<Pop> Pops = new List<Pop>();
 
-        public readonly List<Pop> unemployedPops = new List<Pop>();
+        public readonly List<Pop> UnemployedPops = new List<Pop>();
 
         private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
 
-        public void Init(bool isInhabitable, int size)
+        public Planet(HexTileCoord coord, string name, int size, bool isInhabitable = false) : base(coord, name)
         {
             IsInhabitable = isInhabitable;
             Size = size;
