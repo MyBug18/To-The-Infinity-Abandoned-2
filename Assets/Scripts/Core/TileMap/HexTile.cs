@@ -28,13 +28,28 @@ namespace Infinity.Core
         }
     }
 
-    public class TileInfo : IModifierAttachable
+    public enum TileType
+    {
+        Space,
+        Ocean,
+        Land
+    }
+
+    public class HexTile : IModifierAttachable
     {
         public readonly HexTileCoord Coord;
+
+        public TileType TileType { get; private set; }
 
         public readonly List<OnHexTileObject> Objects = new List<OnHexTileObject>();
 
         private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
+
+        public HexTile(HexTileCoord coord, TileType type)
+        {
+            Coord = coord;
+            TileType = type;
+        }
 
         public void AddModifier(BasicModifier modifier)
         {
