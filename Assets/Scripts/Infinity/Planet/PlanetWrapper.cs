@@ -10,9 +10,9 @@ namespace Infinity.Planet
         [SerializeField]
         private TileMapWrapper tileMapPrefab;
 
-        public void Init(Planet planet)
+        public void Init(Planet p)
         {
-            this.planet = planet;
+            planet = p;
             name = planet.Name;
         }
 
