@@ -34,7 +34,7 @@ namespace Infinity.HexTileMap
 
         public TileType TileType { get; private set; }
 
-        public readonly List<OnHexTileObject> OnTileObjects = new List<OnHexTileObject>();
+        public int WayCost { get; private set; } = 1;
 
         private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
 

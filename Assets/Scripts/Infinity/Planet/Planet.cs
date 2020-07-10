@@ -32,6 +32,11 @@ namespace Infinity.Planet
             TileMap = new TileMap(4, EventHandler);
         }
 
+        public override void ApplyModifier(BasicModifier modifier)
+        {
+
+        }
+
         public void AddModifier(BasicModifier modifier)
         {
             modifiers.Add(modifier);

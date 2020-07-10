@@ -1,4 +1,6 @@
-﻿namespace Infinity.HexTileMap
+﻿using Infinity.Modifiers;
+
+namespace Infinity.HexTileMap
 {
     public abstract class OnHexTileObject
     {
@@ -11,5 +13,7 @@
             Name = name;
             HexCoord = coord;
         }
+
+        public abstract void ApplyModifier(BasicModifier modifier);
     }
 }
