@@ -21,6 +21,8 @@ namespace Infinity.HexTileMap
     {
         private readonly HexTile[][] tileMap;
 
+        private EventHandler planetEventHandler;
+
         public readonly int Radius;
 
         public HexTile this[HexTileCoord coord]
@@ -40,9 +42,11 @@ namespace Infinity.HexTileMap
             }
         }
 
-        public TileMap(int radius)
+        public TileMap(int radius, EventHandler eh)
         {
             Radius = radius;
+            planetEventHandler = eh;
+
             tileMap = new HexTile[radius * 2 + 1][];
             ConstructTileMap();
         }

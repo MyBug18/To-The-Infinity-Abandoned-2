@@ -19,7 +19,7 @@ namespace Infinity.Planet
         private void Start()
         {
             var tileMap = Instantiate(tileMapPrefab, transform);
-            tileMap.Init(planet.TileMap);
+            tileMap.Init(planet.TileMap, planet.EventHandler);
         }
     }
 }

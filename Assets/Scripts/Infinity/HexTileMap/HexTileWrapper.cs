@@ -6,15 +6,18 @@ namespace Infinity.HexTileMap
     {
         private HexTileCoord coord;
 
-        public void Init(HexTileCoord c)
+        private EventHandler planetEventHandler;
+
+        public void Init(HexTileCoord c, EventHandler eh)
         {
             coord = c;
+            planetEventHandler = eh;
             name = $"HexTile ({c.Q}, {c.R})";
         }
 
         public void OnClick()
         {
-            Debug.Log($"({coord.Q}, {coord.R}) clicked!");
+            planetEventHandler.Publish(TileClickEvent.Create(coord));
         }
     }
 }

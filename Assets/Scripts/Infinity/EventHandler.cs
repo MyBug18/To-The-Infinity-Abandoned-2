@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Infinity
 {
-    public delegate bool SubscribeCallback(Event e);
+    public delegate void SubscribeCallback(Event e);
 
     public abstract class Event : IDisposable
     {

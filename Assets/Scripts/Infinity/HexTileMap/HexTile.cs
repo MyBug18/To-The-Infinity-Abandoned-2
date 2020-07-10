@@ -14,6 +14,11 @@ namespace Infinity.HexTileMap
             this.Q = q;
             this.R = r;
         }
+
+        public override string ToString()
+        {
+            return $"({Q}, {R})";
+        }
     }
 
     public enum TileType

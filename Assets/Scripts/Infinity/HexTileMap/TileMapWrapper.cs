@@ -10,10 +10,13 @@ namespace Infinity.HexTileMap
 
         private TileMap tileMap;
 
+        private EventHandler planetEventHandler;
 
-        public void Init(TileMap t)
+
+        public void Init(TileMap t, EventHandler eh)
         {
             tileMap = t;
+            planetEventHandler = eh;
             name = "TileMap";
         }
 
@@ -34,7 +37,7 @@ namespace Infinity.HexTileMap
                 var pos = new Vector3(sqr3 * c.Q + sqr3 * c.R / 2, 0, 1.5f * c.R) -
                           new Vector3(tileMap.Radius * 1.5f * sqr3, 0, tileMap.Radius * 1.5f);
                 var tile = Instantiate(hexTilePrefab, transform);
-                tile.Init(c);
+                tile.Init(c, planetEventHandler);
                 tile.transform.localPosition = pos;
             }
         }

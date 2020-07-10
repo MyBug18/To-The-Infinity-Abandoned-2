@@ -23,12 +23,13 @@ namespace Infinity.Planet
         public Planet(HexTileCoord coord, string name, int size, bool isInhabitable = false) : base(coord, name)
         {
             EventHandler = new EventHandler();
+            EventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
 
             IsInhabitable = isInhabitable;
             Size = size;
 
             // for test
-            TileMap = new TileMap(4);
+            TileMap = new TileMap(4, EventHandler);
         }
 
         public void AddModifier(BasicModifier modifier)
@@ -44,6 +45,15 @@ namespace Infinity.Planet
         public void OnNextTurn()
         {
 
+        }
+
+        private void OnTileClickEvent(Event e)
+        {
+            var tce = e as TileClickEvent;
+            if (tce == null) return;
+
+            var coord = tce.Coord;
+            UnityEngine.Debug.Log(TileMap[coord].Coord + " Clicked! ( " + coord + " )");
         }
     }
 }
