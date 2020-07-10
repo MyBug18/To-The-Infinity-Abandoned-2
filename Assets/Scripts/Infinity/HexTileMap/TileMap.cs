@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,6 +21,9 @@ namespace Infinity.HexTileMap
     public class TileMap : IEnumerable<HexTile>
     {
         private readonly HexTile[][] tileMap;
+
+        private readonly Dictionary<Type, Dictionary<HexTileCoord, OnHexTileObject>> onTileMapObjects =
+            new Dictionary<Type, Dictionary<HexTileCoord, OnHexTileObject>>();
 
         private EventHandler planetEventHandler;
 
@@ -84,6 +88,60 @@ namespace Infinity.HexTileMap
         public bool IsValidCoord(int q, int r)
         {
             return q + r >= Radius && q + r <= 3 * Radius;
+        }
+
+        /// <summary>
+        /// Gets OnHexTileObject with given type and HexTileCoord.
+        /// </summary>
+        /// <returns>Returns null if given type is not in the dict.</returns>
+        public T GetObjectFromCoord<T>(HexTileCoord coord) where T : OnHexTileObject
+        {
+            var type = typeof(T);
+            if (!onTileMapObjects.TryGetValue(type, out var coordObjectDict)) return null;
+            if (!coordObjectDict.TryGetValue(coord, out var obj)) return null;
+
+            return (T) obj;
+        }
+
+        /// <summary>
+        /// Gets collection of OnHexTileObject with given type.
+        /// </summary>
+        /// <returns>Returns null if given type is not in the dict.</returns>
+        public IReadOnlyCollection<T> GetObjectCollection<T>() where T : OnHexTileObject
+        {
+            var type = typeof(T);
+            if (!onTileMapObjects.TryGetValue(type, out var coordObjectDict)) return null;
+            var result = coordObjectDict.Values.Cast<T>();
+
+            return (IReadOnlyCollection<T>)result;
+        }
+
+        private void AddTileObject<T>(T onHexTileObject, HexTileCoord coord) where T : OnHexTileObject
+        {
+            var type = typeof(T);
+            if (!onTileMapObjects.TryGetValue(type, out var coordObjectDict))
+            {
+                onTileMapObjects.Add(type, new Dictionary<HexTileCoord, OnHexTileObject>());
+                coordObjectDict = onTileMapObjects[type];
+            }
+
+            if (coordObjectDict.ContainsKey(coord))
+                throw new InvalidOperationException("There are already an OnHexTileObject on the coordinate!");
+
+            coordObjectDict[coord] = onHexTileObject;
+
+            // TODO: publish event (maybe)
+        }
+
+        private void RemoveTileObject<T>(HexTileCoord coord)
+        {
+            var type = typeof(T);
+            if (!onTileMapObjects.TryGetValue(type, out var coordObjectDict)) return;
+
+            if (coordObjectDict.Remove(coord) && coordObjectDict.Count == 0)
+                onTileMapObjects.Remove(type);
+
+            // TODO: publish event (maybe)
         }
 
         public IEnumerator<HexTile> GetEnumerator()
