@@ -9,11 +9,12 @@ namespace Infinity.HexTileMap
         public void Init(HexTileCoord c)
         {
             coord = c;
+            name = $"HexTile ({c.Q}, {c.R})";
         }
 
         public void OnClick()
         {
-            Debug.Log($"({coord.q}, {coord.r}) clicked!");
+            Debug.Log($"({coord.Q}, {coord.R}) clicked!");
         }
     }
 }

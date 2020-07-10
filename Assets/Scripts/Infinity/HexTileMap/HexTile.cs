@@ -4,15 +4,15 @@ using Infinity.Modifiers;
 namespace Infinity.HexTileMap
 {
 
-    public struct HexTileCoord
+    public readonly struct HexTileCoord
     {
-        public readonly int q;
-        public readonly int r;
+        public readonly int Q;
+        public readonly int R;
 
         public HexTileCoord(int q, int r)
         {
-            this.q = q;
-            this.r = r;
+            this.Q = q;
+            this.R = r;
         }
     }
 

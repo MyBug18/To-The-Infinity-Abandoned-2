@@ -16,10 +16,14 @@ namespace Infinity.Planet
 
         public readonly List<Pop> UnemployedPops = new List<Pop>();
 
+        public readonly EventHandler EventHandler;
+
         private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
 
         public Planet(HexTileCoord coord, string name, int size, bool isInhabitable = false) : base(coord, name)
         {
+            EventHandler = new EventHandler();
+
             IsInhabitable = isInhabitable;
             Size = size;
 

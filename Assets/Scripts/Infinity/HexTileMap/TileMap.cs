@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Infinity.HexTileMap
@@ -16,7 +17,7 @@ namespace Infinity.HexTileMap
         UpLeft,    // ( 0, +1)
     }
 
-    public class TileMap : IEnumerable
+    public class TileMap : IEnumerable<HexTile>
     {
         private readonly HexTile[][] tileMap;
 
@@ -29,8 +30,8 @@ namespace Infinity.HexTileMap
                 if (!IsValidCoord(coord))
                     return null;
 
-                var q = coord.q;
-                var r = coord.r;
+                var q = coord.Q;
+                var r = coord.R;
 
                 if (r < Radius)
                     q = q - Radius + r;
@@ -73,7 +74,7 @@ namespace Infinity.HexTileMap
         /// </summary>
         public bool IsValidCoord(HexTileCoord coord)
         {
-            return coord.q + coord.r >= Radius && coord.q + coord.r <= 3 * Radius;
+            return coord.Q + coord.R >= Radius && coord.Q + coord.R <= 3 * Radius;
         }
 
         public bool IsValidCoord(int q, int r)
@@ -81,9 +82,14 @@ namespace Infinity.HexTileMap
             return q + r >= Radius && q + r <= 3 * Radius;
         }
 
-        public IEnumerator GetEnumerator()
+        public IEnumerator<HexTile> GetEnumerator()
         {
             return tileMap.SelectMany(tileArray => tileArray).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
