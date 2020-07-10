@@ -94,7 +94,7 @@ namespace Infinity.HexTileMap
         /// Gets OnHexTileObject with given type and HexTileCoord.
         /// </summary>
         /// <returns>Returns null if given type is not in the dict.</returns>
-        public T GetObjectFromCoord<T>(HexTileCoord coord) where T : OnHexTileObject
+        public T GetTileObjectFromCoord<T>(HexTileCoord coord) where T : OnHexTileObject
         {
             var type = typeof(T);
             if (!onTileMapObjects.TryGetValue(type, out var coordObjectDict)) return null;
@@ -107,7 +107,7 @@ namespace Infinity.HexTileMap
         /// Gets collection of OnHexTileObject with given type.
         /// </summary>
         /// <returns>Returns null if given type is not in the dict.</returns>
-        public IReadOnlyCollection<T> GetObjectCollection<T>() where T : OnHexTileObject
+        public IReadOnlyCollection<T> GetTileObjectCollection<T>() where T : OnHexTileObject
         {
             var type = typeof(T);
             if (!onTileMapObjects.TryGetValue(type, out var coordObjectDict)) return null;

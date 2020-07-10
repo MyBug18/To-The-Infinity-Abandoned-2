@@ -21,14 +21,21 @@
         EngineerResearch
     }
 
-    public abstract class BasicModifier
+    public abstract class BasicModifier : IAffectedByNextTurn
     {
         public readonly string Name;
 
         public readonly string Description;
 
+        public int LeftTurn { get; private set; }
+
         public readonly ModifierHolder TopHolder;
 
         public readonly AffectedByModifierType ModifierType;
+
+        public void OnNextTurn()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
