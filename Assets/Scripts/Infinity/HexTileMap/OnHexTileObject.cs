@@ -8,7 +8,7 @@ namespace Infinity.HexTileMap
 
         public HexTileCoord HexCoord { get; private set; }
 
-        public OnHexTileObject(HexTileCoord coord, string name)
+        protected OnHexTileObject(HexTileCoord coord, string name)
         {
             Name = name;
             HexCoord = coord;
