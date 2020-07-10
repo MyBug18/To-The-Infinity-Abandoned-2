@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Infinity.HexTileMap
 {
@@ -6,18 +7,18 @@ namespace Infinity.HexTileMap
     {
         private HexTileCoord coord;
 
-        private EventHandler planetEventHandler;
+        private event Action<HexTileCoord> onClick;
 
-        public void Init(HexTileCoord c, EventHandler eh)
+        public void Init(HexTileCoord c, Action<HexTileCoord> onClicked)
         {
             coord = c;
-            planetEventHandler = eh;
+            onClick += onClicked;
             name = $"HexTile ({c.Q}, {c.R})";
         }
 
-        public void OnClick()
+        void IClickable.OnClick()
         {
-            planetEventHandler.Publish(TileClickEvent.Create(coord));
+            onClick?.Invoke(coord);
         }
     }
 }
