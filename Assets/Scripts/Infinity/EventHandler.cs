@@ -24,7 +24,7 @@ namespace Infinity
 
         public override bool Equals(object obj)
         {
-            return obj is SubscribeCallback c && Equals(c);
+            return obj is SubscribeCallback c && c == Callback;
         }
 
         public override int GetHashCode()
