@@ -4,8 +4,12 @@ using Infinity.Modifiers;
 
 namespace Infinity.Planet
 {
-    public class Planet : OnHexTileObject, IModifierAttachable, IAffectedByNextTurn
+    public class Planet : IOnHexTileObject, IModifierAttachable, IAffectedByNextTurn
     {
+        public string Name { get; private set; }
+
+        public HexTileCoord HexCoord { get; private set; }
+
         public readonly bool IsInhabitable;
 
         public readonly int Size;
@@ -20,8 +24,11 @@ namespace Infinity.Planet
 
         private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
 
-        public Planet(HexTileCoord coord, string name, int size, bool isInhabitable = false) : base(coord, name)
+        public Planet(string name, HexTileCoord coord, int size, bool isInhabitable = false)
         {
+            HexCoord = coord;
+            Name = name;
+
             EventHandler = new EventHandler();
             EventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
 
@@ -32,7 +39,7 @@ namespace Infinity.Planet
             TileMap = new TileMap(4, EventHandler);
         }
 
-        public override void ApplyModifier(BasicModifier modifier)
+        public void ApplyModifier(BasicModifier modifier)
         {
 
         }

@@ -20,12 +20,7 @@ namespace Infinity.HexTileMap
             name = "TileMap";
         }
 
-        private void Start()
-        {
-            ConstructTileMap();
-        }
-
-        private void ConstructTileMap()
+        public void ConstructTileMap()
         {
             if (tileMap == null)
                 throw new InvalidOperationException("TileMap has not been initialized!");

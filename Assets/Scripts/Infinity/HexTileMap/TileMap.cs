@@ -22,8 +22,8 @@ namespace Infinity.HexTileMap
     {
         private readonly HexTile[][] tileMap;
 
-        private readonly Dictionary<Type, Dictionary<HexTileCoord, OnHexTileObject>> onTileMapObjects =
-            new Dictionary<Type, Dictionary<HexTileCoord, OnHexTileObject>>();
+        private readonly Dictionary<Type, Dictionary<HexTileCoord, IOnHexTileObject>> onTileMapObjects =
+            new Dictionary<Type, Dictionary<HexTileCoord, IOnHexTileObject>>();
 
         private EventHandler planetEventHandler;
 
@@ -94,11 +94,11 @@ namespace Infinity.HexTileMap
         /// Gets OnHexTileObject with given type and HexTileCoord.
         /// </summary>
         /// <returns>Returns null if given type is not in the dict.</returns>
-        public T GetTileObjectFromCoord<T>(HexTileCoord coord) where T : OnHexTileObject
+        public T GetTileObjectFromCoord<T>(HexTileCoord coord) where T : IOnHexTileObject
         {
             var type = typeof(T);
-            if (!onTileMapObjects.TryGetValue(type, out var coordObjectDict)) return null;
-            if (!coordObjectDict.TryGetValue(coord, out var obj)) return null;
+            if (!onTileMapObjects.TryGetValue(type, out var coordObjectDict)) return default;
+            if (!coordObjectDict.TryGetValue(coord, out var obj)) return default;
 
             return (T) obj;
         }
@@ -107,7 +107,7 @@ namespace Infinity.HexTileMap
         /// Gets collection of OnHexTileObject with given type.
         /// </summary>
         /// <returns>Returns null if given type is not in the dict.</returns>
-        public IReadOnlyCollection<T> GetTileObjectCollection<T>() where T : OnHexTileObject
+        public IReadOnlyCollection<T> GetTileObjectCollection<T>() where T : IOnHexTileObject
         {
             var type = typeof(T);
             if (!onTileMapObjects.TryGetValue(type, out var coordObjectDict)) return null;
@@ -116,12 +116,12 @@ namespace Infinity.HexTileMap
             return (IReadOnlyCollection<T>)result;
         }
 
-        private void AddTileObject<T>(T onHexTileObject, HexTileCoord coord) where T : OnHexTileObject
+        private void AddTileObject<T>(T onHexTileObject, HexTileCoord coord) where T : IOnHexTileObject
         {
             var type = typeof(T);
             if (!onTileMapObjects.TryGetValue(type, out var coordObjectDict))
             {
-                onTileMapObjects.Add(type, new Dictionary<HexTileCoord, OnHexTileObject>());
+                onTileMapObjects.Add(type, new Dictionary<HexTileCoord, IOnHexTileObject>());
                 coordObjectDict = onTileMapObjects[type];
             }
 
