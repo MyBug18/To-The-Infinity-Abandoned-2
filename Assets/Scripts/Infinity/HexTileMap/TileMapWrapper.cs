@@ -20,6 +20,11 @@ namespace Infinity.HexTileMap
             name = "TileMap";
         }
 
+        public void Start()
+        {
+            ConstructTileMap();
+        }
+
         public void ConstructTileMap()
         {
             if (tileMap == null)
