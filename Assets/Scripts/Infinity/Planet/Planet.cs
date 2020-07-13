@@ -39,6 +39,11 @@ namespace Infinity.Planet
             TileMap = new TileMap(4, EventHandler);
         }
 
+        public void OnNextTurn()
+        {
+
+        }
+
         public void ApplyModifier(BasicModifier modifier)
         {
 
@@ -54,15 +59,9 @@ namespace Infinity.Planet
             modifiers.Remove(modifier);
         }
 
-        public void OnNextTurn()
-        {
-
-        }
-
         private void OnTileClickEvent(Event e)
         {
-            var tce = e as TileClickEvent;
-            if (tce == null) return;
+            if (!(e is TileClickEvent tce)) return;
 
             var coord = tce.Coord;
             UnityEngine.Debug.Log(TileMap[coord].Coord + " Clicked! ( " + coord + " )");

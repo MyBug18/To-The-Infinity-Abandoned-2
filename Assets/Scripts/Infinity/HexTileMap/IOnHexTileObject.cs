@@ -7,7 +7,5 @@ namespace Infinity.HexTileMap
         string Name { get; }
 
         HexTileCoord HexCoord { get; }
-
-        void ApplyModifier(BasicModifier modifier);
     }
 }
