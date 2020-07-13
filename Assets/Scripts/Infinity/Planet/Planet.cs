@@ -17,19 +17,21 @@ namespace Infinity.Planet
 
         public readonly TileMap TileMap;
 
+        public readonly EventHandler EventHandler;
+
+        #region Pop
+
         public readonly List<Pop> Pops = new List<Pop>();
 
         public readonly List<Pop> UnemployedPops = new List<Pop>();
 
-        public readonly EventHandler EventHandler;
+        public const int BasePopGrowth = 3;
+
+        #endregion
 
         private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
 
-        public ResourceTank ResourceTank { get; private set; }
-
-        private readonly Dictionary<ResourceType, float> turnResource;
-
-        public IReadOnlyDictionary<ResourceType, float> TurnResource => turnResource;
+        public PlanetResourceHolder PlanetResourceHolder { get; private set; }
 
         public Planet(string name, HexTileCoord coord, int size, bool isInhabitable = false)
         {
@@ -41,12 +43,7 @@ namespace Infinity.Planet
             EventHandler = new EventHandler();
             EventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
 
-            ResourceTank = new ResourceTank(EventHandler);
-
-            turnResource = new Dictionary<ResourceType, float>();
-            foreach (var t in (ResourceType[]) Enum.GetValues(typeof(ResourceType)))
-                turnResource.Add(t, 0);
-            turnResource.Remove(ResourceType.All);
+            PlanetResourceHolder = new PlanetResourceHolder(EventHandler);
 
             // for test
             TileMap = new TileMap(4, EventHandler);
@@ -54,7 +51,6 @@ namespace Infinity.Planet
 
         public void OnNextTurn()
         {
-            ResourceTank.ApplyTurnResource(turnResource);
         }
 
         public void ApplyModifier(BasicModifier modifier)
