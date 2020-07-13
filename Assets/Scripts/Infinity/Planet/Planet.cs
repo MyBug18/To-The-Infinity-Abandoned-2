@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Infinity.HexTileMap;
 using Infinity.Modifiers;
 
@@ -24,20 +25,28 @@ namespace Infinity.Planet
 
         private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
 
-        private ResourceTank resourceTank;
+        public ResourceTank ResourceTank { get; private set; }
+
+        private readonly Dictionary<ResourceType, float> turnResource;
+
+        public IReadOnlyDictionary<ResourceType, float> TurnResource => turnResource;
 
         public Planet(string name, HexTileCoord coord, int size, bool isInhabitable = false)
         {
             HexCoord = coord;
             Name = name;
+            IsInhabitable = isInhabitable;
+            Size = size;
 
             EventHandler = new EventHandler();
             EventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
 
-            resourceTank = new ResourceTank(EventHandler);
+            ResourceTank = new ResourceTank(EventHandler);
 
-            IsInhabitable = isInhabitable;
-            Size = size;
+            turnResource = new Dictionary<ResourceType, float>();
+            foreach (var t in (ResourceType[]) Enum.GetValues(typeof(ResourceType)))
+                turnResource.Add(t, 0);
+            turnResource.Remove(ResourceType.All);
 
             // for test
             TileMap = new TileMap(4, EventHandler);
@@ -45,7 +54,7 @@ namespace Infinity.Planet
 
         public void OnNextTurn()
         {
-
+            ResourceTank.ApplyTurnResource(turnResource);
         }
 
         public void ApplyModifier(BasicModifier modifier)

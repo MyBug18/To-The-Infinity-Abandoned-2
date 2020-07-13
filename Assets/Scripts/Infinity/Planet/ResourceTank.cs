@@ -1,14 +1,19 @@
 using System;
+using System.Collections.Generic;
 
 namespace Infinity.Planet
 {
-    public enum PlanetaryResourceType
+    public enum ResourceType
     {
         All, // Only for events
-        Energy,
+        Energy, // Planet-exclusive
         Mineral,
         Food,
         Alloy,
+        Money, // Global resources
+        PhysicsResearch,
+        SocietyResearch,
+        EngineerResearch,
     }
 
     public class ResourceTank
@@ -28,27 +33,35 @@ namespace Infinity.Planet
             eventHandler = ev;
         }
 
-        public void ChangeResource(PlanetaryResourceType type, float value)
+        public void ChangeResource(ResourceType type, float value)
         {
             switch (type)
             {
-                case PlanetaryResourceType.Energy:
+                case ResourceType.Energy:
                     Energy += value;
                     break;
-                case PlanetaryResourceType.Mineral:
+                case ResourceType.Mineral:
                     Mineral += value;
                     break;
-                case PlanetaryResourceType.Food:
+                case ResourceType.Food:
                     Food += value;
                     break;
-                case PlanetaryResourceType.Alloy:
+                case ResourceType.Alloy:
                     Alloy += value;
                     break;
                 default:
-                    throw new NotImplementedException("There are not resource type such as " + type + "!");
+                    throw new NotImplementedException("There are not planetary resource type such as " + type + "!");
             }
 
             // TODO: publish event (maybe)
+        }
+
+        public void ApplyTurnResource(Dictionary<ResourceType, float> turnResource)
+        {
+            Energy += turnResource[ResourceType.Energy];
+            Mineral += turnResource[ResourceType.Mineral];
+            Food += turnResource[ResourceType.Food];
+            Alloy += turnResource[ResourceType.Alloy];
         }
 
         public static ResourceTank operator -(ResourceTank a)
