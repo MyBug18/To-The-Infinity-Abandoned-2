@@ -24,6 +24,8 @@ namespace Infinity.Planet
 
         private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
 
+        private ResourceTank resourceTank;
+
         public Planet(string name, HexTileCoord coord, int size, bool isInhabitable = false)
         {
             HexCoord = coord;
@@ -31,6 +33,8 @@ namespace Infinity.Planet
 
             EventHandler = new EventHandler();
             EventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
+
+            resourceTank = new ResourceTank(EventHandler);
 
             IsInhabitable = isInhabitable;
             Size = size;
