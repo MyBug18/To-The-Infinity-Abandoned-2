@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 namespace Infinity
 {
-    public delegate void SubscribeCallback(Event e);
-
     public abstract class Event : IDisposable
     {
         public abstract void Dispose();
@@ -12,11 +10,11 @@ namespace Infinity
 
     public readonly struct EventInfo
     {
-        public readonly SubscribeCallback Callback;
+        public readonly Action<Event> Callback;
 
         public readonly bool ReceiveOnlyOnce;
 
-        public EventInfo(SubscribeCallback c, bool once)
+        public EventInfo(Action<Event> c, bool once)
         {
             Callback = c;
             ReceiveOnlyOnce = once;
@@ -24,7 +22,7 @@ namespace Infinity
 
         public override bool Equals(object obj)
         {
-            return obj is SubscribeCallback c && c == Callback;
+            return obj is Action<Event> c && c == Callback;
         }
 
         public override int GetHashCode()
@@ -40,7 +38,7 @@ namespace Infinity
     {
         private readonly Dictionary<Type, List<EventInfo>> subscribeInfoDict = new Dictionary<Type, List<EventInfo>>();
 
-        public void Subscribe<T>(SubscribeCallback c, bool once = false) where T : Event
+        public void Subscribe<T>(Action<Event> c, bool once = false) where T : Event
         {
             var type = typeof(T);
             var eventInfo = new EventInfo(c, once);
@@ -55,7 +53,7 @@ namespace Infinity
             subscribeInfoDict[type].Add(eventInfo);
         }
 
-        public void UnSubscribe<T>(SubscribeCallback c) where T : Event
+        public void UnSubscribe<T>(Action<Event> c) where T : Event
         {
             var type = typeof(T);
 
