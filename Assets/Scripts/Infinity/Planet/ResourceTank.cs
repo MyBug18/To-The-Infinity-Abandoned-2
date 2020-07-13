@@ -4,6 +4,7 @@ namespace Infinity.Planet
 {
     public enum PlanetaryResourceType
     {
+        All, // Only for events
         Energy,
         Mineral,
         Food,
