@@ -29,9 +29,21 @@ namespace Infinity.Planet
 
         #endregion
 
+        #region Resources
+
+        /// <summary>
+        /// Planetary resources only
+        /// </summary>
+        private readonly Dictionary<ResourceType, float> currentResource = new Dictionary<ResourceType, float>();
+
+        private readonly Dictionary<ResourceType, Dictionary<ResourceChangeType, float>> detailedTurnResource =
+            new Dictionary<ResourceType, Dictionary<ResourceChangeType, float>>();
+
+        private readonly Dictionary<ResourceType, int> turnResourceMultiplier = new Dictionary<ResourceType, int>();
+
         private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
 
-        public PlanetResourceHolder PlanetResourceHolder { get; private set; }
+        #endregion
 
         public Planet(string name, HexTileCoord coord, int size, bool isInhabitable = false)
         {
@@ -42,8 +54,6 @@ namespace Infinity.Planet
 
             EventHandler = new EventHandler();
             EventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
-
-            PlanetResourceHolder = new PlanetResourceHolder(EventHandler);
 
             // for test
             TileMap = new TileMap(4, EventHandler);
