@@ -5,20 +5,20 @@ namespace Infinity.HexTileMap
 {
     public class HexTileWrapper : MonoBehaviour, IClickable
     {
-        private HexTileCoord coord;
+        private HexTileCoord _coord;
 
-        private event Action<HexTileCoord> onClick;
+        private event Action<HexTileCoord> OnClick;
 
         public void Init(HexTileCoord c, Action<HexTileCoord> onClicked)
         {
-            coord = c;
-            onClick += onClicked;
+            _coord = c;
+            OnClick += onClicked;
             name = $"HexTile ({c.Q}, {c.R})";
         }
 
         void IClickable.OnClick()
         {
-            onClick?.Invoke(coord);
+            OnClick?.Invoke(_coord);
         }
     }
 }

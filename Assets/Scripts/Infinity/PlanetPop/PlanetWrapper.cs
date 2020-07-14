@@ -5,21 +5,21 @@ namespace Infinity.PlanetPop
 {
     public class PlanetWrapper : MonoBehaviour
     {
-        private Planet planet;
+        private Planet _planet;
 
         [SerializeField]
         private TileMapWrapper tileMapPrefab;
 
         public void Init(Planet p)
         {
-            planet = p;
-            name = planet.Name;
+            _planet = p;
+            name = _planet.Name;
         }
 
         private void Start()
         {
             var tileMap = Instantiate(tileMapPrefab, transform);
-            tileMap.Init(planet.TileMap, planet.EventHandler);
+            tileMap.Init(_planet.TileMap, _planet.LocalEventHandler);
         }
     }
 }

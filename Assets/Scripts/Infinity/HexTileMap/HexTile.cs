@@ -36,7 +36,7 @@ namespace Infinity.HexTileMap
 
         public int WayCost { get; private set; } = 1;
 
-        private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
+        private readonly List<BasicModifier> _modifiers = new List<BasicModifier>();
 
         public HexTile(HexTileCoord coord)
         {
@@ -45,12 +45,12 @@ namespace Infinity.HexTileMap
 
         public void AddModifier(BasicModifier modifier)
         {
-            modifiers.Add(modifier);
+            _modifiers.Add(modifier);
         }
 
         public void RemoveModifier(BasicModifier modifier)
         {
-            modifiers.Remove(modifier);
+            _modifiers.Remove(modifier);
         }
     }
 }

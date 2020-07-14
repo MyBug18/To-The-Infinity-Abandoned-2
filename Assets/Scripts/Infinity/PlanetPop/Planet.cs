@@ -18,7 +18,7 @@ namespace Infinity.PlanetPop
 
         public readonly TileMap TileMap;
 
-        public readonly EventHandler EventHandler;
+        public readonly LocalEventHandler LocalEventHandler;
 
         #region Pop
 
@@ -32,25 +32,25 @@ namespace Infinity.PlanetPop
 
         #region Resources
 
-        private readonly Dictionary<ResourceType, float> currentResource = new Dictionary<ResourceType, float>();
+        private readonly Dictionary<ResourceType, float> _currentResource = new Dictionary<ResourceType, float>();
 
-        private readonly Dictionary<ResourceType, Dictionary<ResourceChangeType, float>> detailedTurnResource =
+        private readonly Dictionary<ResourceType, Dictionary<ResourceChangeType, float>> _detailedTurnResource =
             new Dictionary<ResourceType, Dictionary<ResourceChangeType, float>>();
 
-        private readonly Dictionary<ResourceType, int> turnResourceMultiplier = new Dictionary<ResourceType, int>();
+        private readonly Dictionary<ResourceType, int> _turnResourceMultiplier = new Dictionary<ResourceType, int>();
 
         /// <summary>
         /// Planetary resources only
         /// </summary>
-        public IReadOnlyDictionary<ResourceType, float> CurrentResource => currentResource;
+        public IReadOnlyDictionary<ResourceType, float> CurrentResource => _currentResource;
 
-        public IReadOnlyDictionary<ResourceType, Dictionary<ResourceChangeType, float>> DetailedTurnResource => detailedTurnResource;
+        public IReadOnlyDictionary<ResourceType, Dictionary<ResourceChangeType, float>> DetailedTurnResource => _detailedTurnResource;
 
-        public IReadOnlyDictionary<ResourceType, int> TurnResourceMultiplier => turnResourceMultiplier;
+        public IReadOnlyDictionary<ResourceType, int> TurnResourceMultiplier => _turnResourceMultiplier;
 
         #endregion
 
-        private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
+        private readonly List<BasicModifier> _modifiers = new List<BasicModifier>();
 
         public Planet(string name, HexTileCoord coord, int size, bool isInhabitable = false)
         {
@@ -59,11 +59,11 @@ namespace Infinity.PlanetPop
             IsInhabitable = isInhabitable;
             Size = size;
 
-            EventHandler = new EventHandler();
-            EventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
+            LocalEventHandler = new LocalEventHandler();
+            LocalEventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
 
             for (var r = ResourceType.Energy; r <= ResourceType.Alloy; r++)
-                currentResource.Add(r, 0);
+                _currentResource.Add(r, 0);
 
             for (var r = ResourceType.Energy; r <= ResourceType.EngineerResearch; r++)
             {
@@ -71,11 +71,11 @@ namespace Infinity.PlanetPop
                     ((ResourceChangeType[]) Enum.GetValues(typeof(ResourceChangeType)))
                     .ToDictionary<ResourceChangeType, ResourceChangeType, float>(i => i, i => 0);
 
-                detailedTurnResource.Add(r, changeDict);
+                _detailedTurnResource.Add(r, changeDict);
             }
 
             // for test
-            TileMap = new TileMap(4, EventHandler);
+            TileMap = new TileMap(4, LocalEventHandler);
         }
 
         public void OnNextTurn()
@@ -88,7 +88,7 @@ namespace Infinity.PlanetPop
         /// </summary>
         private void ApplyTurnResource()
         {
-            var keys = currentResource.Keys;
+            var keys = _currentResource.Keys;
 
             foreach (var i in keys)
             {
@@ -103,12 +103,12 @@ namespace Infinity.PlanetPop
 
         public void AddModifier(BasicModifier modifier)
         {
-            modifiers.Add(modifier);
+            _modifiers.Add(modifier);
         }
 
         public void RemoveModifier(BasicModifier modifier)
         {
-            modifiers.Remove(modifier);
+            _modifiers.Remove(modifier);
         }
 
         private void OnTileClickEvent(Event e)

@@ -20,12 +20,12 @@ namespace Infinity.HexTileMap
 
     public class TileMap : IEnumerable<HexTile>
     {
-        private readonly HexTile[][] tileMap;
+        private readonly HexTile[][] _tileMap;
 
-        private readonly Dictionary<Type, Dictionary<HexTileCoord, IOnHexTileObject>> onTileMapObjects =
+        private readonly Dictionary<Type, Dictionary<HexTileCoord, IOnHexTileObject>> _onTileMapObjects =
             new Dictionary<Type, Dictionary<HexTileCoord, IOnHexTileObject>>();
 
-        private EventHandler planetEventHandler;
+        private LocalEventHandler _planetEventHandler;
 
         public readonly int Radius;
 
@@ -42,16 +42,16 @@ namespace Infinity.HexTileMap
                 if (r < Radius)
                     q = q - Radius + r;
 
-                return tileMap[r][q];
+                return _tileMap[r][q];
             }
         }
 
-        public TileMap(int radius, EventHandler eh)
+        public TileMap(int radius, LocalEventHandler eh)
         {
             Radius = radius;
-            planetEventHandler = eh;
+            _planetEventHandler = eh;
 
-            tileMap = new HexTile[radius * 2 + 1][];
+            _tileMap = new HexTile[radius * 2 + 1][];
             ConstructTileMap();
         }
 
@@ -59,20 +59,20 @@ namespace Infinity.HexTileMap
         {
             for (var r = 0; r < Radius; r++)
             {
-                tileMap[r] = new HexTile[Radius + r + 1];
+                _tileMap[r] = new HexTile[Radius + r + 1];
                 for (var q = Radius - r; q <= 2 * Radius; q++)
                 {
                     var qIdx = q - Radius + r;
-                    tileMap[r][qIdx] = new HexTile(new HexTileCoord(q, r));
+                    _tileMap[r][qIdx] = new HexTile(new HexTileCoord(q, r));
                 }
             }
 
             for (var r = Radius; r <= 2 * Radius; r++)
             {
-                tileMap[r] = new HexTile[3 * Radius - r + 1];
+                _tileMap[r] = new HexTile[3 * Radius - r + 1];
                 for (var q = 0; q <= 3 * Radius - r; q++)
                 {
-                    tileMap[r][q] = new HexTile(new HexTileCoord(q, r));
+                    _tileMap[r][q] = new HexTile(new HexTileCoord(q, r));
                 }
             }
         }
@@ -97,7 +97,7 @@ namespace Infinity.HexTileMap
         public T GetTileObjectFromCoord<T>(HexTileCoord coord) where T : IOnHexTileObject
         {
             var type = typeof(T);
-            if (!onTileMapObjects.TryGetValue(type, out var coordObjectDict)) return default;
+            if (!_onTileMapObjects.TryGetValue(type, out var coordObjectDict)) return default;
             if (!coordObjectDict.TryGetValue(coord, out var obj)) return default;
 
             return (T) obj;
@@ -110,7 +110,7 @@ namespace Infinity.HexTileMap
         public IReadOnlyCollection<T> GetTileObjectCollection<T>() where T : IOnHexTileObject
         {
             var type = typeof(T);
-            if (!onTileMapObjects.TryGetValue(type, out var coordObjectDict)) return null;
+            if (!_onTileMapObjects.TryGetValue(type, out var coordObjectDict)) return null;
             var result = coordObjectDict.Values.Cast<T>();
 
             return (IReadOnlyCollection<T>)result;
@@ -119,10 +119,10 @@ namespace Infinity.HexTileMap
         private void AddTileObject<T>(T onHexTileObject, HexTileCoord coord) where T : IOnHexTileObject
         {
             var type = typeof(T);
-            if (!onTileMapObjects.TryGetValue(type, out var coordObjectDict))
+            if (!_onTileMapObjects.TryGetValue(type, out var coordObjectDict))
             {
-                onTileMapObjects.Add(type, new Dictionary<HexTileCoord, IOnHexTileObject>());
-                coordObjectDict = onTileMapObjects[type];
+                _onTileMapObjects.Add(type, new Dictionary<HexTileCoord, IOnHexTileObject>());
+                coordObjectDict = _onTileMapObjects[type];
             }
 
             if (coordObjectDict.ContainsKey(coord))
@@ -136,17 +136,17 @@ namespace Infinity.HexTileMap
         private void RemoveTileObject<T>(HexTileCoord coord)
         {
             var type = typeof(T);
-            if (!onTileMapObjects.TryGetValue(type, out var coordObjectDict)) return;
+            if (!_onTileMapObjects.TryGetValue(type, out var coordObjectDict)) return;
 
             if (coordObjectDict.Remove(coord) && coordObjectDict.Count == 0)
-                onTileMapObjects.Remove(type);
+                _onTileMapObjects.Remove(type);
 
             // TODO: publish event (maybe)
         }
 
         public IEnumerator<HexTile> GetEnumerator()
         {
-            return tileMap.SelectMany(tileArray => tileArray).GetEnumerator();
+            return _tileMap.SelectMany(tileArray => tileArray).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

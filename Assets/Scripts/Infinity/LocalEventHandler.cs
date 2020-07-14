@@ -36,7 +36,7 @@ namespace Infinity
     /// </summary>
     public class EventHandler
     {
-        private readonly Dictionary<Type, List<EventInfo>> subscribeInfoDict = new Dictionary<Type, List<EventInfo>>();
+        private readonly Dictionary<Type, List<EventInfo>> _subscribeInfoDict = new Dictionary<Type, List<EventInfo>>();
 
         public void Subscribe<T>(Action<Event> c, bool once = false) where T : Event
         {
@@ -44,27 +44,27 @@ namespace Infinity
             var eventInfo = new EventInfo(c, once);
 
             // Make new list and add it when there are no initial list for the given type
-            if (!subscribeInfoDict.ContainsKey(type))
+            if (!_subscribeInfoDict.ContainsKey(type))
             {
                 var list = new List<EventInfo>();
-                subscribeInfoDict.Add(type, list);
+                _subscribeInfoDict.Add(type, list);
             }
 
-            subscribeInfoDict[type].Add(eventInfo);
+            _subscribeInfoDict[type].Add(eventInfo);
         }
 
         public void UnSubscribe<T>(Action<Event> c) where T : Event
         {
             var type = typeof(T);
 
-            if (subscribeInfoDict.TryGetValue(type, out var infos))
+            if (_subscribeInfoDict.TryGetValue(type, out var infos))
             {
                 var idx = infos.FindIndex(i => i.Callback.Equals(c));
                 if (idx == -1) return;
 
                 infos.RemoveAt(idx);
                 if (infos.Count == 0)
-                    subscribeInfoDict.Remove(type);
+                    _subscribeInfoDict.Remove(type);
             }
         }
 
@@ -73,7 +73,7 @@ namespace Infinity
             var type = typeof(T);
             var removeList = new List<EventInfo>();
 
-            if (!subscribeInfoDict.TryGetValue(type, out var infos)) return;
+            if (!_subscribeInfoDict.TryGetValue(type, out var infos)) return;
 
             foreach (var i in infos)
             {
@@ -87,7 +87,7 @@ namespace Infinity
                 infos.Remove(i);
 
             if (infos.Count == 0)
-                subscribeInfoDict.Remove(type);
+                _subscribeInfoDict.Remove(type);
 
             e.Dispose();
         }
