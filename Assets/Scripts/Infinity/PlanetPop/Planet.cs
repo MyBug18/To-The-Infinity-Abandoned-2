@@ -6,7 +6,7 @@ using Infinity.Modifiers;
 
 namespace Infinity.PlanetPop
 {
-    public class Planet : IOnHexTileObject, IModifierAttachable, IAffectedByNextTurn
+    public class Planet : IOnHexTileObject, IModifierAttachable, IAffectedByNextTurn, IEventHandlerHolder
     {
         public string Name { get; private set; }
 
@@ -59,7 +59,8 @@ namespace Infinity.PlanetPop
             IsInhabitable = isInhabitable;
             Size = size;
 
-            EventHandler = new EventHandler();
+            // for test
+            EventHandler = new EventHandler(this);
             EventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
 
             for (var r = ResourceType.Energy; r <= ResourceType.Alloy; r++)
@@ -111,12 +112,17 @@ namespace Infinity.PlanetPop
             _modifiers.Remove(modifier);
         }
 
-        private void OnTileClickEvent(Event e)
+        private void OnTileClickEvent(Event e, IEventHandlerHolder holder)
         {
             if (!(e is TileClickEvent tce)) return;
 
             var coord = tce.Coord;
             UnityEngine.Debug.Log(TileMap[coord].Coord + " Clicked! ( " + coord + " )");
+        }
+
+        Type IEventHandlerHolder.GetHolderType()
+        {
+            return typeof(Planet);
         }
     }
 }
