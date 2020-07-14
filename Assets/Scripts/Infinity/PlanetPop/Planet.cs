@@ -32,21 +32,14 @@ namespace Infinity.PlanetPop
 
         #region Resources
 
-        private readonly Dictionary<ResourceType, float> _currentResource = new Dictionary<ResourceType, float>();
+        private readonly Dictionary<ResourceType, float> _currentPlanetaryResource = new Dictionary<ResourceType, float>();
 
-        private readonly Dictionary<ResourceType, Dictionary<ResourceChangeType, float>> _detailedTurnResource =
+        public IReadOnlyDictionary<ResourceType, float> CurrentPlanetaryResource => _currentPlanetaryResource;
+
+        private readonly Dictionary<ResourceType, Dictionary<ResourceChangeType, float>> _planetaryTurnResource =
             new Dictionary<ResourceType, Dictionary<ResourceChangeType, float>>();
 
-        private readonly Dictionary<ResourceType, int> _turnResourceMultiplier = new Dictionary<ResourceType, int>();
-
-        /// <summary>
-        /// Planetary resources only
-        /// </summary>
-        public IReadOnlyDictionary<ResourceType, float> CurrentResource => _currentResource;
-
-        public IReadOnlyDictionary<ResourceType, Dictionary<ResourceChangeType, float>> DetailedTurnResource => _detailedTurnResource;
-
-        public IReadOnlyDictionary<ResourceType, int> TurnResourceMultiplier => _turnResourceMultiplier;
+        public IReadOnlyDictionary<ResourceType, Dictionary<ResourceChangeType, float>> PlanetaryTurnResource => _planetaryTurnResource;
 
         #endregion
 
@@ -63,18 +56,6 @@ namespace Infinity.PlanetPop
             EventHandler = new EventHandler(this);
             EventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
 
-            for (var r = ResourceType.Energy; r <= ResourceType.Alloy; r++)
-                _currentResource.Add(r, 0);
-
-            for (var r = ResourceType.Energy; r <= ResourceType.EngineerResearch; r++)
-            {
-                var changeDict =
-                    ((ResourceChangeType[]) Enum.GetValues(typeof(ResourceChangeType)))
-                    .ToDictionary<ResourceChangeType, ResourceChangeType, float>(i => i, i => 0);
-
-                _detailedTurnResource.Add(r, changeDict);
-            }
-
             // for test
             TileMap = new TileMap(4, EventHandler);
         }
@@ -89,12 +70,6 @@ namespace Infinity.PlanetPop
         /// </summary>
         private void ApplyTurnResource()
         {
-            var keys = _currentResource.Keys;
-
-            foreach (var i in keys)
-            {
-
-            }
         }
 
         public void ApplyModifier(BasicModifier modifier)
