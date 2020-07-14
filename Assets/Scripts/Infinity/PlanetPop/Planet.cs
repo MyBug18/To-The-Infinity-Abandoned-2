@@ -4,7 +4,7 @@ using System.Linq;
 using Infinity.HexTileMap;
 using Infinity.Modifiers;
 
-namespace Infinity.Planet
+namespace Infinity.PlanetPop
 {
     public class Planet : IOnHexTileObject, IModifierAttachable, IAffectedByNextTurn
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Infinity.Modifiers;
 
-namespace Infinity.Planet
+namespace Infinity.PlanetPop
 {
     public class Pop : IModifierAttachable
     {

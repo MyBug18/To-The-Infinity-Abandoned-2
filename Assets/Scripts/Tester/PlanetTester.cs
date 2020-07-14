@@ -1,5 +1,5 @@
 ﻿using Infinity.HexTileMap;
-using Infinity.Planet;
+using Infinity.PlanetPop;
 using UnityEngine;
 
 namespace Tester

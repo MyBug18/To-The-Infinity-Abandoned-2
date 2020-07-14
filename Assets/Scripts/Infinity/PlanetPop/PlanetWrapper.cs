@@ -1,7 +1,7 @@
 ﻿using Infinity.HexTileMap;
 using UnityEngine;
 
-namespace Infinity.Planet
+namespace Infinity.PlanetPop
 {
     public class PlanetWrapper : MonoBehaviour
     {
