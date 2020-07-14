@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Infinity.HexTileMap;
 using Infinity.Modifiers;
 
@@ -31,9 +32,6 @@ namespace Infinity.Planet
 
         #region Resources
 
-        /// <summary>
-        /// Planetary resources only
-        /// </summary>
         private readonly Dictionary<ResourceType, float> currentResource = new Dictionary<ResourceType, float>();
 
         private readonly Dictionary<ResourceType, Dictionary<ResourceChangeType, float>> detailedTurnResource =
@@ -41,8 +39,9 @@ namespace Infinity.Planet
 
         private readonly Dictionary<ResourceType, int> turnResourceMultiplier = new Dictionary<ResourceType, int>();
 
-        private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
-
+        /// <summary>
+        /// Planetary resources only
+        /// </summary>
         public IReadOnlyDictionary<ResourceType, float> CurrentResource => currentResource;
 
         public IReadOnlyDictionary<ResourceType, Dictionary<ResourceChangeType, float>> DetailedTurnResource => detailedTurnResource;
@@ -50,6 +49,8 @@ namespace Infinity.Planet
         public IReadOnlyDictionary<ResourceType, int> TurnResourceMultiplier => turnResourceMultiplier;
 
         #endregion
+
+        private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
 
         public Planet(string name, HexTileCoord coord, int size, bool isInhabitable = false)
         {
@@ -61,12 +62,38 @@ namespace Infinity.Planet
             EventHandler = new EventHandler();
             EventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
 
+            for (var r = ResourceType.Energy; r <= ResourceType.Alloy; r++)
+                currentResource.Add(r, 0);
+
+            for (var r = ResourceType.Energy; r <= ResourceType.EngineerResearch; r++)
+            {
+                var changeDict =
+                    ((ResourceChangeType[]) Enum.GetValues(typeof(ResourceChangeType)))
+                    .ToDictionary<ResourceChangeType, ResourceChangeType, float>(i => i, i => 0);
+
+                detailedTurnResource.Add(r, changeDict);
+            }
+
             // for test
             TileMap = new TileMap(4, EventHandler);
         }
 
         public void OnNextTurn()
         {
+            ApplyTurnResource();
+        }
+
+        /// <summary>
+        /// Planetary resources only
+        /// </summary>
+        private void ApplyTurnResource()
+        {
+            var keys = currentResource.Keys;
+
+            foreach (var i in keys)
+            {
+
+            }
         }
 
         public void ApplyModifier(BasicModifier modifier)
