@@ -18,7 +18,7 @@ namespace Infinity.PlanetPop
 
         public readonly TileMap TileMap;
 
-        public readonly LocalEventHandler LocalEventHandler;
+        public readonly EventHandler EventHandler;
 
         #region Pop
 
@@ -59,8 +59,8 @@ namespace Infinity.PlanetPop
             IsInhabitable = isInhabitable;
             Size = size;
 
-            LocalEventHandler = new LocalEventHandler();
-            LocalEventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
+            EventHandler = new EventHandler();
+            EventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
 
             for (var r = ResourceType.Energy; r <= ResourceType.Alloy; r++)
                 _currentResource.Add(r, 0);
@@ -75,7 +75,7 @@ namespace Infinity.PlanetPop
             }
 
             // for test
-            TileMap = new TileMap(4, LocalEventHandler);
+            TileMap = new TileMap(4, EventHandler);
         }
 
         public void OnNextTurn()

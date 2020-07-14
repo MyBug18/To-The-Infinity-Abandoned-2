@@ -10,10 +10,10 @@ namespace Infinity.HexTileMap
 
         private TileMap _tileMap;
 
-        private LocalEventHandler _planetEventHandler;
+        private EventHandler _planetEventHandler;
 
 
-        public void Init(TileMap t, LocalEventHandler eh)
+        public void Init(TileMap t, EventHandler eh)
         {
             _tileMap = t;
             _planetEventHandler = eh;
