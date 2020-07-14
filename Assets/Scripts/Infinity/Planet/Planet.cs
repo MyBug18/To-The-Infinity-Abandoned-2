@@ -43,6 +43,12 @@ namespace Infinity.Planet
 
         private readonly List<BasicModifier> modifiers = new List<BasicModifier>();
 
+        public IReadOnlyDictionary<ResourceType, float> CurrentResource => currentResource;
+
+        public IReadOnlyDictionary<ResourceType, Dictionary<ResourceChangeType, float>> DetailedTurnResource => detailedTurnResource;
+
+        public IReadOnlyDictionary<ResourceType, int> TurnResourceMultiplier => turnResourceMultiplier;
+
         #endregion
 
         public Planet(string name, HexTileCoord coord, int size, bool isInhabitable = false)

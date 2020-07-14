@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-
-namespace Infinity.Planet
+namespace Infinity
 {
     public enum ResourceType
     {
