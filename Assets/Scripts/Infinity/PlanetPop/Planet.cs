@@ -102,10 +102,7 @@ namespace Infinity.PlanetPop
             UnityEngine.Debug.Log("Clicked ( " + coord + " )!");
         }
 
-        Type IEventHandlerHolder.GetHolderType()
-        {
-            return typeof(Planet);
-        }
+        Type IEventHandlerHolder.GetHolderType() => typeof(Planet);
 
         PlanetStatus IPlanet.GetPlanetStatus() => _pops.Count > 0 ? PlanetStatus.Colonized : PlanetStatus.Inhabitable;
     }

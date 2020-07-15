@@ -45,9 +45,6 @@ namespace Infinity
 
         }
 
-        Type IEventHandlerHolder.GetHolderType()
-        {
-            return typeof(Game);
-        }
+        Type IEventHandlerHolder.GetHolderType() => typeof(Game);
     }
 }
