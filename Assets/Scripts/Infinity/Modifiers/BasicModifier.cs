@@ -23,9 +23,13 @@
 
     public abstract class BasicModifier : IAffectedByNextTurn
     {
-        public readonly string Name;
+        public readonly string ModifierKey;
 
-        public readonly string Description;
+        public int Level { get; private set; }
+
+        public string Name { get; private set; }
+
+        public string Description { get; private set; }
 
         public int LeftTurn { get; private set; }
 
@@ -36,6 +40,16 @@
         public void OnNextTurn()
         {
             throw new System.NotImplementedException();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is BasicModifier b && Name.Equals(b.Name);
+        }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
         }
     }
 }
