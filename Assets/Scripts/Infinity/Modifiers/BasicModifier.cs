@@ -27,9 +27,7 @@
 
         public int Level { get; private set; }
 
-        public string Name { get; private set; }
-
-        public string Description { get; private set; }
+        public string DescriptionKey { get; private set; }
 
         public int LeftTurn { get; private set; }
 
@@ -44,12 +42,12 @@
 
         public override bool Equals(object obj)
         {
-            return obj is BasicModifier b && Name.Equals(b.Name);
+            return obj is BasicModifier b && ModifierKey.Equals(b.ModifierKey);
         }
 
         public override int GetHashCode()
         {
-            return Name.GetHashCode();
+            return ModifierKey.GetHashCode();
         }
     }
 }
