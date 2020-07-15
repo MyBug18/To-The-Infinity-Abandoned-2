@@ -10,12 +10,12 @@ namespace Infinity.HexTileMap
     /// </summary>
     public enum TileDirection
     {
-        Up,        // (+1,  0)
-        UpRight,   // (+1, -1)
-        DownRight, // ( 0, -1)
-        Down,      // (-1,  0)
-        DownLeft,  // (-1, +1)
-        UpLeft,    // ( 0, +1)
+        Right = 0,      // (+1,  0)
+        UpRight = 1,    // ( 0, +1)
+        UpLeft = 2,     // (-1, +1)
+        Left = 3,       // (-1,  0)
+        DownLeft = 4,   // ( 0, -1)
+        DownRight = 5,  // (+1, -1)
     }
 
     public class TileMap : IEnumerable<HexTile>
@@ -90,6 +90,47 @@ namespace Infinity.HexTileMap
             return q + r >= Radius && q + r <= 3 * Radius;
         }
 
+        public List<HexTileCoord> GetRing(int radius, HexTileCoord? center = null)
+        {
+            if (radius < 1)
+                throw new InvalidOperationException("Radius of a ring must be bigger than 0!");
+
+            var current = center ?? new HexTileCoord(Radius, Radius);
+
+            var resultList = new List<HexTileCoord>();
+
+            // To the start point
+            for (var i = 0; i < radius; i++)
+                current = current.AddDirection(TileDirection.Right);
+
+            for (var i = 2; i < 8; i++)
+            {
+                var walkDir = (TileDirection) (i % 6);
+                for (var j = 0; j < radius; j++)
+                {
+                    if (IsValidCoord(current))
+                        resultList.Add(current);
+                    current = current.AddDirection(walkDir);
+                }
+            }
+            return resultList;
+        }
+
+        public HexTileCoord GetRandomCoordFromRing(int radius, HexTileCoord? center = null)
+        {
+            var ring = GetRing(radius, center);
+            var count = ring.Count;
+            var decider = UnityEngine.Random.value;
+            for (var i = 0; i < count; i++)
+            {
+                var chance = 1.0f / (count - i);
+                if (decider < chance)
+                    return ring[i];
+            }
+
+            throw new InvalidOperationException("Chance generator has broken!");
+        }
+
         /// <summary>
         /// Gets OnHexTileObject with given type and HexTileCoord.
         /// </summary>
@@ -126,7 +167,7 @@ namespace Infinity.HexTileMap
             }
 
             if (coordObjectDict.ContainsKey(coord))
-                throw new InvalidOperationException("There are already an OnHexTileObject on the coordinate!");
+                throw new InvalidOperationException($"There are already {nameof(type)} on the coordinate!");
 
             coordObjectDict[coord] = onHexTileObject;
 

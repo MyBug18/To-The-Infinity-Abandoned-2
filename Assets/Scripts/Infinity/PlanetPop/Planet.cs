@@ -99,7 +99,7 @@ namespace Infinity.PlanetPop
             if (!(e is TileClickEvent tce)) return;
 
             var coord = tce.Coord;
-            UnityEngine.Debug.Log(TileMap[coord].Coord + " Clicked! ( " + coord + " )");
+            UnityEngine.Debug.Log("Clicked ( " + coord + " )!");
         }
 
         Type IEventHandlerHolder.GetHolderType()

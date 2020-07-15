@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Infinity.Modifiers;
 
 namespace Infinity.HexTileMap
@@ -18,6 +19,27 @@ namespace Infinity.HexTileMap
         public override string ToString()
         {
             return $"({Q}, {R})";
+        }
+
+        public HexTileCoord AddDirection(TileDirection dir)
+        {
+            switch (dir)
+            {
+                case TileDirection.Right:
+                    return new HexTileCoord(Q + 1, R);
+                case TileDirection.UpRight:
+                    return new HexTileCoord(Q, R + 1);
+                case TileDirection.UpLeft:
+                    return new HexTileCoord(Q - 1, R + 1);
+                case TileDirection.Left:
+                    return new HexTileCoord(Q - 1, R);
+                case TileDirection.DownLeft:
+                    return new HexTileCoord(Q, R - 1);
+                case TileDirection.DownRight:
+                    return new HexTileCoord(Q + 1, R - 1);
+                default:
+                    throw new InvalidOperationException();
+            }
         }
     }
 
