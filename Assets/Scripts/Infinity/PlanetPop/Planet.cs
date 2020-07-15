@@ -22,9 +22,13 @@ namespace Infinity.PlanetPop
 
         #region Pop
 
-        public readonly List<Pop> Pops = new List<Pop>();
+        private readonly List<Pop> _pops = new List<Pop>();
 
-        public readonly List<Pop> UnemployedPops = new List<Pop>();
+        private readonly List<Pop> _unemployedPops = new List<Pop>();
+
+        public IReadOnlyList<Pop> Pops => _pops;
+
+        public IReadOnlyList<Pop> UnemployedPops => _unemployedPops;
 
         public const int BasePopGrowth = 3;
 
@@ -34,10 +38,10 @@ namespace Infinity.PlanetPop
 
         private readonly Dictionary<ResourceType, float> _currentPlanetaryResource = new Dictionary<ResourceType, float>();
 
-        public IReadOnlyDictionary<ResourceType, float> CurrentPlanetaryResource => _currentPlanetaryResource;
-
         private readonly Dictionary<ResourceType, Dictionary<ResourceChangeType, float>> _planetaryTurnResource =
             new Dictionary<ResourceType, Dictionary<ResourceChangeType, float>>();
+
+        public IReadOnlyDictionary<ResourceType, float> CurrentPlanetaryResource => _currentPlanetaryResource;
 
         public IReadOnlyDictionary<ResourceType, Dictionary<ResourceChangeType, float>> PlanetaryTurnResource => _planetaryTurnResource;
 
