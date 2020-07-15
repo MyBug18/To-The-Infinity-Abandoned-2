@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Infinity.HexTileMap;
 using Infinity.Modifiers;
 
 namespace Infinity.PlanetPop
 {
-    public class Planet : IOnHexTileObject, IModifierAttachable, IAffectedByNextTurn, IEventHandlerHolder
+    /// <summary>
+    /// Inhabitable planet
+    /// </summary>
+    public class Planet : IPlanet, IModifierAttachable, IAffectedByNextTurn, IEventHandlerHolder
     {
         public string Name { get; private set; }
 
         public HexTileCoord HexCoord { get; private set; }
 
-        public readonly bool IsInhabitable;
+        public PlanetType PlanetType { get; }
 
         public readonly int Size;
 
@@ -49,12 +51,13 @@ namespace Infinity.PlanetPop
 
         private readonly List<BasicModifier> _modifiers = new List<BasicModifier>();
 
-        public Planet(string name, HexTileCoord coord, int size, bool isInhabitable = false)
+        public Planet(string name, HexTileCoord coord, int size)
         {
             HexCoord = coord;
             Name = name;
-            IsInhabitable = isInhabitable;
             Size = size;
+
+            PlanetType = PlanetType.Inhabitable;
 
             // for test
             EventHandler = new EventHandler(this);
@@ -103,5 +106,7 @@ namespace Infinity.PlanetPop
         {
             return typeof(Planet);
         }
+
+        PlanetStatus IPlanet.GetPlanetStatus() => _pops.Count > 0 ? PlanetStatus.Colonized : PlanetStatus.Inhabitable;
     }
 }

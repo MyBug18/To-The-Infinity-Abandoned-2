@@ -1,6 +1,4 @@
-﻿using Infinity.Modifiers;
-
-namespace Infinity.HexTileMap
+﻿namespace Infinity.HexTileMap
 {
     public interface IOnHexTileObject
     {
