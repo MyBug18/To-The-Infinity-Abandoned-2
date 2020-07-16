@@ -25,7 +25,7 @@ namespace Infinity.HexTileMap
         private readonly Dictionary<Type, Dictionary<HexTileCoord, IOnHexTileObject>> _onTileMapObjects =
             new Dictionary<Type, Dictionary<HexTileCoord, IOnHexTileObject>>();
 
-        private EventHandler _planetEventHandler;
+        private EventHandler eventHandler;
 
         public readonly int Radius;
 
@@ -49,7 +49,7 @@ namespace Infinity.HexTileMap
         public TileMap(int radius, EventHandler eh)
         {
             Radius = radius;
-            _planetEventHandler = eh;
+            eventHandler = eh;
 
             _tileMap = new HexTile[radius * 2 + 1][];
             ConstructTileMap();

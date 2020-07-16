@@ -20,7 +20,7 @@ namespace Infinity.PlanetPop
 
         public readonly TileMap TileMap;
 
-        public readonly EventHandler EventHandler;
+        public EventHandler EventHandler { get; }
 
         #region Pop
 
@@ -32,7 +32,7 @@ namespace Infinity.PlanetPop
 
         public IReadOnlyList<Pop> UnemployedPops => _unemployedPops;
 
-        public const int BasePopGrowth = 3;
+        public const int BasePopGrowth = 5;
 
         #endregion
 
@@ -53,17 +53,17 @@ namespace Infinity.PlanetPop
 
         public IReadOnlyDictionary<string, BasicModifier> Modifiers => _modifiers;
 
-        public Planet(string name, HexTileCoord coord, int size)
+        public Planet(string name, HexTileCoord coord, int size, EventHandler parentHandler)
         {
             HexCoord = coord;
             Name = name;
             Size = size;
 
             PlanetType = PlanetType.Inhabitable;
+            EventHandler = parentHandler;
 
-            // for test
-            EventHandler = new EventHandler(this);
-            EventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
+//            EventHandler = new EventHandler(this);
+//            EventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
 
             // for test
             TileMap = new TileMap(4, EventHandler);

@@ -22,11 +22,11 @@ namespace Infinity
         /// </summary>
         public int MonthsPassed { get; private set; } = 0;
 
-        public readonly EventHandler TopEventHandler;
+        public EventHandler EventHandler { get; }
 
         public Game()
         {
-            TopEventHandler = new EventHandler(this);
+            EventHandler = new EventHandler(this);
         }
 
         /// <summary>

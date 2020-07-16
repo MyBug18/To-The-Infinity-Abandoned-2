@@ -12,15 +12,17 @@ namespace Infinity.GalaxySystem
 
     public class StarSystem : IEventHandlerHolder
     {
+        public string Name { get; private set; }
+
         public readonly StarType StarType;
 
-        public readonly EventHandler StarSystemEventHandler;
+        public EventHandler EventHandler { get; }
 
         private readonly List<IPlanet> _planets = new List<IPlanet>();
 
         public StarSystem(EventHandler parentHandler)
         {
-            StarSystemEventHandler = parentHandler.GetEventHandler(this);
+            EventHandler = parentHandler.GetEventHandler(this);
         }
 
         Type IEventHandlerHolder.GetHolderType() => typeof(StarSystem);

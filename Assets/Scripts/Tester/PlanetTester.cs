@@ -11,7 +11,7 @@ namespace Tester
 
         private void Start()
         {
-            var planet = new Planet("TestEarth", new HexTileCoord(0, 0), 3);
+            var planet = new Planet("TestEarth", new HexTileCoord(0, 0), 3, null);
 
             var p = Instantiate(planetPrefab, transform);
             p.Init(planet);

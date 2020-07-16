@@ -33,6 +33,7 @@ namespace Infinity
 
     public interface IEventHandlerHolder
     {
+        EventHandler EventHandler { get; }
         Type GetHolderType();
     }
 
