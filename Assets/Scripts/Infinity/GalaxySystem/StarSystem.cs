@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Infinity.HexTileMap;
 using Infinity.PlanetPop;
 
 namespace Infinity.GalaxySystem
@@ -20,11 +21,33 @@ namespace Infinity.GalaxySystem
 
         public EventHandler EventHandler { get; }
 
-        private readonly List<IPlanet> _planets = new List<IPlanet>();
+        public readonly TileMap TileMap;
 
         public StarSystem(EventHandler parentHandler)
         {
             EventHandler = parentHandler.GetEventHandler(this);
+            Size = 6;
+
+            TileMap = new TileMap(6, EventHandler);
+        }
+
+        private void SetPlanets()
+        {
+            for (var i = 1; i <= Size; i++)
+            {
+                IPlanet planet;
+
+                var pos = TileMap.GetRandomCoordFromRing(i);
+
+                if (i == 3)
+                {
+                    planet = new Planet("test", pos, 8, EventHandler);
+                }
+                else
+                {
+                    planet = new UnInhabitablePlanet("test_uninhabitable", pos);
+                }
+            }
         }
 
         Type IEventHandlerHolder.GetHolderType() => typeof(StarSystem);
