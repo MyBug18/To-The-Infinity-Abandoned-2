@@ -9,12 +9,12 @@ namespace Tester
         [SerializeField]
         private PlanetWrapper planetPrefab;
 
-        private void Start()
-        {
-            var planet = new Planet("TestEarth", new HexTileCoord(0, 0), 3, null);
-
-            var p = Instantiate(planetPrefab, transform);
-            p.Init(planet);
-        }
+        // private void Start()
+        // {
+        //     var planet = new Planet("TestEarth", new HexTileCoord(0, 0), 4, null);
+        //
+        //     var p = Instantiate(planetPrefab, transform);
+        //     p.Init(planet);
+        // }
     }
 }

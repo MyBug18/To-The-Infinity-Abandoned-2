@@ -16,6 +16,8 @@ namespace Infinity.GalaxySystem
 
         public readonly StarType StarType;
 
+        public readonly int Size;
+
         public EventHandler EventHandler { get; }
 
         private readonly List<IPlanet> _planets = new List<IPlanet>();
