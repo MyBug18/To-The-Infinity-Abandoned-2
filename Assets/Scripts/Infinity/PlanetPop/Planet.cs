@@ -49,7 +49,9 @@ namespace Infinity.PlanetPop
 
         #endregion
 
-        private readonly List<BasicModifier> _modifiers = new List<BasicModifier>();
+        private readonly Dictionary<string, BasicModifier> _modifiers = new Dictionary<string, BasicModifier>();
+
+        public IReadOnlyDictionary<string, BasicModifier> Modifiers => _modifiers;
 
         public Planet(string name, HexTileCoord coord, int size)
         {
@@ -86,12 +88,14 @@ namespace Infinity.PlanetPop
 
         public void AddModifier(BasicModifier modifier)
         {
-            _modifiers.Add(modifier);
+            if (_modifiers.ContainsKey(modifier.ModifierKey)) return;
+
+            _modifiers.Add(modifier.ModifierKey, modifier);
         }
 
         public void RemoveModifier(BasicModifier modifier)
         {
-            _modifiers.Remove(modifier);
+            _modifiers.Remove(modifier.ModifierKey);
         }
 
         private void OnTileClickEvent(Event e, IEventHandlerHolder holder)

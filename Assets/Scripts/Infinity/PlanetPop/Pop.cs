@@ -5,18 +5,22 @@ namespace Infinity.PlanetPop
 {
     public class Pop : IModifierAttachable
     {
-        private readonly List<BasicModifier> _modifiers = new List<BasicModifier>();
+        private readonly Dictionary<string, BasicModifier> _modifiers = new Dictionary<string, BasicModifier>();
+
+        public IReadOnlyDictionary<string, BasicModifier> Modifiers => _modifiers;
 
         public string Name { get; private set; }
 
         public void AddModifier(BasicModifier modifier)
         {
-            _modifiers.Add(modifier);
+            if (_modifiers.ContainsKey(modifier.ModifierKey)) return;
+
+            _modifiers.Add(modifier.ModifierKey, modifier);
         }
 
         public void RemoveModifier(BasicModifier modifier)
         {
-            _modifiers.Remove(modifier);
+            _modifiers.Remove(modifier.ModifierKey);
         }
     }
 }

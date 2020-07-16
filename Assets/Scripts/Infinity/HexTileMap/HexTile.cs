@@ -50,7 +50,7 @@ namespace Infinity.HexTileMap
         Land
     }
 
-    public class HexTile : IModifierAttachable
+    public class HexTile
     {
         public readonly HexTileCoord Coord;
 
@@ -58,21 +58,9 @@ namespace Infinity.HexTileMap
 
         public int WayCost { get; private set; } = 1;
 
-        private readonly List<BasicModifier> _modifiers = new List<BasicModifier>();
-
         public HexTile(HexTileCoord coord)
         {
             Coord = coord;
-        }
-
-        public void AddModifier(BasicModifier modifier)
-        {
-            _modifiers.Add(modifier);
-        }
-
-        public void RemoveModifier(BasicModifier modifier)
-        {
-            _modifiers.Remove(modifier);
         }
     }
 }
