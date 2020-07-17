@@ -21,34 +21,30 @@ namespace Infinity.GalaxySystem
 
         public EventHandler EventHandler { get; }
 
-        public readonly TileMap TileMap;
-
         public StarSystem(EventHandler parentHandler)
         {
             EventHandler = parentHandler.GetEventHandler(this);
             Size = 6;
-
-            TileMap = new TileMap(6, EventHandler);
         }
 
-        private void SetPlanets()
-        {
-            for (var i = 1; i <= Size; i++)
-            {
-                IPlanet planet;
-
-                var pos = TileMap.GetRandomCoordFromRing(i);
-
-                if (i == 3)
-                {
-                    planet = new Planet("test", pos, 8, EventHandler);
-                }
-                else
-                {
-                    planet = new UnInhabitablePlanet("test_uninhabitable", pos);
-                }
-            }
-        }
+        // private void SetPlanets()
+        // {
+        //     for (var i = 1; i <= Size; i++)
+        //     {
+        //         IPlanet planet;
+        //
+        //         var pos = TileMap.GetRandomCoordFromRing(i);
+        //
+        //         if (i == 3)
+        //         {
+        //             planet = new Planet("test", pos, 8, EventHandler);
+        //         }
+        //         else
+        //         {
+        //             planet = new UnInhabitablePlanet("test_uninhabitable", pos);
+        //         }
+        //     }
+        // }
 
         Type IEventHandlerHolder.GetHolderType() => typeof(StarSystem);
     }

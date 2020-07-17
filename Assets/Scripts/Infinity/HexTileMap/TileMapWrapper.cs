@@ -1,4 +1,5 @@
 ﻿using System;
+using Infinity.PlanetPop;
 using UnityEngine;
 
 namespace Infinity.HexTileMap
@@ -8,16 +9,13 @@ namespace Infinity.HexTileMap
         [SerializeField]
         private HexTileWrapper hexTilePrefab;
 
-        private TileMap _tileMap;
-
-        private EventHandler _planetEventHandler;
+        private ITileMapHolder _holder;
 
 
-        public void Init(TileMap t, EventHandler planetEventHandler)
+        public void Init(ITileMapHolder holder)
         {
-            _tileMap = t;
-            _planetEventHandler = planetEventHandler;
             name = "TileMap";
+            _holder = holder;
         }
 
         public void Start()
@@ -27,15 +25,12 @@ namespace Infinity.HexTileMap
 
         public void ConstructTileMap()
         {
-            if (_tileMap == null)
-                throw new InvalidOperationException("TileMap has not been initialized!");
-
             var sqr3 = Mathf.Sqrt(3);
-            foreach (var t in _tileMap)
+            foreach (var t in _holder)
             {
                 var c = t.Coord;
                 var pos = new Vector3(sqr3 * c.Q + sqr3 * c.R / 2, 0, 1.5f * c.R) -
-                          new Vector3(_tileMap.Radius * 1.5f * sqr3, 0, _tileMap.Radius * 1.5f);
+                          new Vector3(_holder.TileMapRadius * 1.5f * sqr3, 0, _holder.TileMapRadius * 1.5f);
                 var tile = Instantiate(hexTilePrefab, transform);
                 tile.Init(c, OnClickTile);
                 tile.transform.localPosition = pos;
@@ -44,7 +39,7 @@ namespace Infinity.HexTileMap
 
         private void OnClickTile(HexTileCoord coord)
         {
-            _planetEventHandler.Publish(TileClickEvent.Create(coord));
+            _holder.EventHandler.Publish(TileClickEvent.Create(coord));
         }
     }
 }

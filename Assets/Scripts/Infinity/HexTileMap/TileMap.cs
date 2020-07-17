@@ -135,13 +135,25 @@ namespace Infinity.HexTileMap
         /// Gets OnHexTileObject with given type and HexTileCoord.
         /// </summary>
         /// <returns>Returns null if given type is not in the dict.</returns>
-        public T GetTileObjectFromCoord<T>(HexTileCoord coord) where T : IOnHexTileObject
+        public T GetTileObject<T>(HexTileCoord coord) where T : IOnHexTileObject
         {
             var type = typeof(T);
             if (!_onTileMapObjects.TryGetValue(type, out var coordObjectDict)) return default;
             if (!coordObjectDict.TryGetValue(coord, out var obj)) return default;
 
             return (T) obj;
+        }
+
+        public IReadOnlyList<IOnHexTileObject> GetAllTileObjects(HexTileCoord coord)
+        {
+            var result = new List<IOnHexTileObject>();
+            foreach (var v in _onTileMapObjects.Values)
+            {
+                if (!v.TryGetValue(coord, out var obj)) continue;
+                result.Add(obj);
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -157,7 +169,7 @@ namespace Infinity.HexTileMap
             return (IReadOnlyCollection<T>)result;
         }
 
-        private void AddTileObject<T>(T onHexTileObject, HexTileCoord coord) where T : IOnHexTileObject
+        public void AddTileObject<T>(T onHexTileObject, HexTileCoord coord) where T : IOnHexTileObject
         {
             var type = typeof(T);
             if (!_onTileMapObjects.TryGetValue(type, out var coordObjectDict))
@@ -174,7 +186,7 @@ namespace Infinity.HexTileMap
             // TODO: publish event (maybe)
         }
 
-        private void RemoveTileObject<T>(HexTileCoord coord)
+        public void RemoveTileObject<T>(HexTileCoord coord)
         {
             var type = typeof(T);
             if (!_onTileMapObjects.TryGetValue(type, out var coordObjectDict)) return;

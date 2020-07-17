@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Infinity.HexTileMap;
 using Infinity.Modifiers;
@@ -8,7 +9,7 @@ namespace Infinity.PlanetPop
     /// <summary>
     /// Inhabitable planet
     /// </summary>
-    public class Planet : IPlanet, IModifierAttachable, IAffectedByNextTurn, IEventHandlerHolder
+    public class Planet : IPlanet, IModifierAttachable, IAffectedByNextTurn, ITileMapHolder
     {
         public string Name { get; private set; }
 
@@ -18,7 +19,7 @@ namespace Infinity.PlanetPop
 
         public readonly int Size;
 
-        public readonly TileMap TileMap;
+        private readonly TileMap _tileMap;
 
         public EventHandler EventHandler { get; }
 
@@ -66,7 +67,7 @@ namespace Infinity.PlanetPop
 //            EventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
 
             // for test
-            TileMap = new TileMap(6, EventHandler);
+            _tileMap = new TileMap(6, EventHandler);
         }
 
         public void OnNextTurn()
@@ -109,5 +110,28 @@ namespace Infinity.PlanetPop
         Type IEventHandlerHolder.GetHolderType() => typeof(Planet);
 
         PlanetStatus IPlanet.GetPlanetStatus() => _pops.Count > 0 ? PlanetStatus.Colonized : PlanetStatus.Inhabitable;
+
+        public int TileMapRadius => _tileMap.Radius;
+
+        public bool IsValidCoord(HexTileCoord coord) => _tileMap.IsValidCoord(coord);
+
+        public T GetTileObject<T>(HexTileCoord coord) where T : IOnHexTileObject =>
+            _tileMap.GetTileObject<T>(coord);
+
+        public IReadOnlyList<IOnHexTileObject> GetAllTileObjects(HexTileCoord coord) =>
+            _tileMap.GetAllTileObjects(coord);
+
+        public IReadOnlyCollection<T> GetTileObjectCollection<T>() where T : IOnHexTileObject =>
+            _tileMap.GetTileObjectCollection<T>();
+
+        public IEnumerator<HexTile> GetEnumerator()
+        {
+            return _tileMap.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 }
