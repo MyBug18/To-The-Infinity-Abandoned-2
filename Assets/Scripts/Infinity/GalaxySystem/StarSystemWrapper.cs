@@ -1,25 +1,24 @@
 ﻿using Infinity.HexTileMap;
 using UnityEngine;
 
-namespace Infinity.PlanetPop
+namespace Infinity.GalaxySystem
 {
-    public class PlanetWrapper : MonoBehaviour
+    public class StarSystemWrapper : MonoBehaviour
     {
-        private Planet _planet;
+        private StarSystem _starSystem;
 
         [SerializeField]
         private TileMapWrapper tileMapPrefab;
 
-        public void Init(Planet planet)
+        public void Init(StarSystem starSystem)
         {
-            _planet = planet;
-            name = _planet.Name;
+            _starSystem = starSystem;
         }
 
         private void Start()
         {
             var tileMap = Instantiate(tileMapPrefab, transform);
-            tileMap.Init(_planet);
+            tileMap.Init(_starSystem);
         }
     }
 }
