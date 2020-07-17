@@ -39,7 +39,7 @@ namespace Infinity.HexTileMap
 
         private void OnClickTile(HexTileCoord coord)
         {
-            _holder.EventHandler.Publish(TileClickEvent.Create(coord));
+            _holder.EventHandler.Publish(TileClickEvent.Create(coord, _holder.TileMapType));
         }
     }
 }

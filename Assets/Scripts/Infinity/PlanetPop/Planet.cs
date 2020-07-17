@@ -21,7 +21,13 @@ namespace Infinity.PlanetPop
 
         private readonly TileMap _tileMap;
 
+        public int TileMapRadius => _tileMap.Radius;
+
+        public TileMapType TileMapType => TileMapType.Planet;
+
         public EventHandler EventHandler { get; }
+
+        Type IEventHandlerHolder.HolderType => typeof(Planet);
 
         #region Pop
 
@@ -62,7 +68,6 @@ namespace Infinity.PlanetPop
 
             PlanetType = PlanetType.Inhabitable;
             EventHandler = parentHandler.GetEventHandler(this);
-            EventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
 
             // for test
             _tileMap = new TileMap(6, EventHandler);
@@ -97,19 +102,7 @@ namespace Infinity.PlanetPop
             _modifiers.Remove(modifier.ModifierKey);
         }
 
-        private void OnTileClickEvent(Event e, IEventHandlerHolder holder)
-        {
-            if (!(e is TileClickEvent tce)) return;
-
-            var coord = tce.Coord;
-            UnityEngine.Debug.Log("Clicked ( " + coord + " )!");
-        }
-
-        Type IEventHandlerHolder.GetHolderType() => typeof(Planet);
-
         PlanetStatus IPlanet.GetPlanetStatus() => _pops.Count > 0 ? PlanetStatus.Colonized : PlanetStatus.Inhabitable;
-
-        public int TileMapRadius => _tileMap.Radius;
 
         public bool IsValidCoord(HexTileCoord coord) => _tileMap.IsValidCoord(coord);
 

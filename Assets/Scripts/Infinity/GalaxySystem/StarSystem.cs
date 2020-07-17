@@ -22,6 +22,12 @@ namespace Infinity.GalaxySystem
 
         private readonly TileMap _tileMap;
 
+        public int TileMapRadius => _tileMap.Radius;
+
+        public TileMapType TileMapType => TileMapType.StarSystem;
+
+        Type IEventHandlerHolder.HolderType => typeof(StarSystem);
+
         public EventHandler EventHandler { get; }
 
         public StarSystem(EventHandler parentHandler)
@@ -54,10 +60,6 @@ namespace Infinity.GalaxySystem
                 _tileMap.AddTileObject(pos, planet);
             }
         }
-
-        Type IEventHandlerHolder.GetHolderType() => typeof(StarSystem);
-
-        public int TileMapRadius => _tileMap.Radius;
 
         public bool IsValidCoord(HexTileCoord coord) => _tileMap.IsValidCoord(coord);
 

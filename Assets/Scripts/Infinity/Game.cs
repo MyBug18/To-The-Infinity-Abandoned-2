@@ -24,6 +24,8 @@ namespace Infinity
 
         public EventHandler EventHandler { get; }
 
+        Type IEventHandlerHolder.HolderType => typeof(Game);
+
         public Game()
         {
             EventHandler = new EventHandler(this);
@@ -44,7 +46,5 @@ namespace Infinity
             MonthsPassed += GameSpeed;
 
         }
-
-        Type IEventHandlerHolder.GetHolderType() => typeof(Game);
     }
 }

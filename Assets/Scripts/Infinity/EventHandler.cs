@@ -33,8 +33,8 @@ namespace Infinity
 
     public interface IEventHandlerHolder
     {
+        Type HolderType { get; }
         EventHandler EventHandler { get; }
-        Type GetHolderType();
     }
 
     /// <summary>
@@ -65,7 +65,7 @@ namespace Infinity
 
         public EventHandler GetEventHandler(IEventHandlerHolder newHolder)
         {
-            if (_holder.GetHolderType() == newHolder.GetHolderType())
+            if (_holder.HolderType == newHolder.HolderType)
                 throw new InvalidOperationException("You can't make a hierarchy between same type!");
 
             // return new EventHandler, setting this instance as parent
