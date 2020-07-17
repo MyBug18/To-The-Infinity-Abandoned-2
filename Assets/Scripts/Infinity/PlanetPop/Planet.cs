@@ -61,10 +61,8 @@ namespace Infinity.PlanetPop
             Size = size;
 
             PlanetType = PlanetType.Inhabitable;
-//            EventHandler = parentHandler.GetEventHandler(this);
-
-//            EventHandler = new EventHandler(this);
-//            EventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
+            EventHandler = parentHandler.GetEventHandler(this);
+            EventHandler.Subscribe<TileClickEvent>(OnTileClickEvent);
 
             // for test
             _tileMap = new TileMap(6, EventHandler);

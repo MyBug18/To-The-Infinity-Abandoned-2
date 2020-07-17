@@ -169,7 +169,7 @@ namespace Infinity.HexTileMap
             return (IReadOnlyCollection<T>)result;
         }
 
-        public void AddTileObject<T>(T onHexTileObject, HexTileCoord coord) where T : IOnHexTileObject
+        public void AddTileObject<T>(HexTileCoord coord, T onHexTileObject) where T : IOnHexTileObject
         {
             var type = typeof(T);
             if (!_onTileMapObjects.TryGetValue(type, out var coordObjectDict))
