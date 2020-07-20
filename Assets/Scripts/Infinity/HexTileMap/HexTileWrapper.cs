@@ -9,11 +9,11 @@ namespace Infinity.HexTileMap
 
         private event Action<HexTileCoord> OnClick;
 
-        public void Init(HexTileCoord c, Action<HexTileCoord> onClicked)
+        public void Init(HexTile t, Action<HexTileCoord> onClicked)
         {
-            _coord = c;
+            _coord = t.Coord;
             OnClick += onClicked;
-            name = $"HexTile ({c.Q}, {c.R})";
+            name = $"{t.TileType} Tile ({_coord.Q}, {_coord.R})";
         }
 
         void IClickable.OnClick()

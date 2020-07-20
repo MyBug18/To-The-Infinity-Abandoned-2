@@ -14,7 +14,7 @@ namespace Infinity.HexTileMap
 
         public void Init(ITileMapHolder holder)
         {
-            name = "TileMap";
+            name = holder.TileMapType + " TileMap";
             _holder = holder;
         }
 
@@ -32,7 +32,7 @@ namespace Infinity.HexTileMap
                 var pos = new Vector3(sqr3 * c.Q + sqr3 * c.R / 2, 0, 1.5f * c.R) -
                           new Vector3(_holder.TileMapRadius * 1.5f * sqr3, 0, _holder.TileMapRadius * 1.5f);
                 var tile = Instantiate(hexTilePrefab, transform);
-                tile.Init(c, OnClickTile);
+                tile.Init(t, OnClickTile);
                 tile.transform.localPosition = pos;
             }
         }

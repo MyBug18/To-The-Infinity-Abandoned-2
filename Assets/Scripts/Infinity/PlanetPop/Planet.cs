@@ -60,7 +60,7 @@ namespace Infinity.PlanetPop
 
         public IReadOnlyDictionary<string, BasicModifier> Modifiers => _modifiers;
 
-        public Planet(string name, HexTileCoord coord, int size, EventHandler parentHandler)
+        public Planet(EventHandler parentHandler, string name, HexTileCoord coord, int size)
         {
             HexCoord = coord;
             Name = name;

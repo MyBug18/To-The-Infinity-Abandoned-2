@@ -13,6 +13,7 @@ namespace Infinity.GalaxySystem
         public void Init(StarSystem starSystem)
         {
             _starSystem = starSystem;
+            name = starSystem.Name + " System";
         }
 
         private void Start()

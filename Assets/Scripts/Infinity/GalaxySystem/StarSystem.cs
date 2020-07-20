@@ -35,6 +35,7 @@ namespace Infinity.GalaxySystem
             EventHandler = new EventHandler(this);
 //            EventHandler = parentHandler.GetEventHandler(this);
             Size = 6;
+            Name = "TestSystem";
 
             _tileMap = new TileMap(6, EventHandler);
             SetPlanets();
@@ -50,7 +51,7 @@ namespace Infinity.GalaxySystem
 
                 if (i == 3)
                 {
-                    planet = new Planet("test", pos, 8, EventHandler);
+                    planet = new Planet(EventHandler, "test", pos, 8);
                 }
                 else
                 {
