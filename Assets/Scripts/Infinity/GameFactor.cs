@@ -1,13 +1,12 @@
 namespace Infinity
 {
-    public enum ResourceType
+    public enum GameFactor
     {
-        All, // Only for events
-        Energy, // Planet-exclusive
+        Energy,
         Mineral,
         Food,
         Alloy,
-        Money, // Global resources
+        Money,
         PhysicsResearch,
         SocietyResearch,
         EngineerResearch,

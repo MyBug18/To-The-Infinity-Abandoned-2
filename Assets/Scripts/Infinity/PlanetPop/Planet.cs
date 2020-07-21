@@ -47,14 +47,14 @@ namespace Infinity.PlanetPop
 
         #region Resources
 
-        private readonly Dictionary<ResourceType, float> _currentPlanetaryResource = new Dictionary<ResourceType, float>();
+        private readonly Dictionary<GameFactor, float> _currentPlanetaryResource = new Dictionary<GameFactor, float>();
 
-        private readonly Dictionary<ResourceType, Dictionary<ResourceChangeType, float>> _planetaryTurnResource =
-            new Dictionary<ResourceType, Dictionary<ResourceChangeType, float>>();
+        private readonly Dictionary<GameFactor, Dictionary<ResourceChangeType, float>> _planetaryTurnResource =
+            new Dictionary<GameFactor, Dictionary<ResourceChangeType, float>>();
 
-        public IReadOnlyDictionary<ResourceType, float> CurrentPlanetaryResource => _currentPlanetaryResource;
+        public IReadOnlyDictionary<GameFactor, float> CurrentPlanetaryResource => _currentPlanetaryResource;
 
-        public IReadOnlyDictionary<ResourceType, Dictionary<ResourceChangeType, float>> PlanetaryTurnResource => _planetaryTurnResource;
+        public IReadOnlyDictionary<GameFactor, Dictionary<ResourceChangeType, float>> PlanetaryTurnResource => _planetaryTurnResource;
 
         #endregion
 
