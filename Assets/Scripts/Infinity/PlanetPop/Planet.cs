@@ -25,6 +25,8 @@ namespace Infinity.PlanetPop
 
         public TileMapType TileMapType => TileMapType.Planet;
 
+        public IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] => _tileMap[coord];
+
         public EventHandler EventHandler { get; }
 
         Type IEventHandlerHolder.HolderType => typeof(Planet);
@@ -108,9 +110,6 @@ namespace Infinity.PlanetPop
 
         public T GetTileObject<T>(HexTileCoord coord) where T : IOnHexTileObject =>
             _tileMap.GetTileObject<T>(coord);
-
-        public IReadOnlyList<IOnHexTileObject> GetAllTileObjects(HexTileCoord coord) =>
-            _tileMap.GetAllTileObjects(coord);
 
         public IReadOnlyCollection<T> GetTileObjectCollection<T>() where T : IOnHexTileObject =>
             _tileMap.GetTileObjectCollection<T>();

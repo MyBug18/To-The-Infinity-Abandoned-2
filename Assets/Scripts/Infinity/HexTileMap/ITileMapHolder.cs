@@ -17,9 +17,9 @@ namespace Infinity.HexTileMap
 
         TileMapType TileMapType { get; }
 
-        T GetTileObject<T>(HexTileCoord coord) where T : IOnHexTileObject;
+        IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] { get; }
 
-        IReadOnlyList<IOnHexTileObject> GetAllTileObjects(HexTileCoord coord);
+        T GetTileObject<T>(HexTileCoord coord) where T : IOnHexTileObject;
 
         IReadOnlyCollection<T> GetTileObjectCollection<T>() where T : IOnHexTileObject;
     }

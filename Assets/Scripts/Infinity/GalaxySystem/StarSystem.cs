@@ -12,9 +12,10 @@ namespace Infinity.GalaxySystem
         BlackHole
     }
 
-    public class StarSystem : ITileMapHolder
+    public class StarSystem : ITileMapHolder, IOnHexTileObject
     {
         public string Name { get; private set; }
+        public HexTileCoord HexCoord { get; }
 
         public readonly StarType StarType;
 
@@ -26,16 +27,18 @@ namespace Infinity.GalaxySystem
 
         public TileMapType TileMapType => TileMapType.StarSystem;
 
+        public IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] => _tileMap[coord];
+
         Type IEventHandlerHolder.HolderType => typeof(StarSystem);
 
         public EventHandler EventHandler { get; }
 
         public StarSystem(EventHandler parentHandler)
         {
-            EventHandler = new EventHandler(this);
-//            EventHandler = parentHandler.GetEventHandler(this);
+            EventHandler = parentHandler.GetEventHandler(this);
             Size = 6;
             Name = "TestSystem";
+            HexCoord = new HexTileCoord(3, 3);
 
             _tileMap = new TileMap(6, EventHandler);
             SetPlanets();
@@ -66,9 +69,6 @@ namespace Infinity.GalaxySystem
 
         public T GetTileObject<T>(HexTileCoord coord) where T : IOnHexTileObject =>
             _tileMap.GetTileObject<T>(coord);
-
-        public IReadOnlyList<IOnHexTileObject> GetAllTileObjects(HexTileCoord coord) =>
-            _tileMap.GetAllTileObjects(coord);
 
         public IReadOnlyCollection<T> GetTileObjectCollection<T>() where T : IOnHexTileObject =>
             _tileMap.GetTileObjectCollection<T>();

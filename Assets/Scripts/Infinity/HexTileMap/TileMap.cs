@@ -22,29 +22,15 @@ namespace Infinity.HexTileMap
     {
         private readonly HexTile[][] _tileMap;
 
-        private readonly Dictionary<Type, Dictionary<HexTileCoord, IOnHexTileObject>> _onTileMapObjects =
-            new Dictionary<Type, Dictionary<HexTileCoord, IOnHexTileObject>>();
+        private readonly Dictionary<HexTileCoord, Dictionary<Type, IOnHexTileObject>> _onTileMapObjects =
+            new Dictionary<HexTileCoord, Dictionary<Type, IOnHexTileObject>>();
 
         private EventHandler eventHandler;
 
         public readonly int Radius;
 
-        public HexTile this[HexTileCoord coord]
-        {
-            get
-            {
-                if (!IsValidCoord(coord))
-                    return null;
-
-                var q = coord.Q;
-                var r = coord.R;
-
-                if (r < Radius)
-                    q = q - Radius + r;
-
-                return _tileMap[r][q];
-            }
-        }
+        public IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] =>
+            IsValidCoord(coord) ? GetAllTileObjects(coord) : null;
 
         public TileMap(int radius, EventHandler eh)
         {
@@ -138,22 +124,17 @@ namespace Infinity.HexTileMap
         public T GetTileObject<T>(HexTileCoord coord) where T : IOnHexTileObject
         {
             var type = typeof(T);
-            if (!_onTileMapObjects.TryGetValue(type, out var coordObjectDict)) return default;
-            if (!coordObjectDict.TryGetValue(coord, out var obj)) return default;
+            if (!_onTileMapObjects.TryGetValue(coord , out var coordObjectDict)) return default;
+            if (!coordObjectDict.TryGetValue(type, out var obj)) return default;
 
             return (T) obj;
         }
 
         public IReadOnlyList<IOnHexTileObject> GetAllTileObjects(HexTileCoord coord)
         {
-            var result = new List<IOnHexTileObject>();
-            foreach (var v in _onTileMapObjects.Values)
-            {
-                if (!v.TryGetValue(coord, out var obj)) continue;
-                result.Add(obj);
-            }
-
-            return result;
+            return _onTileMapObjects.TryGetValue(coord, out var typeObjDict)
+                ? typeObjDict.Values.ToList()
+                : new List<IOnHexTileObject>();
         }
 
         /// <summary>
@@ -163,24 +144,29 @@ namespace Infinity.HexTileMap
         public IReadOnlyList<T> GetTileObjectCollection<T>() where T : IOnHexTileObject
         {
             var type = typeof(T);
-            return !_onTileMapObjects.TryGetValue(type, out var coordObjectDict)
-                ? null
-                : coordObjectDict.Values.Cast<T>().ToList();
+            var result = new List<T>();
+            foreach (var typeObjDict in _onTileMapObjects.Values)
+            {
+                if (!typeObjDict.TryGetValue(type, out var obj)) continue;
+                result.Add((T) obj);
+            }
+
+            return result;
         }
 
         public void AddTileObject<T>(HexTileCoord coord, T onHexTileObject) where T : IOnHexTileObject
         {
             var type = typeof(T);
-            if (!_onTileMapObjects.TryGetValue(type, out var coordObjectDict))
+            if (!_onTileMapObjects.TryGetValue(coord, out var typeObjectDict))
             {
-                _onTileMapObjects.Add(type, new Dictionary<HexTileCoord, IOnHexTileObject>());
-                coordObjectDict = _onTileMapObjects[type];
+                _onTileMapObjects.Add(coord, new Dictionary<Type, IOnHexTileObject>());
+                typeObjectDict = _onTileMapObjects[coord];
             }
 
-            if (coordObjectDict.ContainsKey(coord))
+            if (typeObjectDict.ContainsKey(type))
                 throw new InvalidOperationException($"There are already {nameof(type)} on the coordinate!");
 
-            coordObjectDict[coord] = onHexTileObject;
+            typeObjectDict[type] = onHexTileObject;
 
             // TODO: publish event (maybe)
         }
@@ -188,10 +174,10 @@ namespace Infinity.HexTileMap
         public void RemoveTileObject<T>(HexTileCoord coord)
         {
             var type = typeof(T);
-            if (!_onTileMapObjects.TryGetValue(type, out var coordObjectDict)) return;
+            if (!_onTileMapObjects.TryGetValue(coord, out var typeObjectDict)) return;
 
-            if (coordObjectDict.Remove(coord) && coordObjectDict.Count == 0)
-                _onTileMapObjects.Remove(type);
+            if (typeObjectDict.Remove(type) && typeObjectDict.Count == 0)
+                _onTileMapObjects.Remove(coord);
 
             // TODO: publish event (maybe)
         }
