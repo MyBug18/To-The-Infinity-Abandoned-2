@@ -5,29 +5,16 @@ namespace Infinity
 {
     public abstract class Event : IDisposable
     {
-        public abstract void Dispose();
-    }
+        public IEventHandlerHolder Sender { get; private set; }
 
-    public readonly struct EventInfo
-    {
-        public readonly Action<Event, IEventHandlerHolder> Callback;
-
-        public readonly bool ReceiveOnlyOnce;
-
-        public EventInfo(Action<Event, IEventHandlerHolder> c, bool once)
+        public Event(IEventHandlerHolder holder)
         {
-            Callback = c;
-            ReceiveOnlyOnce = once;
+            Sender = holder;
         }
 
-        public override bool Equals(object obj)
+        public virtual void Dispose()
         {
-            return obj is Action<Event, IEventHandlerHolder> c && c == Callback;
-        }
-
-        public override int GetHashCode()
-        {
-            return Callback.GetHashCode();
+            Sender = null;
         }
     }
 
@@ -42,7 +29,7 @@ namespace Infinity
     /// </summary>
     public class EventHandler
     {
-        private readonly Dictionary<Type, List<EventInfo>> _subscribeInfoDict = new Dictionary<Type, List<EventInfo>>();
+        private readonly Dictionary<Type, List<Action<Event>>> _subscribeInfoDict = new Dictionary<Type, List<Action<Event>>>();
 
         private readonly EventHandler _parentHandler;
 
@@ -72,57 +59,42 @@ namespace Infinity
             return new EventHandler(this, newHolder);
         }
 
-        public void Subscribe<T>(Action<Event, IEventHandlerHolder> c, bool once = false) where T : Event
+        public void Subscribe<T>(Action<Event> callBack) where T : Event
         {
             var type = typeof(T);
-            var eventInfo = new EventInfo(c, once);
 
             // Make new list and add it when there are no initial list for the given type
             if (!_subscribeInfoDict.ContainsKey(type))
             {
-                var list = new List<EventInfo>();
+                var list = new List<Action<Event>>();
                 _subscribeInfoDict.Add(type, list);
             }
 
-            _subscribeInfoDict[type].Add(eventInfo);
+            _subscribeInfoDict[type].Add(callBack);
         }
 
-        public void UnSubscribe<T>(Action<Event> c) where T : Event
+        public void UnSubscribe<T>(Action<Event> callBack) where T : Event
         {
             var type = typeof(T);
 
             if (!_subscribeInfoDict.TryGetValue(type, out var infos)) return;
 
-            var idx = infos.FindIndex(i => i.Callback.Equals(c));
-            if (idx == -1) return;
+            infos.Remove(callBack);
 
-            infos.RemoveAt(idx);
             if (infos.Count == 0)
                 _subscribeInfoDict.Remove(type);
         }
 
-        public void Publish<T>(T e, IEventHandlerHolder holder = null) where T : Event
+        public void Publish<T>(T e) where T : Event
         {
             var type = typeof(T);
-            var removeList = new List<EventInfo>();
 
             if (!_subscribeInfoDict.TryGetValue(type, out var infos)) return;
 
-            foreach (var i in infos)
-            {
-                i.Callback.Invoke(e, null);
+            foreach (var callBack in infos)
+                callBack.Invoke(e);
 
-                if (i.ReceiveOnlyOnce)
-                    removeList.Add(i);
-            }
-
-            foreach (var i in removeList)
-                infos.Remove(i);
-
-            if (infos.Count == 0)
-                _subscribeInfoDict.Remove(type);
-
-            _parentHandler?.Publish(e, _holder);
+            _parentHandler?.Publish(e);
 
             e.Dispose();
         }

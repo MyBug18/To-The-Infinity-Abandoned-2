@@ -2,16 +2,13 @@ namespace Infinity.HexTileMap
 {
     public class TileClickEvent : Event
     {
-        public TileMapType TileType { get; private set; }
-        public HexTileCoord Coord { get; private set; }
+        public TileMapType TileMapType { get; }
+        public HexTileCoord Coord { get; }
 
-        public static TileClickEvent Create(HexTileCoord c, TileMapType type)
+        public TileClickEvent(IEventHandlerHolder holder, TileMapType tileMapType, HexTileCoord coord) : base(holder)
         {
-            return new TileClickEvent {Coord = c, TileType = type};
-        }
-
-        public override void Dispose()
-        {
+            TileMapType = tileMapType;
+            Coord = coord;
         }
     }
 }
