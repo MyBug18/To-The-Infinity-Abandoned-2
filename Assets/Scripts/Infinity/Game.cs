@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Infinity.GalaxySystem;
 
 namespace Infinity
 {
@@ -26,9 +27,12 @@ namespace Infinity
 
         Type IEventHandlerHolder.HolderType => typeof(Game);
 
+        public readonly Galaxy Galaxy;
+
         public Game()
         {
             EventHandler = new EventHandler(this);
+            Galaxy = new Galaxy(EventHandler);
         }
 
         /// <summary>
