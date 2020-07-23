@@ -46,15 +46,19 @@ namespace Infinity.PlanetPop
 
         private readonly List<Pop> _unemployedPops = new List<Pop>();
 
+        private readonly List<Pop> _trainingCenter = new List<Pop>();
+
         public IReadOnlyList<Pop> Pops => _pops;
 
         public IReadOnlyList<Pop> UnemployedPops => _unemployedPops;
+
+        public IReadOnlyList<Pop> TrainingCenter => _trainingCenter;
 
         public const int InitialPopGrowth = 5;
 
         #endregion
 
-        public IReadOnlyList<IBuilding> Buildings => GetTileObjectList<IBuilding>();
+        public IReadOnlyList<BuildingBase> Buildings => GetTileObjectList<BuildingBase>();
 
         private readonly Dictionary<string, BasicModifier> _modifiers = new Dictionary<string, BasicModifier>();
 
@@ -95,6 +99,21 @@ namespace Infinity.PlanetPop
         public void RemoveModifier(BasicModifier modifier)
         {
             _modifiers.Remove(modifier.ModifierKey);
+        }
+
+        private void AddFactorChange(FactorChange change)
+        {
+
+        }
+
+        private void RemoveFactorChange(FactorChange change)
+        {
+
+        }
+
+        private void ToTrainingCenter(Pop pop)
+        {
+            _trainingCenter.Add(pop);
         }
 
         PlanetStatus IPlanet.GetPlanetStatus() => _pops.Count > 0 ? PlanetStatus.Colonized : PlanetStatus.Inhabitable;
