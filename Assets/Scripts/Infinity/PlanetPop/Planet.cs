@@ -3,9 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using Infinity.HexTileMap;
 using Infinity.Modifiers;
+using Infinity.PlanetPop.Building;
 
 namespace Infinity.PlanetPop
 {
+    public enum PlanetaryResourceType
+    {
+        Energy,
+        Mineral,
+        Food,
+        Alloy,
+    }
+
     /// <summary>
     /// Inhabitable planet
     /// </summary>
@@ -41,22 +50,11 @@ namespace Infinity.PlanetPop
 
         public IReadOnlyList<Pop> UnemployedPops => _unemployedPops;
 
-        public const int BasePopGrowth = 5;
+        public const int InitialPopGrowth = 5;
 
         #endregion
 
-        #region Resources
-
-        private readonly Dictionary<GameFactor, float> _currentPlanetaryResource = new Dictionary<GameFactor, float>();
-
-        private readonly Dictionary<GameFactor, Dictionary<ResourceChangeType, float>> _planetaryTurnResource =
-            new Dictionary<GameFactor, Dictionary<ResourceChangeType, float>>();
-
-        public IReadOnlyDictionary<GameFactor, float> CurrentPlanetaryResource => _currentPlanetaryResource;
-
-        public IReadOnlyDictionary<GameFactor, Dictionary<ResourceChangeType, float>> PlanetaryTurnResource => _planetaryTurnResource;
-
-        #endregion
+        public IReadOnlyList<IBuilding> Buildings => GetTileObjectList<IBuilding>();
 
         private readonly Dictionary<string, BasicModifier> _modifiers = new Dictionary<string, BasicModifier>();
 
@@ -87,11 +85,6 @@ namespace Infinity.PlanetPop
         {
         }
 
-        public void ApplyModifier(BasicModifier modifier)
-        {
-
-        }
-
         public void AddModifier(BasicModifier modifier)
         {
             if (_modifiers.ContainsKey(modifier.ModifierKey)) return;
@@ -111,17 +104,11 @@ namespace Infinity.PlanetPop
         public T GetTileObject<T>(HexTileCoord coord) where T : IOnHexTileObject =>
             _tileMap.GetTileObject<T>(coord);
 
-        public IReadOnlyCollection<T> GetTileObjectCollection<T>() where T : IOnHexTileObject =>
-            _tileMap.GetTileObjectCollection<T>();
+        public IReadOnlyList<T> GetTileObjectList<T>() where T : IOnHexTileObject =>
+            _tileMap.GetTileObjectList<T>();
 
-        public IEnumerator<HexTile> GetEnumerator()
-        {
-            return _tileMap.GetEnumerator();
-        }
+        public IEnumerator<HexTile> GetEnumerator() =>  _tileMap.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

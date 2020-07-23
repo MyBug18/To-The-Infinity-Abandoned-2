@@ -21,6 +21,6 @@ namespace Infinity.HexTileMap
 
         T GetTileObject<T>(HexTileCoord coord) where T : IOnHexTileObject;
 
-        IReadOnlyCollection<T> GetTileObjectCollection<T>() where T : IOnHexTileObject;
+        IReadOnlyList<T> GetTileObjectList<T>() where T : IOnHexTileObject;
     }
 }

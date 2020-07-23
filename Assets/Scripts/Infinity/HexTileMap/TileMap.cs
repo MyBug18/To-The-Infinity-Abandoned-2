@@ -141,7 +141,7 @@ namespace Infinity.HexTileMap
         /// Gets collection of OnHexTileObject with given type.
         /// </summary>
         /// <returns>Returns null if given type is not in the dict.</returns>
-        public IReadOnlyList<T> GetTileObjectCollection<T>() where T : IOnHexTileObject
+        public IReadOnlyList<T> GetTileObjectList<T>() where T : IOnHexTileObject
         {
             var type = typeof(T);
             var result = new List<T>();

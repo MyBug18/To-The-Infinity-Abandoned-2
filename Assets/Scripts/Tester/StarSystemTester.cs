@@ -18,7 +18,7 @@ namespace Tester
                 var coord = t.Coord;
             }
 
-            foreach (var p in system.GetTileObjectCollection<IPlanet>())
+            foreach (var p in system.GetTileObjectList<IPlanet>())
             {
                 Debug.Log(p.GetPlanetStatus());
             }

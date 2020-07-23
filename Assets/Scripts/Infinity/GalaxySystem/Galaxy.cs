@@ -30,8 +30,8 @@ namespace Infinity.GalaxySystem
         public T GetTileObject<T>(HexTileCoord coord) where T : IOnHexTileObject =>
             _tileMap.GetTileObject<T>(coord);
 
-        public IReadOnlyCollection<T> GetTileObjectCollection<T>() where T : IOnHexTileObject =>
-            _tileMap.GetTileObjectCollection<T>();
+        public IReadOnlyCollection<T> GetTileObjectList<T>() where T : IOnHexTileObject =>
+            _tileMap.GetTileObjectList<T>();
 
         public IEnumerator<HexTile> GetEnumerator()
         {
