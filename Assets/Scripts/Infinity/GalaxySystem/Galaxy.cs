@@ -11,18 +11,18 @@ namespace Infinity.GalaxySystem
 
         public int TileMapRadius => _tileMap.Radius;
 
-        Type IEventHandlerHolder.HolderType => typeof(StarSystem);
+        Type IEventSenderHolder.HolderType => typeof(StarSystem);
 
-        public EventHandler EventHandler { get; }
+        public UIEventSender UIEventSender { get; }
 
         public TileMapType TileMapType => TileMapType.Galaxy;
 
         public IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] => _tileMap[coord];
 
-        public Galaxy(EventHandler parentHandler)
+        public Galaxy(UIEventSender parentSender)
         {
-            EventHandler = parentHandler.GetEventHandler(this);
-            _tileMap = new TileMap(6, EventHandler);
+            UIEventSender = parentSender.GetEventHandler(this);
+            _tileMap = new TileMap(6, UIEventSender);
         }
 
         public bool IsValidCoord(HexTileCoord coord) => _tileMap.IsValidCoord(coord);

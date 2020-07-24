@@ -36,9 +36,9 @@ namespace Infinity.PlanetPop
 
         public IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] => _tileMap[coord];
 
-        public EventHandler EventHandler { get; }
+        public UIEventSender UIEventSender { get; }
 
-        Type IEventHandlerHolder.HolderType => typeof(Planet);
+        Type IEventSenderHolder.HolderType => typeof(Planet);
 
         #region Pop
 
@@ -64,17 +64,17 @@ namespace Infinity.PlanetPop
 
         public IReadOnlyDictionary<string, BasicModifier> Modifiers => _modifiers;
 
-        public Planet(EventHandler parentHandler, string name, HexTileCoord coord, int size)
+        public Planet(UIEventSender parentSender, string name, HexTileCoord coord, int size)
         {
             HexCoord = coord;
             Name = name;
             Size = size;
 
             PlanetType = PlanetType.Inhabitable;
-            EventHandler = parentHandler.GetEventHandler(this);
+            UIEventSender = parentSender.GetEventHandler(this);
 
             // for test
-            _tileMap = new TileMap(6, EventHandler);
+            _tileMap = new TileMap(6, UIEventSender);
         }
 
         public void OnNextTurn()

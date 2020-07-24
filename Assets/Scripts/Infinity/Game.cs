@@ -11,7 +11,7 @@ namespace Infinity
         Fast = 3,
     }
 
-    public class Game : IEventHandlerHolder
+    public class Game : IEventSenderHolder
     {
         /// <summary>
         /// How many month pass when a turn goes on
@@ -23,16 +23,16 @@ namespace Infinity
         /// </summary>
         public int MonthsPassed { get; private set; } = 0;
 
-        public EventHandler EventHandler { get; }
+        public UIEventSender UIEventSender { get; }
 
-        Type IEventHandlerHolder.HolderType => typeof(Game);
+        Type IEventSenderHolder.HolderType => typeof(Game);
 
         public readonly Galaxy Galaxy;
 
         public Game()
         {
-            EventHandler = new EventHandler(this);
-            Galaxy = new Galaxy(EventHandler);
+            UIEventSender = new UIEventSender(this);
+            Galaxy = new Galaxy(UIEventSender);
         }
 
         /// <summary>

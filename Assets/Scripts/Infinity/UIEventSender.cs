@@ -5,9 +5,9 @@ namespace Infinity
 {
     public abstract class Event : IDisposable
     {
-        public IEventHandlerHolder Sender { get; private set; }
+        public IEventSenderHolder Sender { get; private set; }
 
-        public Event(IEventHandlerHolder holder)
+        public Event(IEventSenderHolder holder)
         {
             Sender = holder;
         }
@@ -18,45 +18,45 @@ namespace Infinity
         }
     }
 
-    public interface IEventHandlerHolder
+    public interface IEventSenderHolder
     {
         Type HolderType { get; }
-        EventHandler EventHandler { get; }
+        UIEventSender UIEventSender { get; }
     }
 
     /// <summary>
     /// Super simple event handler with hierarchy
     /// </summary>
-    public class EventHandler
+    public class UIEventSender
     {
         private readonly Dictionary<Type, List<Action<Event>>> _subscribeInfoDict = new Dictionary<Type, List<Action<Event>>>();
 
-        private readonly EventHandler _parentHandler;
+        private readonly UIEventSender _parentSender;
 
-        private readonly IEventHandlerHolder _holder;
+        private readonly IEventSenderHolder _holder;
 
         /// <summary>
         /// Only for the top-level EventHandlerHolder, which is Game class
         /// </summary>
-        public EventHandler(IEventHandlerHolder holder)
+        public UIEventSender(IEventSenderHolder holder)
         {
-            _parentHandler = null;
+            _parentSender = null;
             _holder = holder;
         }
 
-        private EventHandler(EventHandler parentHandler, IEventHandlerHolder holder)
+        private UIEventSender(UIEventSender parentSender, IEventSenderHolder holder)
         {
-            _parentHandler = parentHandler;
+            _parentSender = parentSender;
             _holder = holder;
         }
 
-        public EventHandler GetEventHandler(IEventHandlerHolder newHolder)
+        public UIEventSender GetEventHandler(IEventSenderHolder newHolder)
         {
             if (_holder.HolderType == newHolder.HolderType)
                 throw new InvalidOperationException("You can't make a hierarchy between same type!");
 
             // return new EventHandler, setting this instance as parent
-            return new EventHandler(this, newHolder);
+            return new UIEventSender(this, newHolder);
         }
 
         public void Subscribe<T>(Action<Event> callBack) where T : Event
@@ -94,7 +94,7 @@ namespace Infinity
             foreach (var callBack in infos)
                 callBack.Invoke(e);
 
-            _parentHandler?.Publish(e);
+            _parentSender?.Publish(e);
 
             e.Dispose();
         }
