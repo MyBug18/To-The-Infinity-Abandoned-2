@@ -21,7 +21,7 @@
         EngineerResearch
     }
 
-    public abstract class BasicModifier : IAffectedByNextTurn
+    public abstract class BasicModifier
     {
         public readonly string ModifierKey;
 

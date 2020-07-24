@@ -18,7 +18,7 @@ namespace Infinity.PlanetPop
     /// <summary>
     /// Inhabitable planet
     /// </summary>
-    public class Planet : IPlanet, IModifierHolder, IAffectedByNextTurn, ITileMapHolder
+    public class Planet : IPlanet, IModifierHolder, ITileMapHolder
     {
         public string Name { get; private set; }
 
