@@ -18,7 +18,7 @@ namespace Infinity.PlanetPop
     /// <summary>
     /// Inhabitable planet
     /// </summary>
-    public class Planet : IPlanet, IModifierAttachable, IAffectedByNextTurn, ITileMapHolder
+    public class Planet : IPlanet, IModifierHolder, IAffectedByNextTurn, ITileMapHolder
     {
         public string Name { get; private set; }
 
@@ -87,18 +87,6 @@ namespace Infinity.PlanetPop
         /// </summary>
         private void ApplyTurnResource()
         {
-        }
-
-        public void AddModifier(BasicModifier modifier)
-        {
-            if (_modifiers.ContainsKey(modifier.ModifierKey)) return;
-
-            _modifiers.Add(modifier.ModifierKey, modifier);
-        }
-
-        public void RemoveModifier(BasicModifier modifier)
-        {
-            _modifiers.Remove(modifier.ModifierKey);
         }
 
         private void AddFactorChange(FactorChange change)

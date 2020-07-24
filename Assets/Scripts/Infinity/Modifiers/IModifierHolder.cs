@@ -2,12 +2,8 @@
 
 namespace Infinity.Modifiers
 {
-    public interface IModifierAttachable
+    public interface IModifierHolder
     {
         IReadOnlyDictionary<string, BasicModifier> Modifiers { get; }
-
-        void AddModifier(BasicModifier modifier);
-
-        void RemoveModifier(BasicModifier modifier);
     }
 }
