@@ -11,7 +11,7 @@ namespace Infinity
         Fast = 3,
     }
 
-    public class Game : IEventSenderHolder
+    public class Game : ISignalDispatcherHolder
     {
         /// <summary>
         /// How many month pass when a turn goes on
@@ -23,16 +23,21 @@ namespace Infinity
         /// </summary>
         public int MonthsPassed { get; private set; } = 0;
 
-        public UIEventSender UIEventSender { get; }
+        private readonly Neuron _neuron;
 
-        Type IEventSenderHolder.HolderType => typeof(Game);
+        Type ISignalDispatcherHolder.HolderType => typeof(Game);
+
+        public SignalDispatcher SignalDispatcher { get; }
+
 
         public readonly Galaxy Galaxy;
 
         public Game()
         {
-            UIEventSender = new UIEventSender(this);
-            Galaxy = new Galaxy(UIEventSender);
+            _neuron = Neuron.GetTopLevelNeuron(this);
+            SignalDispatcher = new SignalDispatcher(_neuron);
+
+            Galaxy = new Galaxy(_neuron);
         }
 
         /// <summary>

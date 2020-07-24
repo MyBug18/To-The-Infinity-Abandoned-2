@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Infinity.HexTileMap;
 using Infinity.Modifiers;
 using Infinity.PlanetPop.Building;
@@ -36,9 +37,11 @@ namespace Infinity.PlanetPop
 
         public IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] => _tileMap[coord];
 
-        public UIEventSender UIEventSender { get; }
+        private readonly Neuron _neuron;
 
-        Type IEventSenderHolder.HolderType => typeof(Planet);
+        Type ISignalDispatcherHolder.HolderType => typeof(Planet);
+
+        public SignalDispatcher SignalDispatcher { get; }
 
         #region Pop
 
@@ -62,19 +65,20 @@ namespace Infinity.PlanetPop
 
         private readonly Dictionary<string, BasicModifier> _modifiers = new Dictionary<string, BasicModifier>();
 
-        public IReadOnlyDictionary<string, BasicModifier> Modifiers => _modifiers;
+        public IReadOnlyDictionary<string, BasicModifier> Modifiers =>
+            new ReadOnlyDictionary<string, BasicModifier>(_modifiers);
 
-        public Planet(UIEventSender parentSender, string name, HexTileCoord coord, int size)
+        public Planet(Neuron parentNeuron, string name, HexTileCoord coord, int size)
         {
+            _neuron = parentNeuron.GetChildNeuron(this);
+            SignalDispatcher = new SignalDispatcher(_neuron);
+
             HexCoord = coord;
             Name = name;
             Size = size;
-
             PlanetType = PlanetType.Inhabitable;
-            UIEventSender = parentSender.GetUIEventsender(this);
 
-            // for test
-            _tileMap = new TileMap(6, UIEventSender);
+            _tileMap = new TileMap(6, _neuron);
         }
 
         public void OnNextTurn()

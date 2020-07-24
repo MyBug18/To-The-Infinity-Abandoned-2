@@ -11,18 +11,21 @@ namespace Infinity.GalaxySystem
 
         public int TileMapRadius => _tileMap.Radius;
 
-        Type IEventSenderHolder.HolderType => typeof(StarSystem);
+        Type ISignalDispatcherHolder.HolderType => typeof(StarSystem);
+        public SignalDispatcher SignalDispatcher { get; }
 
-        public UIEventSender UIEventSender { get; }
+        private readonly Neuron _neuron;
 
         public TileMapType TileMapType => TileMapType.Galaxy;
 
         public IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] => _tileMap[coord];
 
-        public Galaxy(UIEventSender parentSender)
+        public Galaxy(Neuron parentNeuron)
         {
-            UIEventSender = parentSender.GetUIEventsender(this);
-            _tileMap = new TileMap(6, UIEventSender);
+            _neuron = parentNeuron.GetChildNeuron(this);
+            SignalDispatcher = new SignalDispatcher(_neuron);
+
+            _tileMap = new TileMap(6, _neuron);
         }
 
         public bool IsValidCoord(HexTileCoord coord) => _tileMap.IsValidCoord(coord);

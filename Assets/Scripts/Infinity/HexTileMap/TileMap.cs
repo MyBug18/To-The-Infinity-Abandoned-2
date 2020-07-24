@@ -25,17 +25,17 @@ namespace Infinity.HexTileMap
         private readonly Dictionary<HexTileCoord, Dictionary<Type, IOnHexTileObject>> _onTileMapObjects =
             new Dictionary<HexTileCoord, Dictionary<Type, IOnHexTileObject>>();
 
-        private UIEventSender _uiEventSender;
+        private Neuron _neuron;
 
         public readonly int Radius;
 
         public IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] =>
             IsValidCoord(coord) ? GetAllTileObjects(coord) : null;
 
-        public TileMap(int radius, UIEventSender eh)
+        public TileMap(int radius, Neuron neuron)
         {
             Radius = radius;
-            _uiEventSender = eh;
+            _neuron = neuron;
 
             _tileMap = new HexTile[radius * 2 + 1][];
             ConstructTileMap();

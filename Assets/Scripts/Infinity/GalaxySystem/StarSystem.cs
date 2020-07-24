@@ -29,18 +29,22 @@ namespace Infinity.GalaxySystem
 
         public IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] => _tileMap[coord];
 
-        Type IEventSenderHolder.HolderType => typeof(StarSystem);
+        Type ISignalDispatcherHolder.HolderType => typeof(StarSystem);
 
-        public UIEventSender UIEventSender { get; }
+        public SignalDispatcher SignalDispatcher { get; }
 
-        public StarSystem(UIEventSender parentSender)
+        private readonly Neuron _neuron;
+
+        public StarSystem(Neuron parentNeuron)
         {
-            UIEventSender = parentSender.GetUIEventsender(this);
+            _neuron = parentNeuron.GetChildNeuron(this);
+            SignalDispatcher = new SignalDispatcher(_neuron);
+
             Size = 6;
             Name = "TestSystem";
             HexCoord = new HexTileCoord(3, 3);
 
-            _tileMap = new TileMap(6, UIEventSender);
+            _tileMap = new TileMap(6, _neuron);
             SetPlanets();
         }
 
@@ -54,7 +58,7 @@ namespace Infinity.GalaxySystem
 
                 if (i == 3)
                 {
-                    planet = new Planet(UIEventSender, "test", pos, 8);
+                    planet = new Planet(_neuron, "test", pos, 8);
                 }
                 else
                 {

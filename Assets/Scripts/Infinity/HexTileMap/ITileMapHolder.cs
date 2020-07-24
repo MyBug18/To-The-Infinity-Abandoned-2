@@ -9,7 +9,7 @@ namespace Infinity.HexTileMap
         Galaxy,
     }
 
-    public interface ITileMapHolder : IEnumerable<HexTile>, IEventSenderHolder
+    public interface ITileMapHolder : IEnumerable<HexTile>, ISignalDispatcherHolder
     {
         int TileMapRadius { get; }
 
