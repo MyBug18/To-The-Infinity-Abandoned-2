@@ -21,7 +21,7 @@ namespace Infinity.GalaxySystem
 
         public Galaxy(UIEventSender parentSender)
         {
-            UIEventSender = parentSender.GetEventHandler(this);
+            UIEventSender = parentSender.GetUIEventsender(this);
             _tileMap = new TileMap(6, UIEventSender);
         }
 

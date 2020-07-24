@@ -35,7 +35,7 @@ namespace Infinity.GalaxySystem
 
         public StarSystem(UIEventSender parentSender)
         {
-            UIEventSender = parentSender.GetEventHandler(this);
+            UIEventSender = parentSender.GetUIEventsender(this);
             Size = 6;
             Name = "TestSystem";
             HexCoord = new HexTileCoord(3, 3);

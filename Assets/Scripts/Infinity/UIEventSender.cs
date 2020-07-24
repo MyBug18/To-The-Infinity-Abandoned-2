@@ -50,7 +50,7 @@ namespace Infinity
             _holder = holder;
         }
 
-        public UIEventSender GetEventHandler(IEventSenderHolder newHolder)
+        public UIEventSender GetUIEventsender(IEventSenderHolder newHolder)
         {
             if (_holder.HolderType == newHolder.HolderType)
                 throw new InvalidOperationException("You can't make a hierarchy between same type!");
@@ -85,7 +85,7 @@ namespace Infinity
                 _subscribeInfoDict.Remove(type);
         }
 
-        public void Publish<T>(T e) where T : Event
+        public void SendEvent<T>(T e) where T : Event
         {
             var type = typeof(T);
 
@@ -94,7 +94,7 @@ namespace Infinity
             foreach (var callBack in infos)
                 callBack.Invoke(e);
 
-            _parentSender?.Publish(e);
+            _parentSender?.SendEvent(e);
 
             e.Dispose();
         }

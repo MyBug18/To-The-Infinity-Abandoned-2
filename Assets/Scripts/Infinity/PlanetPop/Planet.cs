@@ -71,7 +71,7 @@ namespace Infinity.PlanetPop
             Size = size;
 
             PlanetType = PlanetType.Inhabitable;
-            UIEventSender = parentSender.GetEventHandler(this);
+            UIEventSender = parentSender.GetUIEventsender(this);
 
             // for test
             _tileMap = new TileMap(6, UIEventSender);
