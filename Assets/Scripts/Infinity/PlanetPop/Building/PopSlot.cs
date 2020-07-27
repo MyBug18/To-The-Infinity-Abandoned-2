@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Infinity.PlanetPop.Building
+﻿namespace Infinity.PlanetPop.Building
 {
     public enum PopSlotState
     {
@@ -8,6 +6,7 @@ namespace Infinity.PlanetPop.Building
         Occupied,
         Training,
     }
+
     public class PopSlot
     {
         public GameFactor Factor { get; private set; }
@@ -15,7 +14,5 @@ namespace Infinity.PlanetPop.Building
         public Pop pop { get; private set; }
 
         public PopSlotState CurrentState { get; private set; }
-
-        private readonly Action<Pop> _toTrainingCenter;
     }
 }
