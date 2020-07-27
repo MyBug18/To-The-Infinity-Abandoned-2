@@ -22,7 +22,7 @@ namespace Infinity.GalaxySystem
 
         public Galaxy(Neuron parentNeuron)
         {
-            _neuron = parentNeuron.GetChildNeuron(this);
+            _neuron = parentNeuron.GetChildNeuron();
             SignalDispatcher = new SignalDispatcher(_neuron);
 
             _tileMap = new TileMap(6, _neuron);

@@ -34,7 +34,7 @@ namespace Infinity
 
         public Game()
         {
-            _neuron = Neuron.GetTopLevelNeuron(this);
+            _neuron = Neuron.GetTopLevelNeuron();
             SignalDispatcher = new SignalDispatcher(_neuron);
 
             Galaxy = new Galaxy(_neuron);

@@ -37,7 +37,7 @@ namespace Infinity.GalaxySystem
 
         public StarSystem(Neuron parentNeuron)
         {
-            _neuron = parentNeuron.GetChildNeuron(this);
+            _neuron = parentNeuron.GetChildNeuron();
             SignalDispatcher = new SignalDispatcher(_neuron);
 
             Size = 6;

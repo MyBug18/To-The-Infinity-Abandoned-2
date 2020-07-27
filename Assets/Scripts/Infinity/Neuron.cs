@@ -13,7 +13,7 @@ namespace Infinity
     public interface ISignal
     {
         /// <summary>
-        /// Who had send this signal?
+        /// Who had sent this signal?
         /// </summary>
         public ISignalDispatcherHolder Holder { get; }
     }
@@ -26,7 +26,7 @@ namespace Infinity
     }
 
     /// <summary>
-    /// Wrapper class of Neuron
+    /// Wrapper class of Neuron, without sending signal
     /// </summary>
     public class SignalDispatcher
     {
@@ -55,28 +55,24 @@ namespace Infinity
         private readonly Neuron _parentNeuron;
         private readonly List<Neuron> _childNeurons = new List<Neuron>();
 
-        private readonly ISignalDispatcherHolder _holder;
-
-        private Neuron(ISignalDispatcherHolder holder)
+        private Neuron()
         {
-            _holder = holder;
             _parentNeuron = null;
         }
 
         /// <summary>
         /// Only for the top-level Neuron holder, which is Game class
         /// </summary>
-        public static Neuron GetTopLevelNeuron(ISignalDispatcherHolder holder) => new Neuron(holder);
+        public static Neuron GetTopLevelNeuron() => new Neuron();
 
-        private Neuron(ISignalDispatcherHolder holder, Neuron parentNeuron)
+        private Neuron(Neuron parentNeuron)
         {
-            _holder = holder;
             _parentNeuron = parentNeuron;
         }
 
-        public Neuron GetChildNeuron(ISignalDispatcherHolder childHolder)
+        public Neuron GetChildNeuron()
         {
-            var newNeuron = new Neuron(childHolder, this);
+            var newNeuron = new Neuron(this);
             _childNeurons.Add(newNeuron);
             return newNeuron;
         }

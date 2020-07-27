@@ -70,7 +70,7 @@ namespace Infinity.PlanetPop
 
         public Planet(Neuron parentNeuron, string name, HexTileCoord coord, int size)
         {
-            _neuron = parentNeuron.GetChildNeuron(this);
+            _neuron = parentNeuron.GetChildNeuron();
             SignalDispatcher = new SignalDispatcher(_neuron);
 
             HexCoord = coord;
