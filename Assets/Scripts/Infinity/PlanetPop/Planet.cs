@@ -52,7 +52,7 @@ namespace Infinity.PlanetPop
 
         #endregion
 
-        public IReadOnlyList<BuildingBase> Buildings => GetTileObjectList<BuildingBase>();
+        public IReadOnlyList<IBuildingBase> Buildings => GetTileObjectList<IBuildingBase>();
 
         private readonly Dictionary<string, BasicModifier> _modifiers = new Dictionary<string, BasicModifier>();
 
