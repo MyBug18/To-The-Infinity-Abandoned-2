@@ -7,7 +7,11 @@ namespace Infinity.PlanetPop.Building
     {
         public int BaseConstructTime { get; }
 
+        public float ConstructTimeMultiplier { get; }
+
         public int BaseConstructCost { get; }
+
+        public float ConstructCostMultiplier { get; }
 
         public IReadOnlyList<PopSlot> Slots { get; }
     }
