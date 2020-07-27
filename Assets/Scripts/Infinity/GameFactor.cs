@@ -1,59 +1,19 @@
+﻿using System;
+
 namespace Infinity
 {
-    public enum GameFactor
+    public class GameFactor
     {
-        Energy,
-        Mineral,
-        Food,
-        Alloy,
-        Money,
-        PopGrowth,
-        SocietyResearch,
-        EngineerResearch,
-        Unity,
-    }
+        public float Amount => _amountGetter.Invoke();
 
-    public static class GameFactorExtention
-    {
-        public static bool IsPlanetaryResource(this GameFactor factor)
+        public readonly GameFactorType FactorType;
+
+        private readonly Func<float> _amountGetter;
+
+        public GameFactor(Func<float> amountGetter, GameFactorType factorType)
         {
-            return GameFactor.Energy <= factor && factor <= GameFactor.Alloy;
+            _amountGetter = amountGetter;
+            FactorType = factorType;
         }
-    }
-
-    public class FactorChangeSignal : ISignal
-    {
-        public ISignalDispatcherHolder Holder { get; }
-
-        public readonly FactorChange Change;
-
-        public FactorChangeSignal(ISignalDispatcherHolder holder, FactorChange change)
-        {
-            Holder = holder;
-            Change = change;
-        }
-    }
-
-    public enum PlanetaryResources
-    {
-        Energy,
-        Mineral,
-        Food,
-        Alloy,
-    }
-
-    /// <summary>
-    /// When divided by 2, the rest is 0 when the value is Income, 1 when the value is Upkeep.
-    /// </summary>
-    public enum ResourceChangeType
-    {
-        JobIncome,
-        JobUpkeep,
-        TradeSend,
-        TradeReceive,
-        BuildingIncome,
-        BuildingUpkeep,
-        ModifierIncome,
-        ModifierUpkeep,
     }
 }

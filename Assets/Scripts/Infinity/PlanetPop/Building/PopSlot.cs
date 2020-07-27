@@ -9,7 +9,7 @@
 
     public class PopSlot
     {
-        public GameFactor Factor { get; private set; }
+        public GameFactorType FactorType { get; private set; }
 
         public Pop pop { get; private set; }
 
