@@ -52,8 +52,18 @@ namespace Infinity
         /// </summary>
         public void StartNewTurn()
         {
+            _neuron.SendSignal(new NextTurnSignal(this), SignalDirection.Downward);
             MonthsPassed += GameSpeed;
+        }
+    }
 
+    public class NextTurnSignal : ISignal
+    {
+        public ISignalDispatcherHolder Holder { get; }
+
+        public NextTurnSignal(ISignalDispatcherHolder holder)
+        {
+            Holder = holder;
         }
     }
 }

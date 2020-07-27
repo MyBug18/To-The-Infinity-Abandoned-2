@@ -63,6 +63,7 @@ namespace Infinity.PlanetPop
             _neuron = parentNeuron.GetChildNeuron();
             SignalDispatcher = new SignalDispatcher(_neuron);
 
+            _neuron.Subscribe<NextTurnSignal>(OnNextTurnSignal);
             _neuron.Subscribe<FactorChangeSignal>(OnFactorChangeSignal);
 
             HexCoord = coord;
@@ -73,8 +74,10 @@ namespace Infinity.PlanetPop
             _tileMap = new TileMap(6, _neuron);
         }
 
-        public void OnNextTurn()
+        private void OnNextTurnSignal(ISignal s)
         {
+            if (!(s is NextTurnSignal)) return;
+
             ApplyTurnResource();
         }
 
@@ -85,9 +88,9 @@ namespace Infinity.PlanetPop
         {
         }
 
-        private void OnFactorChangeSignal(ISignal signal)
+        private void OnFactorChangeSignal(ISignal s)
         {
-            if (!(signal is FactorChangeSignal fcs)) return;
+            if (!(s is FactorChangeSignal fcs)) return;
         }
 
         PlanetStatus IPlanet.GetPlanetStatus() => _pops.Count > 0 ? PlanetStatus.Colonized : PlanetStatus.Inhabitable;
