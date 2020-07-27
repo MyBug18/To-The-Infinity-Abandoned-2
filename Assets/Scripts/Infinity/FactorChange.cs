@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infinity.PlanetPop
+namespace Infinity
 {
     public class FactorChange
     {

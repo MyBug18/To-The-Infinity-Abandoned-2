@@ -13,6 +13,27 @@ namespace Infinity
         Unity,
     }
 
+    public static class GameFactorExtention
+    {
+        public static bool IsPlanetaryResource(this GameFactor factor)
+        {
+            return GameFactor.Energy <= factor && factor <= GameFactor.Alloy;
+        }
+    }
+
+    public class FactorChangeSignal : ISignal
+    {
+        public ISignalDispatcherHolder Holder { get; }
+
+        public readonly FactorChange Change;
+
+        public FactorChangeSignal(ISignalDispatcherHolder holder, FactorChange change)
+        {
+            Holder = holder;
+            Change = change;
+        }
+    }
+
     public enum PlanetaryResources
     {
         Energy,

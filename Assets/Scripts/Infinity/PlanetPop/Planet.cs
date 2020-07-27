@@ -1,21 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Infinity.HexTileMap;
 using Infinity.Modifiers;
 using Infinity.PlanetPop.Building;
 
 namespace Infinity.PlanetPop
 {
-    public enum PlanetaryResourceType
-    {
-        Energy,
-        Mineral,
-        Food,
-        Alloy,
-    }
-
     /// <summary>
     /// Inhabitable planet
     /// </summary>
@@ -65,13 +56,14 @@ namespace Infinity.PlanetPop
 
         private readonly Dictionary<string, BasicModifier> _modifiers = new Dictionary<string, BasicModifier>();
 
-        public IReadOnlyDictionary<string, BasicModifier> Modifiers =>
-            new ReadOnlyDictionary<string, BasicModifier>(_modifiers);
+        public IReadOnlyDictionary<string, BasicModifier> Modifiers => _modifiers;
 
         public Planet(Neuron parentNeuron, string name, HexTileCoord coord, int size)
         {
             _neuron = parentNeuron.GetChildNeuron();
             SignalDispatcher = new SignalDispatcher(_neuron);
+
+            _neuron.Subscribe<FactorChangeSignal>(OnFactorChangeSignal);
 
             HexCoord = coord;
             Name = name;
@@ -93,19 +85,9 @@ namespace Infinity.PlanetPop
         {
         }
 
-        private void AddFactorChange(FactorChange change)
+        private void OnFactorChangeSignal(ISignal signal)
         {
-
-        }
-
-        private void RemoveFactorChange(FactorChange change)
-        {
-
-        }
-
-        private void ToTrainingCenter(Pop pop)
-        {
-            _trainingCenter.Add(pop);
+            if (!(signal is FactorChangeSignal fcs)) return;
         }
 
         PlanetStatus IPlanet.GetPlanetStatus() => _pops.Count > 0 ? PlanetStatus.Colonized : PlanetStatus.Inhabitable;
