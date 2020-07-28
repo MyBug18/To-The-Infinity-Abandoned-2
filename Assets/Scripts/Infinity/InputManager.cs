@@ -16,6 +16,7 @@ namespace Infinity
 
         private void Update()
         {
+            // should be changed to new input system
             if (Input.GetMouseButtonDown(0))
             {
                 var ray = camera.ScreenPointToRay(Input.mousePosition);
