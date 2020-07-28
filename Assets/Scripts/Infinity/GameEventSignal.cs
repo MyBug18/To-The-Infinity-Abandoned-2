@@ -6,6 +6,8 @@ namespace Infinity
     {
         public ISignalDispatcherHolder SignalSender { get; }
 
+        public Func<TTarget, bool> ConditionChecker { get; }
+
         public string Command { get; }
     }
 }

@@ -25,7 +25,14 @@ namespace Infinity.GalaxySystem
             _neuron = parentNeuron.GetChildNeuron();
             SignalDispatcher = new SignalDispatcher(_neuron);
 
+            _neuron.Subscribe<GameEventSignal<Galaxy>>(OnGameEventSignal);
+
             _tileMap = new TileMap(6, _neuron);
+        }
+
+        private void OnGameEventSignal(ISignal s)
+        {
+            if (!(s is GameEventSignal<Galaxy> ges)) return;
         }
 
         public bool IsValidCoord(HexTileCoord coord) => _tileMap.IsValidCoord(coord);

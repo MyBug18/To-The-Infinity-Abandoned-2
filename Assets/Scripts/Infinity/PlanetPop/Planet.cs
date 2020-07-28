@@ -63,6 +63,7 @@ namespace Infinity.PlanetPop
             _neuron = parentNeuron.GetChildNeuron();
             SignalDispatcher = new SignalDispatcher(_neuron);
 
+            _neuron.Subscribe<GameEventSignal<Planet>>(OnGameEventSignal);
             _neuron.Subscribe<NextTurnSignal>(OnNextTurnSignal);
             _neuron.Subscribe<GameFactorChangeSignal>(OnFactorChangeSignal);
 
@@ -91,6 +92,11 @@ namespace Infinity.PlanetPop
         private void OnFactorChangeSignal(ISignal s)
         {
             if (!(s is GameFactorChangeSignal fcs)) return;
+        }
+
+        private void OnGameEventSignal(ISignal s)
+        {
+            if (!(s is GameEventSignal<Planet> ges)) return;
         }
 
         PlanetStatus IPlanet.GetPlanetStatus() => _pops.Count > 0 ? PlanetStatus.Colonized : PlanetStatus.Inhabitable;

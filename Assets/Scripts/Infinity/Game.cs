@@ -37,6 +37,8 @@ namespace Infinity
             _neuron = Neuron.GetTopLevelNeuron();
             SignalDispatcher = new SignalDispatcher(_neuron);
 
+            _neuron.Subscribe<GameEventSignal<Game>>(OnGameEventSignal);
+
             Galaxy = new Galaxy(_neuron);
         }
 
@@ -54,6 +56,11 @@ namespace Infinity
         {
             _neuron.SendSignal(new NextTurnSignal(this), SignalDirection.Downward);
             MonthsPassed += GameSpeed;
+        }
+
+        private void OnGameEventSignal(ISignal s)
+        {
+            if (!(s is GameEventSignal<Game> ges)) return;
         }
     }
 
