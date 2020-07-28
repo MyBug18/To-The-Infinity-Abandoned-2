@@ -59,11 +59,11 @@ namespace Infinity
 
     public class NextTurnSignal : ISignal
     {
-        public ISignalDispatcherHolder Holder { get; }
+        public ISignalDispatcherHolder SignalSender { get; }
 
         public NextTurnSignal(ISignalDispatcherHolder holder)
         {
-            Holder = holder;
+            SignalSender = holder;
         }
     }
 }

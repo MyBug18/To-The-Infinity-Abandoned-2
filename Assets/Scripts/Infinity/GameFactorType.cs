@@ -24,7 +24,7 @@ namespace Infinity
     public class GameFactorChangeSignal : ISignal
     {
 
-        public ISignalDispatcherHolder Holder { get; }
+        public ISignalDispatcherHolder SignalSender { get; }
 
         public readonly GameFactor Change;
 
@@ -32,7 +32,7 @@ namespace Infinity
 
         public GameFactorChangeSignal(ISignalDispatcherHolder holder, GameFactor change, AddOrRemove addOrRemove)
         {
-            Holder = holder;
+            SignalSender = holder;
             Change = change;
             AddOrRemove = addOrRemove;
         }
