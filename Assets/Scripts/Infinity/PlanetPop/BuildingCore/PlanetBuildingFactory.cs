@@ -1,4 +1,4 @@
-﻿namespace Infinity.PlanetPop.Building
+﻿namespace Infinity.PlanetPop.BuildingCore
 {
     public class PlanetBuildingFactory
     {

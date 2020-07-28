@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Infinity.HexTileMap;
 using Infinity.Modifiers;
-using Infinity.PlanetPop.Building;
+using Infinity.PlanetPop.BuildingCore;
 
 namespace Infinity.PlanetPop
 {
@@ -52,7 +52,7 @@ namespace Infinity.PlanetPop
 
         #endregion
 
-        public IReadOnlyList<IBuildingBase> Buildings => GetTileObjectList<IBuildingBase>();
+        public IReadOnlyList<BuildingCore.Building> Buildings => GetTileObjectList<Building>();
 
         private readonly Dictionary<string, BasicModifier> _modifiers = new Dictionary<string, BasicModifier>();
 
