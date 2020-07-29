@@ -25,6 +25,5 @@ namespace Infinity.PlanetPop.BuildingCore
             _neuron = parentNeuron.GetChildNeuron();
             SignalDispatcher = new SignalDispatcher(_neuron);
         }
-
     }
 }
