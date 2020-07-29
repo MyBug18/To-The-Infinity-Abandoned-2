@@ -55,19 +55,26 @@ namespace Infinity
         private readonly Neuron _parentNeuron;
         private readonly List<Neuron> _childNeurons = new List<Neuron>();
 
-        private Neuron()
+        /// <summary>
+        /// Reference to the Game instance on the top level
+        /// </summary>
+        public readonly Game Game;
+
+        private Neuron(Game game)
         {
             _parentNeuron = null;
+            Game = game;
         }
 
         /// <summary>
         /// Only for the top-level Neuron holder, which is Game class
         /// </summary>
-        public static Neuron GetTopLevelNeuron() => new Neuron();
+        public static Neuron GetNeuronForGame(Game game) => new Neuron(game);
 
         private Neuron(Neuron parentNeuron)
         {
             _parentNeuron = parentNeuron;
+            Game = parentNeuron.Game;
         }
 
         public Neuron GetChildNeuron()

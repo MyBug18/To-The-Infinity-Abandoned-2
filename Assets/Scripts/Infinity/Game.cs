@@ -34,7 +34,7 @@ namespace Infinity
 
         public Game()
         {
-            _neuron = Neuron.GetTopLevelNeuron();
+            _neuron = Neuron.GetNeuronForGame(this);
             SignalDispatcher = new SignalDispatcher(_neuron);
 
             _neuron.Subscribe<GameEventSignal<Game>>(OnGameEventSignal);
