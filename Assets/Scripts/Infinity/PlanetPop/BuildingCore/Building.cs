@@ -6,8 +6,6 @@ namespace Infinity.PlanetPop.BuildingCore
 {
     public class Building : IOnHexTileObject, ISignalDispatcherHolder
     {
-        public string Name { get; }
-
         public HexTileCoord HexCoord { get; }
 
         public Type HolderType => typeof(Building);
@@ -15,6 +13,8 @@ namespace Infinity.PlanetPop.BuildingCore
         private readonly Neuron _neuron;
 
         public SignalDispatcher SignalDispatcher { get; }
+
+        public string Name { get; }
 
         private readonly List<PopSlot> _popSlots = new List<PopSlot>();
 

@@ -1,6 +1,4 @@
-﻿using System;
-using Infinity.PlanetPop;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Infinity.HexTileMap
 {

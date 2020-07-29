@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Infinity.GalaxySystem;
 
 namespace Infinity
@@ -16,12 +15,12 @@ namespace Infinity
         /// <summary>
         /// How many month pass when a turn goes on
         /// </summary>
-        public static int GameSpeed { get; private set; } = 2;
+        public int GameSpeed { get; private set; } = 2;
 
         /// <summary>
         /// How many Months has passed
         /// </summary>
-        public int MonthsPassed { get; private set; } = 0;
+        public int MonthsPassed { get; private set; }
 
         private readonly Neuron _neuron;
 

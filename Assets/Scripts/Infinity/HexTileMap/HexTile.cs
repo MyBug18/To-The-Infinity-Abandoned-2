@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using Infinity.Modifiers;
 
 namespace Infinity.HexTileMap
 {
