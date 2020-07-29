@@ -1,0 +1,53 @@
+﻿{
+  "name": "test_building",
+  "construct_time": 12,
+  "construct_cost": 500,
+  "buildable_condition": {
+    "min_pop_number": 10,
+    "required_tech": "test_basic_tech",
+    "tile_state": "!mountain && (plain || sea)",
+    "around_buildings": "any == 0"
+  },
+  "base_slots": [
+    {
+      "yield": {
+        "mineral": 3,
+        "energy": 1
+      },
+      "upkeep": {
+        "food": 3,
+        "alloy": 1
+      },
+      "wage": 1.5
+    },
+    {
+      "yield": {
+        "mineral": 3,
+        "energy": 1
+      },
+      "upkeep": {
+        "food": 3,
+        "alloy": 1
+      },
+      "wage": 1.5
+    },
+    {
+      "yield": {
+        "money": 3,
+        "amenity": 1
+      },
+      "upkeep": {
+      },
+      "wage": 1
+    },
+    {
+      "yield": {
+        "physics": 4,
+        "engineer": 4
+      },
+      "upkeep": {
+      },
+      "wage": 3
+    }
+  ]
+}
