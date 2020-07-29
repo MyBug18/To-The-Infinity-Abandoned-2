@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Infinity.HexTileMap;
 using Infinity.Modifiers;
 using Infinity.PlanetPop.BuildingCore;
@@ -40,15 +41,15 @@ namespace Infinity.PlanetPop
 
         private readonly List<Pop> _unemployedPops = new List<Pop>();
 
-        private readonly List<Pop> _trainingCenter = new List<Pop>();
-
         public IReadOnlyList<Pop> Pops => _pops;
 
         public IReadOnlyList<Pop> UnemployedPops => _unemployedPops;
 
-        public IReadOnlyList<Pop> TrainingCenter => _trainingCenter;
+        public const float InitialPopGrowth = 5f;
 
-        public const int InitialPopGrowth = 5;
+        private readonly Dictionary<string, int> _popGrowthMultipliers = new Dictionary<string, int>();
+
+        public float CurrentPopGrowth { get; private set; }
 
         #endregion
 
@@ -79,6 +80,7 @@ namespace Infinity.PlanetPop
         {
             if (!(s is NextTurnSignal)) return;
 
+            ApplyPopGrowth();
             ApplyTurnResource();
         }
 
@@ -87,6 +89,17 @@ namespace Infinity.PlanetPop
         /// </summary>
         private void ApplyTurnResource()
         {
+        }
+
+        private void ApplyPopGrowth()
+        {
+            CurrentPopGrowth += InitialPopGrowth * (_popGrowthMultipliers.Values.Sum() / 100f + 1);
+
+            if (CurrentPopGrowth < 100) return;
+
+            var newPop = new Pop("TestPop", new HexTileCoord(_tileMap.Radius, _tileMap.Radius));
+            _neuron.SendSignal(new PopBirthSignal(this, newPop), SignalDirection.Upward);
+            _unemployedPops.Add(newPop);
         }
 
         private void OnFactorChangeSignal(ISignal s)
