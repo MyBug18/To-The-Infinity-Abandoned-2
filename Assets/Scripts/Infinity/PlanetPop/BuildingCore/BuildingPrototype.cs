@@ -13,7 +13,8 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public readonly int BaseConstructCost;
 
-        public readonly List<PopSlotPrototype> Slots;
+        private readonly List<PopSlotPrototype> _slots;
+        public IReadOnlyList<PopSlotPrototype> Slots => _slots;
 
         public Func<Planet, bool> ConditionChecker { get; private set; }
 
@@ -25,7 +26,7 @@ namespace Infinity.PlanetPop.BuildingCore
             BaseConstructTime = (int)(long)primary["BaseConstructTime"];
             BaseConstructCost = (int)(long)primary["BaseConstructCost"];
 
-            Slots = JArray.FromObject(primary["Slots"]).ToObject<List<PopSlotPrototype>>();
+            _slots = JArray.FromObject(primary["Slots"]).ToObject<List<PopSlotPrototype>>();
         }
     }
 
