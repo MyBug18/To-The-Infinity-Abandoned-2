@@ -4,9 +4,8 @@
   "BaseConstructCost": 500,
   "Condition": {
     "MinPopNumber": 10,
-    "RequiredTech": "TestBasicTech",
-    "TileState": "!Mountain && (Plain || Sea)",
-    "AroundBuildings": "Any == 0"
+    "TileState": "!Mountain & (Plain | Sea)",
+    "AroundBuildings": "Any = 0"
   },
   "Slots": [
     {

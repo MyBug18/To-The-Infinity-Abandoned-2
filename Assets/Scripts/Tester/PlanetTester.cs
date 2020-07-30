@@ -47,7 +47,7 @@ namespace Tester
 
             var condition = "fieldA > int.Parse(myInt) && fieldB == myBool";
 
-            var expr = DynamicExpressionParser.ParseLambda(new ParameterExpression[] { Expression.Parameter(typeof(A)) },
+            var expr = DynamicExpressionParser.ParseLambda(new[] { Expression.Parameter(typeof(A)) },
                 typeof(bool),
                 condition, args);
 
@@ -59,6 +59,8 @@ namespace Tester
         {
             var j = File.ReadAllText(Path.Combine(Application.streamingAssetsPath, "Buildings", "TestBuilding.json"));
             var p = new BuildingPrototype(j);
+
+            File.WriteAllText(Path.Combine(Application.streamingAssetsPath, "test.json"), JsonConvert.SerializeObject(p, Formatting.Indented));
         }
     }
 }
