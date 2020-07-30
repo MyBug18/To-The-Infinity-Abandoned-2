@@ -1,8 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
+using Infinity;
+using Infinity.HexTileMap;
 using Infinity.PlanetPop;
+using Infinity.PlanetPop.BuildingCore;
 using UnityEngine;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Tester
 {
@@ -19,23 +25,23 @@ namespace Tester
         public bool fieldB = true;
     }
 
+    public class B
+    {
+        [JsonProperty]
+        public int asdf { get; }
+    }
+
     public class PlanetTester : MonoBehaviour
     {
-        public static bool TestCondition(A obj, string condition, IDictionary<string, object> args)
-        {
-            var expr = DynamicExpressionParser.ParseLambda(new ParameterExpression[] { Expression.Parameter(typeof(A)) },
-                typeof(bool),
-                condition,
-                new object[] { args });
-
-            var func = expr.Compile();
-            return (bool)func.DynamicInvoke(obj);
-        }
-
         [SerializeField]
         private PlanetWrapper planetPrefab;
 
         private void Start()
+        {
+            TestJson();
+        }
+
+        private void PlayDynamicLinq()
         {
             var args = new Dictionary<string, object> {{"myInt", "40"}, {"myBool", true}};
 
@@ -47,6 +53,12 @@ namespace Tester
 
             var func = expr.Compile();
             Debug.Log((bool)func.DynamicInvoke(new A()));
+        }
+
+        private void TestJson()
+        {
+            var j = File.ReadAllText(Path.Combine(Application.streamingAssetsPath, "Buildings", "TestBuilding.json"));
+            var p = new BuildingPrototype(j);
         }
     }
 }

@@ -1,5 +1,6 @@
 namespace Infinity
 {
+    [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
     public enum GameFactorType
     {
         Energy,

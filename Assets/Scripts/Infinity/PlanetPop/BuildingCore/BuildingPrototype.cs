@@ -1,47 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Infinity.PlanetPop.BuildingCore
 {
     public class BuildingPrototype
     {
-        public string Name { get; private set; }
+        public readonly string Name;
 
-        public int BaseConstructTime { get; private set; }
+        public readonly int BaseConstructTime;
 
-        public int BaseConstructCost { get; private set; }
+        public readonly int BaseConstructCost;
+
+        public readonly List<PopSlotPrototype> Slots;
 
         public Func<Planet, bool> ConditionChecker { get; private set; }
-
-        public readonly List<PopSlotPrototype> Slots = new List<PopSlotPrototype>();
 
         public BuildingPrototype(string jsonData)
         {
             var primary = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonData);
 
-            Name = (string)primary["name"];
-            BaseConstructTime = (int)primary["construct_time"];
-            BaseConstructCost = (int)primary["construct_cost"];
+            Name = (string)primary["Name"];
+            BaseConstructTime = (int)(long)primary["BaseConstructTime"];
+            BaseConstructCost = (int)(long)primary["BaseConstructCost"];
 
-            var primarySlotList = (primary["base_slots"] as List<object>).Cast<Dictionary<string, object>>();
-            foreach (var o in primarySlotList)
-            {
-                var yieldList = new List<(GameFactorType FactorType, float Amount)>();
-                var upkeepList = new List<(GameFactorType FactorType, float Amount)>();
-
-                var yield = o["yield"] as Dictionary<string, object>;
-            }
+            Slots = JArray.FromObject(primary["Slots"]).ToObject<List<PopSlotPrototype>>();
         }
     }
 
     public struct PopSlotPrototype
     {
-        public List<(GameFactorType FactorType, float Amount)> Yield;
+        public List<FactorChangePrototype> Yield;
 
-        public List<(GameFactorType FactorType, float Amount)> Upkeep;
+        public List<FactorChangePrototype> Upkeep;
 
         public float Wage;
+    }
+
+    public struct FactorChangePrototype
+    {
+        public GameFactorType FactorType;
+        public float Amount;
     }
 }

@@ -1,53 +1,59 @@
 ﻿{
-  "name": "test_building",
-  "construct_time": 12,
-  "construct_cost": 500,
-  "buildable_condition": {
-    "min_pop_number": 10,
-    "required_tech": "test_basic_tech",
-    "tile_state": "!mountain && (plain || sea)",
-    "around_buildings": "any == 0"
+  "Name": "TestBuilding",
+  "BaseConstructTime": 12,
+  "BaseConstructCost": 500,
+  "Condition": {
+    "MinPopNumber": 10,
+    "RequiredTech": "TestBasicTech",
+    "TileState": "!Mountain && (Plain || Sea)",
+    "AroundBuildings": "Any == 0"
   },
-  "base_slots": [
+  "Slots": [
     {
-      "yield": {
-        "mineral": 3,
-        "energy": 1
-      },
-      "upkeep": {
-        "food": 3,
-        "alloy": 1
-      },
-      "wage": 1.5
+      "Yield": [
+        {
+          "FactorType": "Energy",
+          "Amount": 3.5
+        },
+        {
+          "FactorType": "Mineral",
+          "Amount": 3.5
+        }
+      ],
+      "Upkeep": [
+        {
+          "FactorType": "Money",
+          "Amount": 3.5
+        },
+        {
+          "FactorType": "Food",
+          "Amount": 3.5
+        }
+      ],
+      "Wage": 1.5
     },
     {
-      "yield": {
-        "mineral": 3,
-        "energy": 1
-      },
-      "upkeep": {
-        "food": 3,
-        "alloy": 1
-      },
-      "wage": 1.5
-    },
-    {
-      "yield": {
-        "money": 3,
-        "amenity": 1
-      },
-      "upkeep": {
-      },
-      "wage": 1
-    },
-    {
-      "yield": {
-        "physics": 4,
-        "engineer": 4
-      },
-      "upkeep": {
-      },
-      "wage": 3
+      "Yield": [
+        {
+          "FactorType": "Energy",
+          "Amount": 3.5
+        },
+        {
+          "FactorType": "Mineral",
+          "Amount": 3.5
+        }
+      ],
+      "Upkeep": [
+        {
+          "FactorType": "Money",
+          "Amount": 3.5
+        },
+        {
+          "FactorType": "Food",
+          "Amount": 3.5
+        }
+      ],
+      "Wage": 1.5
     }
   ]
 }
