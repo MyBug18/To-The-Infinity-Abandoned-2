@@ -13,7 +13,7 @@ namespace Infinity.HexTileMap
         {
             _coord = t.Coord;
             OnClick += onClicked;
-            name = $"{t.TileType} Tile ({_coord.Q}, {_coord.R})";
+            name = $"Tile ({_coord.Q}, {_coord.R})";
         }
 
         void IClickable.OnClick()

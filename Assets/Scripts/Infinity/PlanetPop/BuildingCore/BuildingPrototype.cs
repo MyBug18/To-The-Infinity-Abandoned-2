@@ -16,7 +16,7 @@ namespace Infinity.PlanetPop.BuildingCore
         private readonly List<PopSlotPrototype> _slots = new List<PopSlotPrototype>();
         public IReadOnlyList<PopSlotPrototype> Slots => _slots;
 
-
+        [JsonIgnore]
         public Func<Planet, bool> ConditionChecker { get; private set; }
 
         public BuildingPrototype(string jsonData)

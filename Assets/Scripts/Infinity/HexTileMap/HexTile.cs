@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Infinity.HexTileMap
 {
@@ -52,7 +53,8 @@ namespace Infinity.HexTileMap
     {
         public readonly HexTileCoord Coord;
 
-        public TileType TileType { get; private set; }
+        private List<TileType> _tileTypes = new List<TileType>();
+        public IReadOnlyList<TileType> TileTypes => _tileTypes;
 
         public int WayCost { get; private set; } = 1;
 
