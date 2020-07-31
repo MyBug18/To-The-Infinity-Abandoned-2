@@ -15,7 +15,7 @@ namespace Infinity
         /// <summary>
         /// Who had sent this signal?
         /// </summary>
-        public ISignalDispatcherHolder SignalSender { get; }
+        ISignalDispatcherHolder SignalSender { get; }
     }
 
     public interface ISignalDispatcherHolder
