@@ -54,8 +54,16 @@ namespace Tester
 
         private void TestJson()
         {
-            var j = File.ReadAllText(Path.Combine(Application.streamingAssetsPath, "BuildingData", "TestBuilding.json"));
-            var p = new BuildingPrototype(j);
+            var l = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, "gamedata/buildingdata"));
+
+            if (l == null)
+            {
+                Debug.Log("ASDFASDFASDF");
+                return;
+            }
+
+            var j = l.LoadAsset<TextAsset>("TestBuilding.json");
+            var p = new BuildingPrototype(j.text);
 
             File.WriteAllText(Path.Combine(Application.streamingAssetsPath, "test.json"), JsonConvert.SerializeObject(p, Formatting.Indented));
         }

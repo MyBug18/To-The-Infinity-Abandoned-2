@@ -1,0 +1,10 @@
+ManifestFileVersion: 0
+CRC: 569985207
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: gamedata/buildingdata
+      Dependencies: {}
+    Info_1:
+      Name: gamedata/popslotdata
+      Dependencies: {}

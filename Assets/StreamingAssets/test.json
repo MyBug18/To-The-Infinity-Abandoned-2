@@ -1,0 +1,13 @@
+{
+  "Name": "TestBuilding",
+  "BaseConstructTime": 12,
+  "BaseConstructCost": 500,
+  "BasePopSlots": {
+    "TestPopSlot": 2
+  },
+  "Conditions": {
+    "MinPopNumber": 10,
+    "TileState": "!Mountain & (Plain | Sea)",
+    "AroundBuildings": "Any = 0"
+  }
+}
