@@ -42,19 +42,29 @@ namespace Infinity.HexTileMap
         }
     }
 
-    public enum TileType
+    public enum TileBaseType
     {
         Space,
         Ocean,
-        Land
+        Desert,
+        Snow,
+        Grass,
+    }
+
+    public enum TileSpecialType
+    {
+        Hill,
+        Mountain,
+        Forest,
+        Iron,
+        Fertile,
     }
 
     public class HexTile
     {
         public readonly HexTileCoord Coord;
 
-        private List<TileType> _tileTypes = new List<TileType>();
-        public IReadOnlyList<TileType> TileTypes => _tileTypes;
+        public TileBaseType BaseType { get; private set; }
 
         public int WayCost { get; private set; } = 1;
 

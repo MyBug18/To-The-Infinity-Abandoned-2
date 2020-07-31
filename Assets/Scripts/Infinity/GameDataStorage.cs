@@ -15,6 +15,15 @@ namespace Infinity
         private void Initialize()
         {
             _gameDataDict[typeof(BuildingData)] = new BuildingData();
+            _gameDataDict[typeof(PopSlotData)] = new PopSlotData();
+        }
+
+        /// <summary>
+        /// For test
+        /// </summary>
+        public void InitializeManually()
+        {
+            Initialize();
         }
 
         public T GetGameData<T>() where T : IGameData
