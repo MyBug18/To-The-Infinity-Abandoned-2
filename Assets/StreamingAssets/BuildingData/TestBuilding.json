@@ -7,52 +7,7 @@
     "TileState": "!Mountain & (Plain | Sea)",
     "AroundBuildings": "Any = 0"
   },
-  "Slots": [
-    {
-      "Yield": [
-        {
-          "FactorType": "Energy",
-          "Amount": 3.5
-        },
-        {
-          "FactorType": "Mineral",
-          "Amount": 3.5
-        }
-      ],
-      "Upkeep": [
-        {
-          "FactorType": "Money",
-          "Amount": 3.5
-        },
-        {
-          "FactorType": "Food",
-          "Amount": 3.5
-        }
-      ],
-      "Wage": 1.5
-    },
-    {
-      "Yield": [
-        {
-          "FactorType": "Energy",
-          "Amount": 3.5
-        },
-        {
-          "FactorType": "Mineral",
-          "Amount": 3.5
-        }
-      ],
-      "Upkeep": [
-        {
-          "FactorType": "Money",
-          "Amount": 3.5
-        },
-        {
-          "FactorType": "Food",
-          "Amount": 3.5
-        }
-      ],
-      "Wage": 1.5
-    }
-  ]
+  "BaseSlots":{
+    "TestPopSlot" : 2
+  }
 }

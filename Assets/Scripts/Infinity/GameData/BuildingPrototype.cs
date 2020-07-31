@@ -30,8 +30,8 @@ namespace Infinity.GameData
 
         public readonly int BaseConstructCost;
 
-        private readonly List<PopSlotPrototype> _slots = new List<PopSlotPrototype>();
-        public IReadOnlyList<PopSlotPrototype> Slots => _slots;
+        private readonly Dictionary<string, int> _basePopSlots;
+        public IReadOnlyDictionary<string, int> BasePopSlots => _basePopSlots;
 
         private readonly Dictionary<string, object> _conditions;
         public IReadOnlyDictionary<string, object> Conditions => _conditions;
@@ -55,10 +55,7 @@ namespace Infinity.GameData
             BaseConstructTime = Convert.ToInt32(primary["BaseConstructTime"]);
             BaseConstructCost = Convert.ToInt32(primary["BaseConstructCost"]);
 
-            foreach (var slotData in JArray.FromObject(primary["Slots"]))
-            {
-                _slots.Add(new PopSlotPrototype(slotData.ToString()));
-            }
+            _basePopSlots = JObject.FromObject(primary["BaseSlots"]).ToObject<Dictionary<string, int>>();
 
             _conditions = JObject.FromObject(primary["Condition"]).ToObject<Dictionary<string, object>>();
             if (_conditions == null) return;

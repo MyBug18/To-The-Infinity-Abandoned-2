@@ -54,7 +54,7 @@ namespace Tester
 
         private void TestJson()
         {
-            var j = File.ReadAllText(Path.Combine(Application.streamingAssetsPath, "Buildings", "TestBuilding.json"));
+            var j = File.ReadAllText(Path.Combine(Application.streamingAssetsPath, "BuildingData", "TestBuilding.json"));
             var p = new BuildingPrototype(j);
 
             File.WriteAllText(Path.Combine(Application.streamingAssetsPath, "test.json"), JsonConvert.SerializeObject(p, Formatting.Indented));
