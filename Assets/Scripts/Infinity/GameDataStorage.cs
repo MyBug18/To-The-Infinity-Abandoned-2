@@ -14,7 +14,7 @@ namespace Infinity
 
         private void Initialize()
         {
-            _gameDataDict[typeof(BuildingPrototypeData)] = new BuildingPrototypeData();
+            _gameDataDict[typeof(BuildingData)] = new BuildingData();
         }
 
         public T GetGameData<T>() where T : IGameData
