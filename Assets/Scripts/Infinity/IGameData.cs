@@ -4,6 +4,6 @@
     {
         string DataName { get; }
 
-        bool Load();
+        void Load();
     }
 }
