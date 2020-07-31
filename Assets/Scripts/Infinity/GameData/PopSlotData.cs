@@ -1,8 +1,8 @@
 ﻿namespace Infinity.GameData
 {
-    public class BuildingData : IGameData
+    public class PopSlotData : IGameData
     {
-        public string DataName => nameof(BuildingData);
+        public string DataName => nameof(PopSlotData);
 
         public bool Load()
         {
