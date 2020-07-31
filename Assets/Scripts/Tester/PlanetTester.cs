@@ -2,13 +2,10 @@
 using System.IO;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
-using Infinity;
-using Infinity.HexTileMap;
+using Infinity.GameData;
 using Infinity.PlanetPop;
-using Infinity.PlanetPop.BuildingCore;
 using UnityEngine;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Tester
 {

@@ -1,25 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Infinity.HexTileMap;
+using Infinity.PlanetPop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Infinity.PlanetPop.BuildingCore
+namespace Infinity.GameData
 {
     public class BuildingPrototype
     {
         private enum TokenType
         {
-            Parenthesis,
+            ParenthesisOpen,
+            ParenthesisClose,
             Not,
             Equal,
             And,
             Or,
             Word
         }
+
+        private static Dictionary<string, TileBaseType> _tileBaseTypeStringDict;
 
         public readonly string Name;
 
@@ -37,6 +40,15 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public BuildingPrototype(string jsonData)
         {
+            if (_tileBaseTypeStringDict == null)
+            {
+                _tileBaseTypeStringDict = new Dictionary<string, TileBaseType>();
+                foreach (var tbt in (TileBaseType[]) Enum.GetValues(typeof(TileBaseType)))
+                {
+                    _tileBaseTypeStringDict[tbt.ToString()] = tbt;
+                }
+            }
+
             var primary = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonData);
 
             Name = (string)primary["Name"];
@@ -102,8 +114,10 @@ namespace Infinity.PlanetPop.BuildingCore
                 switch (c)
                 {
                     case '(':
+                        result.Add(("(", TokenType.ParenthesisOpen));
+                        break;
                     case ')':
-                        result.Add(($"{c}", TokenType.Parenthesis));
+                        result.Add((")", TokenType.ParenthesisClose));
                         break;
                     case '!':
                         result.Add(("!", TokenType.Not));
