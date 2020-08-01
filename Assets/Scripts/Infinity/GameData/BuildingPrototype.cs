@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Infinity.HexTileMap;
 using Infinity.PlanetPop;
 using Newtonsoft.Json;
@@ -11,19 +10,6 @@ namespace Infinity.GameData
 {
     public class BuildingPrototype
     {
-        private enum TokenType
-        {
-            ParenthesisOpen,
-            ParenthesisClose,
-            Not,
-            Equal,
-            And,
-            Or,
-            Word
-        }
-
-        private static Dictionary<string, TileBaseType> _tileBaseTypeStringDict;
-
         public readonly string Name;
 
         public readonly int BaseConstructTime;
@@ -36,19 +22,10 @@ namespace Infinity.GameData
         private readonly Dictionary<string, object> _conditions;
         public IReadOnlyDictionary<string, object> Conditions => _conditions;
 
-        private readonly Func<(Planet, HexTileCoord), bool> _conditionChecker;
+        private readonly IPropositionalLogic<HexTile> _tileStateChecker;
 
         public BuildingPrototype(string jsonData)
         {
-            if (_tileBaseTypeStringDict == null)
-            {
-                _tileBaseTypeStringDict = new Dictionary<string, TileBaseType>();
-                foreach (var tbt in (TileBaseType[]) Enum.GetValues(typeof(TileBaseType)))
-                {
-                    _tileBaseTypeStringDict[tbt.ToString()] = tbt;
-                }
-            }
-
             var primary = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonData);
 
             Name = (string)primary["Name"];
@@ -58,9 +35,9 @@ namespace Infinity.GameData
             _basePopSlots = JObject.FromObject(primary["BaseSlots"]).ToObject<Dictionary<string, int>>();
 
             _conditions = JObject.FromObject(primary["Condition"]).ToObject<Dictionary<string, object>>();
-            if (_conditions == null) return;
 
-            ConstructConditionChecker();
+            if (_conditions.TryGetValue("TileState", out var condition))
+                _tileStateChecker = ConditionParser<HexTile>.ParseCondition(Convert.ToString(condition), PlanetTileStateChecker);
         }
 
         public List<HexTileCoord> GetBuildableTile(Planet planet)
@@ -68,74 +45,32 @@ namespace Infinity.GameData
             return null;
         }
 
-        private void ConstructConditionChecker()
+        public bool CheckPopNumber(Planet planet)
         {
-            var sb = new StringBuilder();
+            if (!_conditions.TryGetValue("MinPopNumber", out var value)) return true;
 
-            foreach (var kv in _conditions)
-            {
-                switch (kv.Key)
-                {
-                    case "MinPopNumber":
-                        sb.Append($"{kv.Key} <= Item1.Pops.Count && ");
-                        break;
-                    case "TileState":
-                        var tokens = TokenizeConditionString(Convert.ToString(kv.Value));
-                        break;
-                }
-            }
+            return planet.Pops.Count >= Convert.ToInt32(value);
         }
 
-        private List<(string, TokenType)> TokenizeConditionString(string condition)
+        public bool CheckTileState(HexTile tile)
         {
-            var result = new List<(string, TokenType)>();
-            var currentWordToken = new List<char>();
+            if (!_conditions.ContainsKey("TileState")) return true;
 
-            foreach (var c in condition)
-            {
-                if ('a' <= c && c <= 'z' || 'A' <= c && c <= 'Z')
-                {
-                    currentWordToken.Add(c);
-                    continue;
-                }
-
-                if (!IsValidSpecialCharacter(c))
-                    throw new InvalidOperationException($"Unexpected character : {c} in {Name}.");
-
-                if (currentWordToken.Count > 0)
-                {
-                    result.Add((new string(currentWordToken.ToArray()), TokenType.Word));
-                    currentWordToken.Clear();
-                }
-
-                switch (c)
-                {
-                    case '(':
-                        result.Add(("(", TokenType.ParenthesisOpen));
-                        break;
-                    case ')':
-                        result.Add((")", TokenType.ParenthesisClose));
-                        break;
-                    case '!':
-                        result.Add(("!", TokenType.Not));
-                        break;
-                    case '=':
-                        result.Add(("=", TokenType.Equal));
-                        break;
-                    case '&':
-                        result.Add(("&", TokenType.And));
-                        break;
-                    case '|':
-                        result.Add(("|", TokenType.Or));
-                        break;
-                    case ' ':
-                        break;
-                }
-            }
-
-            return result;
+            return _tileStateChecker.Evaluate(tile);
         }
 
-        private bool IsValidSpecialCharacter(char c) => " !&|()=".Contains(c);
+        private bool PlanetTileStateChecker(string state, HexTile tile)
+        {
+
+            if (state == tile.TileClimate) return true;
+            if (state == tile.SpecialResource) return true;
+
+            return false;
+        }
+
+        private bool CheckAroundBuildingState()
+        {
+            return true;
+        }
     }
 }
