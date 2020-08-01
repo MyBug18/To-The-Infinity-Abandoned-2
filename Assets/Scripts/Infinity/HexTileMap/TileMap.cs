@@ -108,6 +108,7 @@ namespace Infinity.HexTileMap
                 var walkDir = (TileDirection) (i % 6);
                 for (var j = 0; j < radius; j++)
                 {
+                    // Add only valid coordinates
                     if (IsValidCoord(current))
                         resultList.Add(current);
                     current = current.AddDirection(walkDir);

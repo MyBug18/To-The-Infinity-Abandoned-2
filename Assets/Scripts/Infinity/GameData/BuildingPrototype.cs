@@ -61,7 +61,6 @@ namespace Infinity.GameData
 
         private bool PlanetTileStateChecker(string state, HexTile tile)
         {
-
             if (state == tile.TileClimate) return true;
             if (state == tile.SpecialResource) return true;
 

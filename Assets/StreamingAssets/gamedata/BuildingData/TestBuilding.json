@@ -4,8 +4,8 @@
   "BaseConstructCost": 500,
   "Condition": {
     "MinPopNumber": 10,
-    "TileState": "!Mountain & (Plain | Sea)",
-    "AroundBuildings": "Any = 0"
+    "TileState": "(!Mountain & (!Plain | Sea)) | Plain",
+    "AroundBuildings": "AlloyBuilding > 1 & Generator > 0"
   },
   "BaseSlots":{
     "TestPopSlot" : 2

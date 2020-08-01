@@ -7,10 +7,10 @@ using Newtonsoft.Json;
 using Infinity;
 using System;
 using Infinity.HexTileMap;
+using Infinity.PlanetPop.BuildingCore;
 
 namespace Tester
 {
-
     public class PlanetTester : MonoBehaviour
     {
         [SerializeField]
