@@ -23,6 +23,7 @@ namespace Infinity.GameData
         public IReadOnlyDictionary<string, object> Conditions => _conditions;
 
         private readonly IPropositionalLogic<HexTile> _tileStateChecker;
+        private readonly IPropositionalLogic<(Planet planet, HexTileCoord coord)> _aroundBuildingsChecker;
 
         public BuildingPrototype(string jsonData)
         {
@@ -36,8 +37,14 @@ namespace Infinity.GameData
 
             _conditions = JObject.FromObject(primary["Condition"]).ToObject<Dictionary<string, object>>();
 
-            if (_conditions.TryGetValue("TileState", out var condition))
-                _tileStateChecker = ConditionParser<HexTile>.ParseCondition(Convert.ToString(condition), PlanetTileStateChecker);
+            if (_conditions.TryGetValue("TileState", out var tileStateCondition))
+                _tileStateChecker = ConditionParser<HexTile>.ParseCondition(
+                    Convert.ToString(tileStateCondition), PlanetTileStateChecker);
+
+            if (_conditions.TryGetValue("AroundBuildings", out var aroundBuildingsCondition))
+                _aroundBuildingsChecker = 
+                    ConditionParser<(Planet planet, HexTileCoord coord)>.ParseCondition(
+                        Convert.ToString(aroundBuildingsCondition), PlanetAroundBuildingsChecker);
         }
 
         public List<HexTileCoord> GetBuildableTile(Planet planet)
@@ -67,9 +74,37 @@ namespace Infinity.GameData
             return false;
         }
 
-        private bool CheckAroundBuildingState()
+        private bool PlanetAroundBuildingsChecker(string comparisonDataHolder, (Planet planet, HexTileCoord coord) data)
         {
-            return true;
+            var holder = ConditionParser.ParseBinaryComparison(comparisonDataHolder);
+            var buildingDict = data.planet.GetAroundBuildings(data.coord);
+
+            var leftValue = 0;
+            var rightValue = holder.RightValue;
+
+            if (holder.Name == "Any")
+                leftValue = buildingDict.Values.Sum();
+
+            foreach (var kv in buildingDict)
+            {
+                if (kv.Key.Name == holder.Name)
+                {
+                    leftValue = kv.Value;
+                    break;
+                }
+            }
+
+            switch (holder.Operator)
+            {
+                case -1:
+                    return leftValue < rightValue;
+                case 0:
+                    return leftValue == rightValue;
+                case 1:
+                    return leftValue > rightValue;
+            }
+
+            throw new InvalidOperationException();
         }
     }
 }

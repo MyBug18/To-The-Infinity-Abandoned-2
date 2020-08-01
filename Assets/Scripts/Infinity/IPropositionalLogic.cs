@@ -14,6 +14,21 @@ namespace Infinity
     }
 
     /// <summary>
+    /// Binary comparison will use another parser.
+    /// </summary>
+    public struct BinaryComparisonHolder
+    {
+        public string Name;
+
+        /// <summary>
+        /// -1 if less, 0 if equal, 1 if more
+        /// </summary>
+        public int Operator;
+
+        public int RightValue;
+    }
+
+    /// <summary>
     /// Super simple condition parser with custon grammar
     /// </summary>
     public static class ConditionParser<T>
@@ -28,14 +43,14 @@ namespace Infinity
 
             foreach (var c in condition)
             {
-                if ('a' <= c && c <= 'z' || 'A' <= c && c <= 'Z')
+                if ('a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || '0' <= c && c <= '9')
                 {
                     currentWordToken.Add(c);
                     continue;
                 }
 
                 if (!IsValidSpecialCharacter(c))
-                    throw new InvalidOperationException($"Unexpected character : {c}.");
+                    throw new InvalidOperationException($"Unexpected special character : {c}.");
 
                 if (currentWordToken.Count > 0)
                 {
@@ -50,12 +65,28 @@ namespace Infinity
             if (currentWordToken.Count > 0)
                 result.Add(new string(currentWordToken.ToArray()));
 
+            for (var i = 0; i < result.Count; i++)
+            {
+                if (result[i] == "<" || result[i] == "=" || result[i] == ">")
+                {
+                    if (i < 1 || i > result.Count - 2)
+                        throw new ArgumentOutOfRangeException();
+
+                    var binaryComparisionString = $"{result[i - 1]} {result[i]} {result[i + 1]}";
+
+                    result[i] = binaryComparisionString;
+
+                    result.RemoveAt(i + 1);
+                    result.RemoveAt(i - 1);
+                }
+            }
+
             return result;
         }
 
         private static bool IsValidSpecialCharacter(char c)
         {
-            var set = " !&|()=\n";
+            var set = " !&|()=<>\n";
             foreach (var validChar in set)
                 if (validChar == c) return true;
 
@@ -66,14 +97,18 @@ namespace Infinity
         {
             var walker = 0;
 
+            // Will collect not fully constructed logics (ex: (e1 & ), (! )
             var _incompleteLogics = new Stack<IPropositionalLogic<T>>();
 
-            IPropositionalLogic<T> currentTree = null;
+            // Will point the top node of expression
+            IPropositionalLogic<T> topExpression = null;
+
+            // Will store just-evaluated complete expression
+            IPropositionalLogic<T> justFullExpression = null;
 
             while (walker < condition.Count)
             {
                 var current = condition[walker];
-                var wasEvaluation = false;
                 walker++;
 
                 switch (current)
@@ -81,16 +116,7 @@ namespace Infinity
                     case "(":
                         var insideString = GetParenthesisSurrounding(walker, condition, out var endIdx);
                         var inside = ParseConditionInternal(insideString, _conditionChecker);
-
-                        if (_incompleteLogics.Count > 0)
-                        {
-                            currentTree = _incompleteLogics.Pop();
-                            currentTree.SetRestExpression(inside);
-                        }
-                        else
-                            currentTree = inside;
-
-                        wasEvaluation = true;
+                        justFullExpression = inside;
                         walker = endIdx + 1;
                         break;
                     case ")":
@@ -99,38 +125,41 @@ namespace Infinity
                         _incompleteLogics.Push(new NotLogic<T>());
                         break;
                     case "|":
-                        _incompleteLogics.Push(new OrLogic<T>(currentTree));
+                        _incompleteLogics.Push(new OrLogic<T>(topExpression));
                         break;
                     case "&":
-                        _incompleteLogics.Push(new AndLogic<T>(currentTree));
+                        _incompleteLogics.Push(new AndLogic<T>(topExpression));
                         break;
                     default:
-                        var stringValueLogic = new StringValueLogic<T>(t => _conditionChecker(current, t));
-
-                        if (_incompleteLogics.Count > 0)
-                        {
-                            currentTree = _incompleteLogics.Pop();
-                            currentTree.SetRestExpression(stringValueLogic);
-                        }
-                        else
-                            currentTree = stringValueLogic;
-
-                        wasEvaluation = true;
+                        var stringValueLogic = new ValueLogic<T>(t => _conditionChecker(current, t));
+                        justFullExpression = stringValueLogic;
                         break;
                 }
 
-                if (wasEvaluation)
+                // If a full expression has appeared
+                if (justFullExpression != null)
                 {
+                    if (_incompleteLogics.Count > 0)
+                    {
+                        topExpression = _incompleteLogics.Pop();
+                        topExpression.SetRestExpression(justFullExpression);
+                    }
+                    else
+                        topExpression = justFullExpression;
+
+                    // Should connect all incomplete logics
                     while (_incompleteLogics.Count > 0)
                     {
                         var temp = _incompleteLogics.Pop();
-                        temp.SetRestExpression(currentTree);
-                        currentTree = temp;
+                        temp.SetRestExpression(topExpression);
+                        topExpression = temp;
                     }
+
+                    justFullExpression = null;
                 }
             }
 
-            return currentTree;
+            return topExpression;
         }
 
         private static List<string> GetParenthesisSurrounding(int startIdx, List<string> condition, out int endIdx)
@@ -166,11 +195,11 @@ namespace Infinity
     /// <summary>
     /// Evaluates VALUE operation
     /// </summary>
-    public class StringValueLogic<T> : IPropositionalLogic<T>
+    public class ValueLogic<T> : IPropositionalLogic<T>
     {
         private Func<T, bool> _valueChecker;
 
-        public StringValueLogic(Func<T, bool> valueChecker)
+        public ValueLogic(Func<T, bool> valueChecker)
         {
             _valueChecker = valueChecker;
         }
@@ -178,6 +207,30 @@ namespace Infinity
         public bool Evaluate(T input) => _valueChecker(input);
 
         public void SetRestExpression(IPropositionalLogic<T> _) => new InvalidOperationException("Operator expected!");
+    }
+
+    public static class ConditionParser
+    {
+        public static BinaryComparisonHolder ParseBinaryComparison(string s)
+        {
+            var tokens = s.Split(' ');
+            if (tokens.Length != 3)
+                throw new InvalidOperationException();
+
+            if (!int.TryParse(tokens[2], out var value)) throw new InvalidOperationException();
+
+            switch (tokens[1])
+            {
+                case "<":
+                    return new BinaryComparisonHolder { Name = tokens[0], Operator = -1, RightValue = value };
+                case "=":
+                    return new BinaryComparisonHolder { Name = tokens[0], Operator = 0, RightValue = value };
+                case ">":
+                    return new BinaryComparisonHolder { Name = tokens[0], Operator = 1, RightValue = value };
+            }
+
+            throw new InvalidOperationException();
+        }
     }
 
     /// <summary>

@@ -124,6 +124,24 @@ namespace Infinity.PlanetPop
         public IReadOnlyList<T> GetTileObjectList<T>() where T : IOnHexTileObject =>
             _tileMap.GetTileObjectList<T>();
 
+        public IReadOnlyDictionary<Building, int> GetAroundBuildings(HexTileCoord coord)
+        {
+            var result = new Dictionary<Building, int>();
+
+            foreach (var c in _tileMap.GetRing(1, coord))
+            {
+                var building = GetTileObject<Building>(coord);
+                if (building == null) continue;
+
+                if (result.ContainsKey(building))
+                    result[building]++;
+                else
+                    result[building] = 1;
+            }
+
+            return result;
+        }
+
         public IEnumerator<HexTile> GetEnumerator() =>  _tileMap.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
