@@ -71,6 +71,8 @@ namespace Infinity.GalaxySystem
 
         public bool IsValidCoord(HexTileCoord coord) => _tileMap.IsValidCoord(coord);
 
+        public HexTile GetHexTile(HexTileCoord coord) => _tileMap.GetHexTile(coord);
+
         public T GetTileObject<T>(HexTileCoord coord) where T : IOnHexTileObject =>
             _tileMap.GetTileObject<T>(coord);
 

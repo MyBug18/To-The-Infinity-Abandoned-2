@@ -76,6 +76,20 @@ namespace Infinity.HexTileMap
             return q + r >= Radius && q + r <= 3 * Radius;
         }
 
+        public HexTile GetHexTile(HexTileCoord coord)
+        {
+            if (!IsValidCoord(coord))
+                return null;
+
+            var q = coord.Q;
+            var r = coord.R;
+
+            if (r < Radius)
+                q = q - Radius + r;
+
+            return _tileMap[r][q];
+        }
+
         public List<HexTileCoord> GetRing(int radius, HexTileCoord? center = null)
         {
             if (radius < 1)

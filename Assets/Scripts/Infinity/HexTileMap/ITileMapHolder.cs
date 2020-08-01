@@ -13,11 +13,13 @@ namespace Infinity.HexTileMap
     {
         int TileMapRadius { get; }
 
-        bool IsValidCoord(HexTileCoord coord);
-
         TileMapType TileMapType { get; }
 
         IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] { get; }
+
+        bool IsValidCoord(HexTileCoord coord);
+
+        HexTile GetHexTile(HexTileCoord coord);
 
         T GetTileObject<T>(HexTileCoord coord) where T : IOnHexTileObject;
 
