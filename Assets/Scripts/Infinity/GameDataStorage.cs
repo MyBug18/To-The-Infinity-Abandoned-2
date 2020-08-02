@@ -33,10 +33,16 @@ namespace Infinity
 
         private readonly GameInitializedEventSender _gameInitializedSender = new GameInitializedEventSender();
 
+        public void InitializeGame(string dataPath)
+        {
+            var game = new Game(dataPath);
+            _gameInitializedSender.SendInitializedEvent(game);
+        }
+
         private void InitializeGameData()
         {
             _gameDataDict[typeof(BuildingData)] = new BuildingData(_gameInitializedSender);
-            _gameDataDict[typeof(PopSlotData)] = new PopSlotData(_gameInitializedSender);
+            _gameDataDict[typeof(PopSlotData)] = new PopSlotData();
 
             foreach (var data in _gameDataDict.Values)
                 data.Load();

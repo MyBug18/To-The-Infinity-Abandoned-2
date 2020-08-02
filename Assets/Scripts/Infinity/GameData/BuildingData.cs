@@ -10,7 +10,25 @@ namespace Infinity.GameData
 
         private readonly string dataPath = Path.Combine(Application.streamingAssetsPath, "GameData", "BuildingData");
 
-        private readonly Dictionary<string, BuildingPrototype> _dict = new Dictionary<string, BuildingPrototype>();
+        private readonly Dictionary<string, BuildingPrototype> _prototypeDict = new Dictionary<string, BuildingPrototype>();
+
+        private readonly Dictionary<string, bool> _availableDict = new Dictionary<string, bool>();
+
+        public IReadOnlyDictionary<string, BuildingPrototype> AvailableBuildingDict
+        {
+            get
+            {
+                var newDict = new Dictionary<string, BuildingPrototype>();
+                foreach (var kv in _prototypeDict)
+                {
+                    if (!_availableDict[kv.Key]) continue;
+
+                    newDict.Add(kv.Key, kv.Value);
+                }
+
+                return newDict;
+            }
+        }
 
         private Game _game;
 
@@ -18,7 +36,7 @@ namespace Infinity.GameData
         {
             get
             {
-                if (!_dict.TryGetValue(key, out var result))
+                if (!_prototypeDict.TryGetValue(key, out var result))
                 {
                     // should log or throw exception
                     return null;
@@ -36,6 +54,11 @@ namespace Infinity.GameData
         private void OnGameInitialized(Game game)
         {
             _game = game;
+
+            foreach (var name in game.AvailableBuildings)
+                _availableDict[name] = true;
+
+            // Should receive events which enables building
         }
 
         public void Load()
@@ -49,13 +72,16 @@ namespace Infinity.GameData
 
                 var building = new BuildingPrototype(jsonData);
 
-                if (_dict.ContainsKey(building.Name))
+                if (_prototypeDict.ContainsKey(building.Name))
                 {
                     // should log or throw exception
                     continue;
                 }
 
-                _dict[building.Name] = building;
+                _prototypeDict[building.Name] = building;
+
+                // First set all false and wait for the game to be initialized
+                _availableDict[building.Name] = false;
             }
         }
     }

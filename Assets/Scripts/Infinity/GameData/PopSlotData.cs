@@ -12,8 +12,6 @@ namespace Infinity.GameData
 
         private readonly Dictionary<string, PopSlotPrototype> _dict = new Dictionary<string, PopSlotPrototype>();
 
-        private Game _game;
-
         public PopSlotPrototype this[string key]
         {
             get
@@ -26,16 +24,6 @@ namespace Infinity.GameData
 
                 return result;
             }
-        }
-
-        public PopSlotData(GameInitializedEventSender sender)
-        {
-            sender.Subscribe(OnGameInitialized);
-        }
-
-        private void OnGameInitialized(Game game)
-        {
-            _game = game;
         }
 
         public void Load()
