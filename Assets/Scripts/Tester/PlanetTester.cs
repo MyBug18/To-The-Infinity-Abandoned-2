@@ -19,7 +19,7 @@ namespace Tester
 
         private void TestJson()
         {
-            GameDataStorage.Instance.InitializeManually();
+            GameDataStorage.Instance.InitializeGameDataManually();
 
             var data = GameDataStorage.Instance.GetGameData<BuildingData>();
 

@@ -33,7 +33,7 @@ namespace Infinity
 
         private readonly GameInitializedEventSender _gameInitializedSender = new GameInitializedEventSender();
 
-        private void Initialize()
+        private void InitializeGameData()
         {
             _gameDataDict[typeof(BuildingData)] = new BuildingData(_gameInitializedSender);
             _gameDataDict[typeof(PopSlotData)] = new PopSlotData(_gameInitializedSender);
@@ -45,9 +45,9 @@ namespace Infinity
         /// <summary>
         /// For test
         /// </summary>
-        public void InitializeManually()
+        public void InitializeGameDataManually()
         {
-            Initialize();
+            InitializeGameData();
         }
 
         public T GetGameData<T>() where T : IGameData

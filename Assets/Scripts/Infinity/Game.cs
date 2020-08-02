@@ -1,5 +1,7 @@
 ﻿using Infinity.GalaxySystem;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace Infinity
 {
@@ -12,19 +14,6 @@ namespace Infinity
 
     public class Game : ISignalDispatcherHolder
     {
-        private static Game _instance;
-
-        public static Game Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    throw new InvalidOperationException("Game instance has not yet initialized!");
-
-                return _instance;
-            }
-        }
-
         /// <summary>
         /// How many month pass when a turn goes on
         /// </summary>
@@ -39,17 +28,18 @@ namespace Infinity
 
         Type ISignalDispatcherHolder.HolderType => typeof(Game);
 
+        [JsonIgnore]
         public SignalDispatcher SignalDispatcher { get; }
 
+        [JsonIgnore]
         public readonly Galaxy Galaxy;
 
-        public Game()
+        private readonly List<string> _availableBuildings = new List<string>();
+
+        public IReadOnlyList<string> AvailableBuildings => _availableBuildings;
+
+        public Game(string dataPath)
         {
-            if (_instance != null)
-                throw new InvalidOperationException("Trying to instantiate new game instance while an instance already exist!");
-
-            _instance = this;
-
             _neuron = Neuron.GetNeuronForGame();
             SignalDispatcher = new SignalDispatcher(_neuron);
 

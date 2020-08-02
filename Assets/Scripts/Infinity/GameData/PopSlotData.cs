@@ -42,8 +42,9 @@ namespace Infinity.GameData
         {
             foreach (var path in Directory.GetFiles(dataPath))
             {
+#if UNITY_EDITOR
                 if (!path.EndsWith(".json")) continue;
-
+#endif
                 var jsonData = File.ReadAllText(path);
 
                 var popSlot = new PopSlotPrototype(jsonData);
