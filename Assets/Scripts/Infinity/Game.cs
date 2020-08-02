@@ -12,6 +12,19 @@ namespace Infinity
 
     public class Game : ISignalDispatcherHolder
     {
+        private static Game _instance;
+
+        public static Game Instance
+        {
+            get
+            {
+                if (_instance == null)
+                    throw new InvalidOperationException("Game instance has not yet initialized!");
+
+                return _instance;
+            }
+        }
+
         /// <summary>
         /// How many month pass when a turn goes on
         /// </summary>
@@ -32,7 +45,12 @@ namespace Infinity
 
         public Game()
         {
-            _neuron = Neuron.GetNeuronForGame(this);
+            if (_instance != null)
+                throw new InvalidOperationException("Trying to instantiate new game instance while an instance already exist!");
+
+            _instance = this;
+
+            _neuron = Neuron.GetNeuronForGame();
             SignalDispatcher = new SignalDispatcher(_neuron);
 
             _neuron.Subscribe<GameEventSignal<Game>>(OnGameEventSignal);

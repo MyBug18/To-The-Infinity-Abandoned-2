@@ -1,4 +1,6 @@
-﻿namespace Infinity.PlanetPop.BuildingCore
+﻿using Infinity.GameData;
+
+namespace Infinity.PlanetPop.BuildingCore
 {
     public enum PopSlotState
     {
@@ -9,9 +11,7 @@
 
     public class PopSlot
     {
-        public GameFactorType FactorType { get; private set; }
-
-        public float Amount { get; private set; }
+        public readonly string Name;
 
         public Pop pop { get; private set; }
 

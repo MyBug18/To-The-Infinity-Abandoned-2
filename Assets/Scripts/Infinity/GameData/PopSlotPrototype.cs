@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Infinity.PlanetPop.BuildingCore;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,12 @@ namespace Infinity.GameData
             _yield = JArray.FromObject(primary["Yield"]).ToObject<List<FactorChangePrototype>>();
             _upkeep = JArray.FromObject(primary["Upkeep"]).ToObject<List<FactorChangePrototype>>();
             Wage = Convert.ToSingle(primary["Wage"]);
+        }
+
+        public PopSlot GetPopSlot()
+        {
+            // TODO
+            return null;
         }
     }
 

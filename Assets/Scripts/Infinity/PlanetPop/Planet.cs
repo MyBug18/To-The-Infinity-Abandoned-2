@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Infinity.HexTileMap;
+using Infinity.Modifiers;
+using Infinity.PlanetPop.BuildingCore;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Infinity.HexTileMap;
-using Infinity.Modifiers;
-using Infinity.PlanetPop.BuildingCore;
 
 namespace Infinity.PlanetPop
 {
@@ -51,7 +51,7 @@ namespace Infinity.PlanetPop
 
         public float CurrentPopGrowth { get; private set; }
 
-        #endregion
+        #endregion Pop
 
         public IReadOnlyList<Building> Buildings => GetTileObjectList<Building>();
 
@@ -142,7 +142,7 @@ namespace Infinity.PlanetPop
             return result;
         }
 
-        public IEnumerator<HexTile> GetEnumerator() =>  _tileMap.GetEnumerator();
+        public IEnumerator<HexTile> GetEnumerator() => _tileMap.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }

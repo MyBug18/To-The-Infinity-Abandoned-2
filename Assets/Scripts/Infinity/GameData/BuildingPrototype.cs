@@ -1,5 +1,6 @@
 ﻿using Infinity.HexTileMap;
 using Infinity.PlanetPop;
+using Infinity.PlanetPop.BuildingCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -47,6 +48,12 @@ namespace Infinity.GameData
                         Convert.ToString(aroundBuildingsCondition), PlanetAroundBuildingsChecker);
         }
 
+        public Building GetBuilding()
+        {
+            // TODO
+            return null;
+        }
+
         public List<HexTileCoord> GetBuildableTile(Planet planet)
         {
             return null;
@@ -64,6 +71,13 @@ namespace Infinity.GameData
             if (!_conditions.ContainsKey("TileState")) return true;
 
             return _tileStateChecker.Evaluate(tile);
+        }
+
+        public bool CheckAroundBuildings(Planet planet, HexTileCoord coord)
+        {
+            if (!_conditions.ContainsKey("AroundBuildings")) return true;
+
+            return _aroundBuildingsChecker.Evaluate((planet, coord));
         }
 
         private bool PlanetTileStateChecker(string state, HexTile tile)
