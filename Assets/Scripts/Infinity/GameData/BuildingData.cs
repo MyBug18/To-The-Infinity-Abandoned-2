@@ -10,7 +10,7 @@ namespace Infinity.GameData
 
         private readonly string dataPath = Path.Combine(Application.streamingAssetsPath, "GameData", "BuildingData");
 
-        private Dictionary<string, BuildingPrototype> _dict = new Dictionary<string, BuildingPrototype>();
+        private readonly Dictionary<string, BuildingPrototype> _dict = new Dictionary<string, BuildingPrototype>();
 
         private Game _game;
 

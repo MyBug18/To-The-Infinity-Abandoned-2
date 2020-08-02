@@ -29,9 +29,9 @@ namespace Infinity
 
         public static GameDataStorage Instance => _instance == null ? (_instance = new GameDataStorage()) : _instance;
 
-        private Dictionary<Type, IGameData> _gameDataDict = new Dictionary<Type, IGameData>();
+        private readonly Dictionary<Type, IGameData> _gameDataDict = new Dictionary<Type, IGameData>();
 
-        private GameInitializedEventSender _gameInitializedSender = new GameInitializedEventSender();
+        private readonly GameInitializedEventSender _gameInitializedSender = new GameInitializedEventSender();
 
         private void Initialize()
         {
