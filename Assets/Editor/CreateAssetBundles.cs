@@ -1,11 +1,10 @@
 using System.IO;
 using UnityEditor;
 
-
 public class CreateAssetBundles
 {
     [MenuItem("Assets/Build AssetBundles")]
-    static void BuildAllAssetBundles()
+    private static void BuildAllAssetBundles()
     {
         string assetBundleDirectory = "Assets/StreamingAssets";
         if (!Directory.Exists(assetBundleDirectory))

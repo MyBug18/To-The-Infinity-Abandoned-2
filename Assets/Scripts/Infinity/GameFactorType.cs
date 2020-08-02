@@ -24,7 +24,6 @@ namespace Infinity
 
     public class GameFactorChangeSignal : ISignal
     {
-
         public ISignalDispatcherHolder SignalSender { get; }
 
         public readonly GameFactor Change;

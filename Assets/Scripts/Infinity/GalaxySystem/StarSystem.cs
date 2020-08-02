@@ -1,8 +1,8 @@
+using Infinity.HexTileMap;
+using Infinity.PlanetPop;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Infinity.HexTileMap;
-using Infinity.PlanetPop;
 
 namespace Infinity.GalaxySystem
 {

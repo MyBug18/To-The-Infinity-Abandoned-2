@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Infinity.HexTileMap
 {
-
     public readonly struct HexTileCoord
     {
         public readonly int Q;

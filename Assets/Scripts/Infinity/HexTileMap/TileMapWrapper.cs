@@ -9,7 +9,6 @@ namespace Infinity.HexTileMap
 
         private ITileMapHolder _holder;
 
-
         public void Init(ITileMapHolder holder)
         {
             name = holder.TileMapType + " TileMap";

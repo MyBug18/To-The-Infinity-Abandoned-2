@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Infinity.HexTileMap;
+using System;
 using System.Collections.Generic;
-using Infinity.HexTileMap;
 
 namespace Infinity.PlanetPop.BuildingCore
 {

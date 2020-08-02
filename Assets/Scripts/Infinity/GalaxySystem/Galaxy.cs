@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Infinity.HexTileMap;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Infinity.HexTileMap;
 
 namespace Infinity.GalaxySystem
 {

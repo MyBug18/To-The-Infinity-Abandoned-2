@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Infinity.HexTileMap;
+﻿using Infinity.HexTileMap;
 using Infinity.PlanetPop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Infinity.GameData
 {
@@ -42,7 +42,7 @@ namespace Infinity.GameData
                     Convert.ToString(tileStateCondition), PlanetTileStateChecker);
 
             if (_conditions.TryGetValue("AroundBuildings", out var aroundBuildingsCondition))
-                _aroundBuildingsChecker = 
+                _aroundBuildingsChecker =
                     ConditionParser<(Planet planet, HexTileCoord coord)>.ParseCondition(
                         Convert.ToString(aroundBuildingsCondition), PlanetAroundBuildingsChecker);
         }

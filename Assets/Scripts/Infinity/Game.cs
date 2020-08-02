@@ -1,5 +1,5 @@
-﻿using System;
-using Infinity.GalaxySystem;
+﻿using Infinity.GalaxySystem;
+using System;
 
 namespace Infinity
 {
@@ -27,7 +27,6 @@ namespace Infinity
         Type ISignalDispatcherHolder.HolderType => typeof(Game);
 
         public SignalDispatcher SignalDispatcher { get; }
-
 
         public readonly Galaxy Galaxy;
 

@@ -105,7 +105,7 @@ namespace Infinity.HexTileMap
 
             for (var i = 2; i < 8; i++)
             {
-                var walkDir = (TileDirection) (i % 6);
+                var walkDir = (TileDirection)(i % 6);
                 for (var j = 0; j < radius; j++)
                 {
                     // Add only valid coordinates
@@ -139,10 +139,10 @@ namespace Infinity.HexTileMap
         public T GetTileObject<T>(HexTileCoord coord) where T : IOnHexTileObject
         {
             var type = typeof(T);
-            if (!_onTileMapObjects.TryGetValue(coord , out var coordObjectDict)) return default;
+            if (!_onTileMapObjects.TryGetValue(coord, out var coordObjectDict)) return default;
             if (!coordObjectDict.TryGetValue(type, out var obj)) return default;
 
-            return (T) obj;
+            return (T)obj;
         }
 
         public IReadOnlyList<IOnHexTileObject> GetAllTileObjects(HexTileCoord coord)
@@ -163,7 +163,7 @@ namespace Infinity.HexTileMap
             foreach (var typeObjDict in _onTileMapObjects.Values)
             {
                 if (!typeObjDict.TryGetValue(type, out var obj)) continue;
-                result.Add((T) obj);
+                result.Add((T)obj);
             }
 
             return result;

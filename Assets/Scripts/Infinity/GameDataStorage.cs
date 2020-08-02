@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Infinity.GameData;
+using System;
 using System.Collections.Generic;
-using Infinity.GameData;
 
 namespace Infinity
 {
@@ -34,7 +34,7 @@ namespace Infinity
             if (!_gameDataDict.TryGetValue(typeof(T), out var gameData))
                 throw new InvalidOperationException($"There are no GameData: {nameof(T)}");
 
-            return (T) gameData;
+            return (T)gameData;
         }
     }
 }
