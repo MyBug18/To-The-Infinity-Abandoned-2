@@ -12,6 +12,8 @@ namespace Infinity.GameData
 
         private Dictionary<string, BuildingPrototype> _dict = new Dictionary<string, BuildingPrototype>();
 
+        private Game _game;
+
         public BuildingPrototype this[string key]
         {
             get
@@ -24,6 +26,16 @@ namespace Infinity.GameData
 
                 return result;
             }
+        }
+
+        public BuildingData(GameInitializedEventSender sender)
+        {
+            sender.Subscribe(OnGameInitialized);
+        }
+
+        private void OnGameInitialized(Game game)
+        {
+            _game = game;
         }
 
         public void Load()

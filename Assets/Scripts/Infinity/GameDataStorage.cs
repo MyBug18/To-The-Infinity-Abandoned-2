@@ -4,6 +4,25 @@ using System.Collections.Generic;
 
 namespace Infinity
 {
+    public class GameInitializedEventSender
+    {
+        private readonly List<Action<Game>> _eventReceivers = new List<Action<Game>>();
+
+        public void SendInitializedEvent(Game game)
+        {
+            foreach (var a in _eventReceivers)
+                a.Invoke(game);
+        }
+
+        public void Subscribe(Action<Game> action)
+        {
+            _eventReceivers.Add(action);
+        }
+    }
+
+    /// <summary>
+    /// Will store every game data, including game itself
+    /// </summary>
     public class GameDataStorage
     {
         private static GameDataStorage _instance;
@@ -12,10 +31,12 @@ namespace Infinity
 
         private Dictionary<Type, IGameData> _gameDataDict = new Dictionary<Type, IGameData>();
 
+        private GameInitializedEventSender _gameInitializedSender = new GameInitializedEventSender();
+
         private void Initialize()
         {
-            _gameDataDict[typeof(BuildingData)] = new BuildingData();
-            _gameDataDict[typeof(PopSlotData)] = new PopSlotData();
+            _gameDataDict[typeof(BuildingData)] = new BuildingData(_gameInitializedSender);
+            _gameDataDict[typeof(PopSlotData)] = new PopSlotData(_gameInitializedSender);
 
             foreach (var data in _gameDataDict.Values)
                 data.Load();
