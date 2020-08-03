@@ -55,24 +55,28 @@ namespace Infinity
         private readonly Neuron _parentNeuron;
         private readonly List<Neuron> _childNeurons = new List<Neuron>();
 
-        private Neuron()
+        public readonly ISignalDispatcherHolder Holder;
+
+        private Neuron(ISignalDispatcherHolder holder)
         {
+            Holder = holder;
             _parentNeuron = null;
         }
 
         /// <summary>
         /// Only for the top-level Neuron holder, which is Game class
         /// </summary>
-        public static Neuron GetNeuronForGame() => new Neuron();
+        public static Neuron GetNeuronForGame(ISignalDispatcherHolder holder) => new Neuron(holder);
 
-        private Neuron(Neuron parentNeuron)
+        private Neuron(ISignalDispatcherHolder holder, Neuron parentNeuron)
         {
+            Holder = holder;
             _parentNeuron = parentNeuron;
         }
 
-        public Neuron GetChildNeuron()
+        public Neuron GetChildNeuron(ISignalDispatcherHolder childHolder)
         {
-            var newNeuron = new Neuron(this);
+            var newNeuron = new Neuron(childHolder, this);
             _childNeurons.Add(newNeuron);
             return newNeuron;
         }
@@ -127,6 +131,11 @@ namespace Infinity
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
+        }
+
+        public void RemoveChild(ISignalDispatcherHolder holder)
+        {
+            _childNeurons.RemoveAll(x => x.Holder == holder);
         }
     }
 }

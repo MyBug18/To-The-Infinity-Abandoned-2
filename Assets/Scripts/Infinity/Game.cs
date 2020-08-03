@@ -40,7 +40,8 @@ namespace Infinity
 
         public Game(string dataPath)
         {
-            _neuron = Neuron.GetNeuronForGame();
+            _neuron = Neuron.GetNeuronForGame(this);
+
             SignalDispatcher = new SignalDispatcher(_neuron);
 
             _neuron.Subscribe<GameEventSignal<Game>>(OnGameEventSignal);

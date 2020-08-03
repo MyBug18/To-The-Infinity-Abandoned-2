@@ -61,7 +61,7 @@ namespace Infinity.PlanetPop
 
         public Planet(Neuron parentNeuron, string name, HexTileCoord coord, int size)
         {
-            _neuron = parentNeuron.GetChildNeuron();
+            _neuron = parentNeuron.GetChildNeuron(this);
             SignalDispatcher = new SignalDispatcher(_neuron);
 
             _neuron.Subscribe<GameEventSignal<Planet>>(OnGameEventSignal);

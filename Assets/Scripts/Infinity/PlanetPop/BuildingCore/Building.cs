@@ -22,7 +22,7 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public Building(Neuron parentNeuron)
         {
-            _neuron = parentNeuron.GetChildNeuron();
+            _neuron = parentNeuron.GetChildNeuron(this);
             SignalDispatcher = new SignalDispatcher(_neuron);
         }
     }
