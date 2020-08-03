@@ -122,6 +122,14 @@ namespace Infinity.PlanetPop
         private void OnBuildingQueueEndedSignal(ISignal s)
         {
             if (!(s is BuildingQueueEndedSignal bqes)) return;
+
+            var coord = bqes.QueueElement.Coord;
+
+            var building = new Building(_neuron, bqes.QueueElement.Prototype, this, coord);
+
+            _tileMap.AddTileObject(coord, building);
+
+            _neuron.SendSignal(new BuildingConstructedSignal(this, building.Name, coord), SignalDirection.Downward);
         }
 
         PlanetStatus IPlanet.GetPlanetStatus() => _pops.Count > 0 ? PlanetStatus.Colonized : PlanetStatus.Inhabitable;

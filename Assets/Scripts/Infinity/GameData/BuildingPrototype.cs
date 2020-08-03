@@ -18,13 +18,18 @@ namespace Infinity.GameData
         public readonly int BaseConstructCost;
 
         private readonly Dictionary<string, int> _basePopSlots;
+
         public IReadOnlyDictionary<string, int> BasePopSlots => _basePopSlots;
 
         private readonly Dictionary<string, object> _conditions;
+
         public IReadOnlyDictionary<string, object> Conditions => _conditions;
 
         private readonly IPropositionalLogic<HexTile> _tileStateChecker;
+
         private readonly IPropositionalLogic<(Planet planet, HexTileCoord coord)> _aroundBuildingsChecker;
+
+        public readonly AdjacencyBonusData AdjacencyBonus;
 
         public BuildingPrototype(string jsonData)
         {
@@ -38,6 +43,8 @@ namespace Infinity.GameData
             _basePopSlots = JObject.FromObject(primary["BaseSlots"]).ToObject<Dictionary<string, int>>();
 
             _conditions = JObject.FromObject(primary["Condition"]).ToObject<Dictionary<string, object>>();
+
+            AdjacencyBonus = new AdjacencyBonusData(Convert.ToString(primary["AdjacencyBonus"]));
 
             if (_conditions == null)
             {
@@ -126,6 +133,26 @@ namespace Infinity.GameData
             }
 
             throw new InvalidOperationException();
+        }
+    }
+
+    public class AdjacencyBonusData
+    {
+        public readonly int BonusPerLevel;
+
+        public readonly int MaxLevel;
+
+        private readonly Dictionary<string, int> _bonusChangeInfo;
+
+        public IReadOnlyDictionary<string, int> BonusChangeInfo => _bonusChangeInfo;
+
+        public AdjacencyBonusData(string jsonData)
+        {
+            var primary = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonData);
+
+            BonusPerLevel = Convert.ToInt32(primary["BonusPerLevel"]);
+            MaxLevel = Convert.ToInt32(primary["MaxLevel"]);
+            _bonusChangeInfo = JObject.FromObject(primary["BonusChangeInfo"]).ToObject<Dictionary<string, int>>();
         }
     }
 }

@@ -9,5 +9,13 @@
   },
   "BaseSlots":{
     "TestPopSlot" : 2
+  },
+  "AdjacencyBonus": {
+    "BonusPerLevel": 5,
+    "MaxLevel": 3,
+    "BonusChangeInfo": {
+      "TestBuilding": 1,
+      "TestBuilding2": -1
+    }
   }
 }

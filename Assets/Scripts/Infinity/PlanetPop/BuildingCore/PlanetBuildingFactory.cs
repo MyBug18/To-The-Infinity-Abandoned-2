@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Infinity.GameData;
 using Infinity.HexTileMap;
 
@@ -29,6 +30,7 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public void StartConstruction(string buildingName, HexTileCoord coord)
         {
+            //TODO: Add resource consumption
             var prototype = _buildingData[buildingName];
             var newElement = new BuildingQueueElement(prototype, coord);
             _constructionQueue.Add((newElement, prototype.BaseConstructTime));
@@ -46,9 +48,29 @@ namespace Infinity.PlanetPop.BuildingCore
 
         private void EndConstruction()
         {
-            var completedElement = _constructionQueue[0];
+            var (Element, _) = _constructionQueue[0];
             _constructionQueue.RemoveAt(0);
-            _planetNeuron.SendSignal(new BuildingQueueEndedSignal(_planet, completedElement.Element), SignalDirection.Local);
+            _planetNeuron.SendSignal(new BuildingQueueEndedSignal(_planet, Element), SignalDirection.Local);
+        }
+
+        public void MoveToSmallerPosition(int index)
+        {
+            if (index <= 0)
+                throw new ArgumentOutOfRangeException();
+
+            var temp = _constructionQueue[index - 1];
+            _constructionQueue[index - 1] = _constructionQueue[index];
+            _constructionQueue[index] = temp;
+        }
+
+        public void MoveToBiggerPosition(int index)
+        {
+            if (index >= _constructionQueue.Count - 1)
+                throw new ArgumentOutOfRangeException();
+
+            var temp = _constructionQueue[index + 1];
+            _constructionQueue[index + 1] = _constructionQueue[index];
+            _constructionQueue[index] = temp;
         }
     }
 
@@ -72,12 +94,12 @@ namespace Infinity.PlanetPop.BuildingCore
     {
         public ISignalDispatcherHolder SignalSender { get; }
 
-        public readonly BuildingQueueElement Building;
+        public readonly BuildingQueueElement QueueElement;
 
         public BuildingQueueEndedSignal(ISignalDispatcherHolder sender, BuildingQueueElement building)
         {
             SignalSender = sender;
-            Building = building;
+            QueueElement = building;
         }
     }
 }
