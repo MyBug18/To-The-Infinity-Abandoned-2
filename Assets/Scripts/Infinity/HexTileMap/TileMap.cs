@@ -5,19 +5,6 @@ using System.Linq;
 
 namespace Infinity.HexTileMap
 {
-    /// <summary>
-    /// Clockwise tile direction
-    /// </summary>
-    public enum TileDirection
-    {
-        Right = 0,      // (+1,  0)
-        UpRight = 1,    // ( 0, +1)
-        UpLeft = 2,     // (-1, +1)
-        Left = 3,       // (-1,  0)
-        DownLeft = 4,   // ( 0, -1)
-        DownRight = 5,  // (+1, -1)
-    }
-
     public class TileMap : IEnumerable<HexTile>
     {
         private readonly HexTile[][] _tileMap;

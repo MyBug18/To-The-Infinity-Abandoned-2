@@ -1,21 +1,76 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Infinity.HexTileMap
 {
-    public readonly struct HexTileCoord
+    /// <summary>
+    /// Clockwise tile direction
+    /// </summary>
+    public enum TileDirection
+    {
+        Right = 0,      // (+1,  0)
+        UpRight = 1,    // ( 0, +1)
+        UpLeft = 2,     // (-1, +1)
+        Left = 3,       // (-1,  0)
+        DownLeft = 4,   // ( 0, -1)
+        DownRight = 5,  // (+1, -1)
+    }
+
+    public readonly struct HexTileCoord : IEquatable<HexTileCoord>
     {
         public readonly int Q;
         public readonly int R;
 
         public HexTileCoord(int q, int r)
         {
-            this.Q = q;
-            this.R = r;
+            Q = q;
+            R = r;
         }
 
-        public override string ToString()
+        public readonly static HexTileCoord Right = new HexTileCoord(1, 0);
+        public readonly static HexTileCoord UpRight = new HexTileCoord(0, 1);
+        public readonly static HexTileCoord UpLeft = new HexTileCoord(-1, 1);
+        public readonly static HexTileCoord Left = new HexTileCoord(-1, 0);
+        public readonly static HexTileCoord DownLeft = new HexTileCoord(0, -1);
+        public readonly static HexTileCoord DownRight = new HexTileCoord(1, -1);
+
+        public readonly static HashSet<HexTileCoord> AllDirectionSet = new HashSet<HexTileCoord>
         {
-            return $"({Q}, {R})";
+            Right,
+            UpRight,
+            UpLeft,
+            Left,
+            DownLeft,
+            DownRight,
+        };
+
+        public override string ToString() => $"({Q}, {R})";
+
+        public bool Equals(HexTileCoord c) => c.Q == Q && c.R == R;
+
+        public override bool Equals(object obj) => (obj is HexTileCoord c) && Equals(c);
+
+        public override int GetHashCode() => base.GetHashCode();
+
+        public static HexTileCoord operator +(HexTileCoord coord) => coord;
+
+        public static HexTileCoord operator -(HexTileCoord coord) => new HexTileCoord(-coord.Q, -coord.R);
+
+        public static HexTileCoord operator +(HexTileCoord coord1, HexTileCoord coord2) =>
+            new HexTileCoord(coord1.Q + coord2.Q, coord1.R + coord2.R);
+
+        public static HexTileCoord operator -(HexTileCoord coord1, HexTileCoord coord2) => coord1 + (-coord2);
+
+        public static bool operator ==(HexTileCoord coord1, HexTileCoord coord2) => coord1.Equals(coord2);
+
+        public static bool operator !=(HexTileCoord coord1, HexTileCoord coord2) => !coord1.Equals(coord2);
+
+        public bool IsAdjacent(HexTileCoord coord, bool includeCenter)
+        {
+            if (this == coord)
+                return includeCenter;
+
+            return AllDirectionSet.Contains(this - coord);
         }
 
         public HexTileCoord AddDirection(TileDirection dir)
@@ -23,17 +78,17 @@ namespace Infinity.HexTileMap
             switch (dir)
             {
                 case TileDirection.Right:
-                    return new HexTileCoord(Q + 1, R);
+                    return this + Right;
                 case TileDirection.UpRight:
-                    return new HexTileCoord(Q, R + 1);
+                    return this + UpRight;
                 case TileDirection.UpLeft:
-                    return new HexTileCoord(Q - 1, R + 1);
+                    return this + UpLeft;
                 case TileDirection.Left:
-                    return new HexTileCoord(Q - 1, R);
+                    return this + Left;
                 case TileDirection.DownLeft:
-                    return new HexTileCoord(Q, R - 1);
+                    return this + DownLeft;
                 case TileDirection.DownRight:
-                    return new HexTileCoord(Q + 1, R - 1);
+                    return this + DownRight;
                 default:
                     throw new InvalidOperationException();
             }
