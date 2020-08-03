@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Infinity
 {
@@ -29,7 +30,7 @@ namespace Infinity
     }
 
     /// <summary>
-    /// Super simple condition parser with custon grammar
+    /// Super simple condition parser with custom grammar
     /// </summary>
     public static class ConditionParser<T>
     {
@@ -67,38 +68,30 @@ namespace Infinity
 
             for (var i = 0; i < result.Count; i++)
             {
-                if (result[i] == "<" || result[i] == "=" || result[i] == ">")
-                {
-                    if (i < 1 || i > result.Count - 2)
-                        throw new ArgumentOutOfRangeException();
+                if (result[i] != "<" && result[i] != "=" && result[i] != ">") continue;
 
-                    var binaryComparisionString = $"{result[i - 1]} {result[i]} {result[i + 1]}";
+                if (i < 1 || i > result.Count - 2)
+                    throw new ArgumentOutOfRangeException();
 
-                    result[i] = binaryComparisionString;
+                var binaryComparisionString = $"{result[i - 1]} {result[i]} {result[i + 1]}";
 
-                    result.RemoveAt(i + 1);
-                    result.RemoveAt(i - 1);
-                }
+                result[i] = binaryComparisionString;
+
+                result.RemoveAt(i + 1);
+                result.RemoveAt(i - 1);
             }
 
             return result;
         }
 
-        private static bool IsValidSpecialCharacter(char c)
-        {
-            var set = " !&|()=<>\n";
-            foreach (var validChar in set)
-                if (validChar == c) return true;
+        private static bool IsValidSpecialCharacter(char c) => " !&|()=<>\n".Any(validChar => validChar == c);
 
-            return false;
-        }
-
-        private static IPropositionalLogic<T> ParseConditionInternal(List<string> condition, Func<string, T, bool> _conditionChecker)
+        private static IPropositionalLogic<T> ParseConditionInternal(IReadOnlyList<string> condition, Func<string, T, bool> conditionChecker)
         {
             var walker = 0;
 
-            // Will collect not fully constructed logics (ex: (e1 & ), (! )
-            var _incompleteLogics = new Stack<IPropositionalLogic<T>>();
+            // Will collect not fully constructed logic (ex: (e1 & ), (! )
+            var incompleteLogic = new Stack<IPropositionalLogic<T>>();
 
             // Will point the top node of expression
             IPropositionalLogic<T> topExpression = null;
@@ -115,61 +108,59 @@ namespace Infinity
                 {
                     case "(":
                         var insideString = GetParenthesisSurrounding(walker, condition, out var endIdx);
-                        var inside = ParseConditionInternal(insideString, _conditionChecker);
+                        var inside = ParseConditionInternal(insideString, conditionChecker);
                         justFullExpression = inside;
                         walker = endIdx + 1;
                         break;
                     case ")":
                         throw new InvalidOperationException("Parenthesis mismatch!");
                     case "!":
-                        _incompleteLogics.Push(new NotLogic<T>());
+                        incompleteLogic.Push(new NotLogic<T>());
                         break;
                     case "|":
-                        _incompleteLogics.Push(new OrLogic<T>(topExpression));
+                        incompleteLogic.Push(new OrLogic<T>(topExpression));
                         break;
                     case "&":
-                        _incompleteLogics.Push(new AndLogic<T>(topExpression));
+                        incompleteLogic.Push(new AndLogic<T>(topExpression));
                         break;
                     default:
-                        var stringValueLogic = new ValueLogic<T>(t => _conditionChecker(current, t));
+                        var stringValueLogic = new ValueLogic<T>(t => conditionChecker(current, t));
                         justFullExpression = stringValueLogic;
                         break;
                 }
+                if (justFullExpression == null) continue;
 
                 // If a full expression has appeared
-                if (justFullExpression != null)
+                if (incompleteLogic.Count > 0)
                 {
-                    if (_incompleteLogics.Count > 0)
-                    {
-                        topExpression = _incompleteLogics.Pop();
-                        topExpression.SetRestExpression(justFullExpression);
-                    }
-                    else
-                        topExpression = justFullExpression;
-
-                    // Should connect all incomplete logics
-                    while (_incompleteLogics.Count > 0)
-                    {
-                        var temp = _incompleteLogics.Pop();
-                        temp.SetRestExpression(topExpression);
-                        topExpression = temp;
-                    }
-
-                    justFullExpression = null;
+                    topExpression = incompleteLogic.Pop();
+                    topExpression.SetRestExpression(justFullExpression);
                 }
+                else
+                    topExpression = justFullExpression;
+
+                // Should connect all incomplete logic
+                while (incompleteLogic.Count > 0)
+                {
+                    var temp = incompleteLogic.Pop();
+                    temp.SetRestExpression(topExpression);
+                    topExpression = temp;
+                }
+
+                justFullExpression = null;
             }
 
             return topExpression;
         }
 
-        private static List<string> GetParenthesisSurrounding(int startIdx, List<string> condition, out int endIdx)
+        private static List<string> GetParenthesisSurrounding(int startIdx, IReadOnlyList<string> condition, out int endIdx)
         {
             var currentParenthesisCount = 1;
             var walker = startIdx;
 
             var insideParenthesisHolder = new List<string>();
 
-            // get expression surrouded by current parenthesis
+            // get expression surrounded by current parenthesis
             while (currentParenthesisCount != 0)
             {
                 if (walker > condition.Count)
@@ -197,7 +188,7 @@ namespace Infinity
     /// </summary>
     public class ValueLogic<T> : IPropositionalLogic<T>
     {
-        private Func<T, bool> _valueChecker;
+        private readonly Func<T, bool> _valueChecker;
 
         public ValueLogic(Func<T, bool> valueChecker)
         {
@@ -206,7 +197,7 @@ namespace Infinity
 
         public bool Evaluate(T input) => _valueChecker(input);
 
-        public void SetRestExpression(IPropositionalLogic<T> _) => new InvalidOperationException("Operator expected!");
+        public void SetRestExpression(IPropositionalLogic<T> _) => throw new InvalidOperationException("Operator expected!");
     }
 
     public static class ConditionParser
@@ -253,7 +244,8 @@ namespace Infinity
     /// </summary>
     public class AndLogic<T> : IPropositionalLogic<T>
     {
-        private IPropositionalLogic<T> _e1, _e2;
+        private readonly IPropositionalLogic<T> _e1;
+        private IPropositionalLogic<T> _e2;
 
         public AndLogic(IPropositionalLogic<T> e1)
         {
@@ -273,7 +265,8 @@ namespace Infinity
     /// </summary>
     public class OrLogic<T> : IPropositionalLogic<T>
     {
-        private IPropositionalLogic<T> _e1, _e2;
+        private readonly IPropositionalLogic<T> _e1;
+        private IPropositionalLogic<T> _e2;
 
         public OrLogic(IPropositionalLogic<T> e1)
         {

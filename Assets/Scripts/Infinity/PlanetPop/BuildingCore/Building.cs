@@ -16,9 +16,9 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public string Name { get; }
 
-        private readonly List<PopSlot> _popSlots = new List<PopSlot>();
+        private readonly List<PopWorkingSlot> _popSlots = new List<PopWorkingSlot>();
 
-        public IReadOnlyList<PopSlot> PopSlots => _popSlots;
+        public IReadOnlyList<PopWorkingSlot> PopSlots => _popSlots;
 
         public Building(Neuron parentNeuron)
         {

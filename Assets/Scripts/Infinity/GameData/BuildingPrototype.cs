@@ -38,6 +38,12 @@ namespace Infinity.GameData
 
             _conditions = JObject.FromObject(primary["Condition"]).ToObject<Dictionary<string, object>>();
 
+            if (_conditions == null)
+            {
+                _conditions = new Dictionary<string, object>();
+                return;
+            }
+
             if (_conditions.TryGetValue("TileState", out var tileStateCondition))
                 _tileStateChecker = ConditionParser<HexTile>.ParseCondition(
                     Convert.ToString(tileStateCondition), PlanetTileStateChecker);

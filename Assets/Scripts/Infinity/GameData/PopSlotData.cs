@@ -12,19 +12,7 @@ namespace Infinity.GameData
 
         private readonly Dictionary<string, PopSlotPrototype> _dict = new Dictionary<string, PopSlotPrototype>();
 
-        public PopSlotPrototype this[string key]
-        {
-            get
-            {
-                if (!_dict.TryGetValue(key, out var result))
-                {
-                    // should log or throw exception
-                    return null;
-                }
-
-                return result;
-            }
-        }
+        public PopSlotPrototype this[string key] => !_dict.TryGetValue(key, out var result) ? null : result;
 
         public void Load()
         {

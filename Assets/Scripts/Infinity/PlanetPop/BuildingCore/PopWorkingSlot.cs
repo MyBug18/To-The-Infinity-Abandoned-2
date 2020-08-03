@@ -9,12 +9,12 @@ namespace Infinity.PlanetPop.BuildingCore
         Training,
     }
 
-    public class PopSlot
+    public class PopWorkingSlot
     {
+        public PopSlotState CurrentState { get; private set; } = PopSlotState.Empty;
+
         public readonly string Name;
 
         public Pop pop { get; private set; }
-
-        public PopSlotState CurrentState { get; private set; }
     }
 }

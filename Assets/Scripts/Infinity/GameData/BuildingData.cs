@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 namespace Infinity.GameData
@@ -14,21 +15,8 @@ namespace Infinity.GameData
 
         private readonly Dictionary<string, bool> _availableDict = new Dictionary<string, bool>();
 
-        public IReadOnlyDictionary<string, BuildingPrototype> AvailableBuildingDict
-        {
-            get
-            {
-                var newDict = new Dictionary<string, BuildingPrototype>();
-                foreach (var kv in _prototypeDict)
-                {
-                    if (!_availableDict[kv.Key]) continue;
-
-                    newDict.Add(kv.Key, kv.Value);
-                }
-
-                return newDict;
-            }
-        }
+        public IReadOnlyDictionary<string, BuildingPrototype> AvailableBuildingDict =>
+            _prototypeDict.Where(kv => _availableDict[kv.Key]).ToDictionary(kv => kv.Key, kv => kv.Value);
 
         private Game _game;
 

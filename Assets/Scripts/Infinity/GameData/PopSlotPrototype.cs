@@ -28,7 +28,7 @@ namespace Infinity.GameData
             Wage = Convert.ToSingle(primary["Wage"]);
         }
 
-        public PopSlot GetPopSlot()
+        public PopWorkingSlot GetPopSlot()
         {
             // TODO
             return null;
