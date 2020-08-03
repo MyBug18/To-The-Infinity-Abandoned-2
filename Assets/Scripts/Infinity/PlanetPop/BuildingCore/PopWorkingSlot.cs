@@ -1,4 +1,6 @@
-﻿using Infinity.GameData;
+﻿using System;
+using System.Collections.Generic;
+using Infinity.GameData;
 
 namespace Infinity.PlanetPop.BuildingCore
 {
@@ -6,7 +8,7 @@ namespace Infinity.PlanetPop.BuildingCore
     {
         Empty,
         Occupied,
-        Training,
+        TrainingForHere,
     }
 
     public class PopWorkingSlot
@@ -15,6 +17,62 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public readonly string Name;
 
-        public Pop pop { get; private set; }
+        public readonly float Wage;
+
+        private readonly Dictionary<GameFactorType, float> _baseYield;
+
+        public IReadOnlyDictionary<GameFactorType, float> BaseYield => _baseYield;
+
+        private readonly Dictionary<GameFactorType, float> _baseUpkeep;
+
+        public IReadOnlyDictionary<GameFactorType, float> BaseUpkeep => _baseUpkeep;
+
+        public int YieldMultiplier { get; private set; }
+
+        public int UpkeepMultiplier { get; private set; }
+
+        private readonly Neuron _buildingNeuron;
+
+        public Pop Pop { get; private set; }
+
+        private readonly List<GameFactor> _yield = new List<GameFactor>();
+
+        private readonly List<GameFactor> _upkeep = new List<GameFactor>();
+
+        public PopWorkingSlot(Neuron buildingNeuron, PopSlotPrototype prototype)
+        {
+            _buildingNeuron = buildingNeuron;
+
+            Name = prototype.Name;
+            Wage = prototype.Wage;
+
+            foreach (var y in prototype.Yield)
+            {
+                _baseYield.Add(y.FactorType, y.Amount);
+
+                float YieldGetter()
+                {
+                    return CurrentState == PopSlotState.Occupied
+                        ? _baseYield[y.FactorType] * (1 + YieldMultiplier / 100f) * (1 + Pop.YieldMultiplier / 100f)
+                        : 0;
+                }
+
+                _yield.Add(new GameFactor(YieldGetter, y.FactorType));
+            }
+
+            foreach (var u in prototype.Upkeep)
+            {
+                _baseUpkeep.Add(u.FactorType, u.Amount);
+
+                float UpkeepGetter()
+                {
+                    return CurrentState == PopSlotState.Occupied
+                        ? _baseUpkeep[u.FactorType] * (1 + UpkeepMultiplier / 100f) * (1 + Pop.UpkeepMultiplier / 100f)
+                        : 0;
+                }
+
+                _upkeep.Add(new GameFactor(UpkeepGetter, u.FactorType));
+            }
+        }
     }
 }

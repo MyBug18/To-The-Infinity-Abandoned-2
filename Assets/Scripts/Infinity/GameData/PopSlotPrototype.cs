@@ -27,12 +27,6 @@ namespace Infinity.GameData
             _upkeep = JArray.FromObject(primary["Upkeep"]).ToObject<List<FactorChangePrototype>>();
             Wage = Convert.ToSingle(primary["Wage"]);
         }
-
-        public PopWorkingSlot GetPopSlot()
-        {
-            // TODO
-            return null;
-        }
     }
 
     public struct FactorChangePrototype

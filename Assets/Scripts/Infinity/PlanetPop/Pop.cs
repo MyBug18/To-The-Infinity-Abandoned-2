@@ -14,6 +14,10 @@ namespace Infinity.PlanetPop
 
         public HexTileCoord CurrentCoord { get; private set; }
 
+        public int YieldMultiplier => 0;
+
+        public int UpkeepMultiplier => 0;
+
         public Pop(string name, HexTileCoord initialCoord)
         {
             Name = name;
