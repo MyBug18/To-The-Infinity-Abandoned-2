@@ -15,24 +15,12 @@ namespace Infinity.GameData
 
         private readonly Dictionary<string, bool> _availableDict = new Dictionary<string, bool>();
 
-        public IReadOnlyDictionary<string, BuildingPrototype> AvailableBuildingDict =>
-            _prototypeDict.Where(kv => _availableDict[kv.Key]).ToDictionary(kv => kv.Key, kv => kv.Value);
+        public IReadOnlyList<string> AvailableBuildingList =>
+            _prototypeDict.Keys.Where(s => _availableDict[s]).ToList();
 
         private Game _game;
 
-        public BuildingPrototype this[string key]
-        {
-            get
-            {
-                if (!_prototypeDict.TryGetValue(key, out var result))
-                {
-                    // should log or throw exception
-                    return null;
-                }
-
-                return result;
-            }
-        }
+        public BuildingPrototype this[string key] => !_prototypeDict.TryGetValue(key, out var result) ? null : result;
 
         public BuildingData(GameInitializedEventSender sender)
         {

@@ -34,6 +34,7 @@ namespace Infinity.GameData
             BaseConstructTime = Convert.ToInt32(primary["BaseConstructTime"]);
             BaseConstructCost = Convert.ToInt32(primary["BaseConstructCost"]);
 
+            // TODO: Should check whether the slot really exists
             _basePopSlots = JObject.FromObject(primary["BaseSlots"]).ToObject<Dictionary<string, int>>();
 
             _conditions = JObject.FromObject(primary["Condition"]).ToObject<Dictionary<string, object>>();
