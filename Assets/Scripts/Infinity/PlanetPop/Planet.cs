@@ -21,6 +21,8 @@ namespace Infinity.PlanetPop
 
         public readonly int Size;
 
+        #region ITileMapHolder
+
         private readonly TileMap _tileMap;
 
         public int TileMapRadius => _tileMap.Radius;
@@ -29,11 +31,17 @@ namespace Infinity.PlanetPop
 
         public IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] => _tileMap[coord];
 
+        #endregion ITileMapHolder
+
+        #region ISignalDispatcher
+
         private readonly Neuron _neuron;
 
         Type ISignalDispatcherHolder.HolderType => typeof(Planet);
 
         public SignalDispatcher SignalDispatcher { get; }
+
+        #endregion ISignalDispatcher
 
         #region Pop
 
@@ -55,6 +63,8 @@ namespace Infinity.PlanetPop
 
         public IReadOnlyList<Building> Buildings => GetTileObjectList<Building>();
 
+        public readonly PlanetBuildingFactory BuildingFactory;
+
         private readonly Dictionary<string, BasicModifier> _modifiers = new Dictionary<string, BasicModifier>();
 
         public IReadOnlyDictionary<string, BasicModifier> Modifiers => _modifiers;
@@ -64,7 +74,10 @@ namespace Infinity.PlanetPop
             _neuron = parentNeuron.GetChildNeuron(this);
             SignalDispatcher = new SignalDispatcher(_neuron);
 
+            BuildingFactory = new PlanetBuildingFactory(_neuron, this);
+
             _neuron.Subscribe<GameEventSignal<Planet>>(OnGameEventSignal);
+            _neuron.Subscribe<BuildingQueueEndedSignal>(OnBuildingQueueEndedSignal);
             _neuron.Subscribe<NextTurnSignal>(OnNextTurnSignal);
 
             HexCoord = coord;
@@ -104,6 +117,11 @@ namespace Infinity.PlanetPop
         private void OnGameEventSignal(ISignal s)
         {
             if (!(s is GameEventSignal<Planet> ges)) return;
+        }
+
+        private void OnBuildingQueueEndedSignal(ISignal s)
+        {
+            if (!(s is BuildingQueueEndedSignal bqes)) return;
         }
 
         PlanetStatus IPlanet.GetPlanetStatus() => _pops.Count > 0 ? PlanetStatus.Colonized : PlanetStatus.Inhabitable;

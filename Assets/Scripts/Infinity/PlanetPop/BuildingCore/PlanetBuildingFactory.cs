@@ -6,7 +6,6 @@ namespace Infinity.PlanetPop.BuildingCore
 {
     public class PlanetBuildingFactory
     {
-
         private readonly Neuron _planetNeuron;
 
         private readonly Planet _planet;
@@ -24,6 +23,8 @@ namespace Infinity.PlanetPop.BuildingCore
             _planet = planet;
 
             _buildingData = GameDataStorage.Instance.GetGameData<BuildingData>();
+
+            _planetNeuron.Subscribe<NextTurnSignal>(ProceedConstruction);
         }
 
         public void StartConstruction(string buildingName, HexTileCoord coord)
@@ -33,8 +34,10 @@ namespace Infinity.PlanetPop.BuildingCore
             _constructionQueue.Add((newElement, prototype.BaseConstructTime));
         }
 
-        private void ProceedConstruction()
+        private void ProceedConstruction(ISignal s)
         {
+            if (!(s is NextTurnSignal)) return;
+
             _constructionQueue[0] = (_constructionQueue[0].Element, _constructionQueue[0].LeftTurn - 1);
 
             if (_constructionQueue[0].LeftTurn == 0)
@@ -45,6 +48,7 @@ namespace Infinity.PlanetPop.BuildingCore
         {
             var completedElement = _constructionQueue[0];
             _constructionQueue.RemoveAt(0);
+            _planetNeuron.SendSignal(new BuildingQueueEndedSignal(_planet, completedElement.Element), SignalDirection.Local);
         }
     }
 
@@ -61,6 +65,19 @@ namespace Infinity.PlanetPop.BuildingCore
             Prototype = prototype;
             Coord = coord;
             IsUpgrading = isUpgrading;
+        }
+    }
+
+    public class BuildingQueueEndedSignal : ISignal
+    {
+        public ISignalDispatcherHolder SignalSender { get; }
+
+        public readonly BuildingQueueElement Building;
+
+        public BuildingQueueEndedSignal(ISignalDispatcherHolder sender, BuildingQueueElement building)
+        {
+            SignalSender = sender;
+            Building = building;
         }
     }
 }
