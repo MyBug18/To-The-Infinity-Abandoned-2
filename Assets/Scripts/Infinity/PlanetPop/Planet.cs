@@ -66,7 +66,6 @@ namespace Infinity.PlanetPop
 
             _neuron.Subscribe<GameEventSignal<Planet>>(OnGameEventSignal);
             _neuron.Subscribe<NextTurnSignal>(OnNextTurnSignal);
-            _neuron.Subscribe<GameFactorChangeSignal>(OnFactorChangeSignal);
 
             HexCoord = coord;
             Name = name;
@@ -100,11 +99,6 @@ namespace Infinity.PlanetPop
             var newPop = new Pop("TestPop", new HexTileCoord(_tileMap.Radius, _tileMap.Radius));
             _neuron.SendSignal(new PopBirthSignal(this, newPop), SignalDirection.Upward);
             _unemployedPops.Add(newPop);
-        }
-
-        private void OnFactorChangeSignal(ISignal s)
-        {
-            if (!(s is GameFactorChangeSignal fcs)) return;
         }
 
         private void OnGameEventSignal(ISignal s)

@@ -21,49 +21,4 @@ namespace Infinity
             return GameFactorType.Energy <= factorType && factorType <= GameFactorType.Alloy;
         }
     }
-
-    public class GameFactorChangeSignal : ISignal
-    {
-        public ISignalDispatcherHolder SignalSender { get; }
-
-        public readonly GameFactor Change;
-
-        public readonly AddOrRemove AddOrRemove;
-
-        public GameFactorChangeSignal(ISignalDispatcherHolder holder, GameFactor change, AddOrRemove addOrRemove)
-        {
-            SignalSender = holder;
-            Change = change;
-            AddOrRemove = addOrRemove;
-        }
-    }
-
-    public enum PlanetaryResources
-    {
-        Energy,
-        Mineral,
-        Food,
-        Alloy,
-    }
-
-    /// <summary>
-    /// When divided by 2, the rest is 0 when the value is Income, 1 when the value is Upkeep.
-    /// </summary>
-    public enum ResourceChangeType
-    {
-        JobIncome,
-        JobUpkeep,
-        TradeSend,
-        TradeReceive,
-        BuildingIncome,
-        BuildingUpkeep,
-        ModifierIncome,
-        ModifierUpkeep,
-    }
-
-    public enum AddOrRemove
-    {
-        Add,
-        Remove,
-    }
 }
