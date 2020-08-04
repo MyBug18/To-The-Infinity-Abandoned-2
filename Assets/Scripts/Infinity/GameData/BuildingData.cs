@@ -9,7 +9,7 @@ namespace Infinity.GameData
     {
         public string DataName => nameof(BuildingData);
 
-        private readonly string dataPath = Path.Combine(Application.streamingAssetsPath, "GameData", "BuildingData");
+        private readonly string _dataPath = Path.Combine(Application.streamingAssetsPath, "GameData", "BuildingData");
 
         private readonly Dictionary<string, BuildingPrototype> _prototypeDict = new Dictionary<string, BuildingPrototype>();
 
@@ -39,7 +39,7 @@ namespace Infinity.GameData
 
         public void Load()
         {
-            foreach (var path in Directory.GetFiles(dataPath))
+            foreach (var path in Directory.GetFiles(_dataPath))
             {
 #if UNITY_EDITOR
                 if (!path.EndsWith(".json")) continue;

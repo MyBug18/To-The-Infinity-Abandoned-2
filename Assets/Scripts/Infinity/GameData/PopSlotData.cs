@@ -8,7 +8,7 @@ namespace Infinity.GameData
     {
         public string DataName => nameof(PopSlotData);
 
-        private readonly string dataPath = Path.Combine(Application.streamingAssetsPath, "GameData", "PopSlotData");
+        private readonly string _dataPath = Path.Combine(Application.streamingAssetsPath, "GameData", "PopSlotData");
 
         private readonly Dictionary<string, PopSlotPrototype> _dict = new Dictionary<string, PopSlotPrototype>();
 
@@ -16,7 +16,7 @@ namespace Infinity.GameData
 
         public void Load()
         {
-            foreach (var path in Directory.GetFiles(dataPath))
+            foreach (var path in Directory.GetFiles(_dataPath))
             {
 #if UNITY_EDITOR
                 if (!path.EndsWith(".json")) continue;
