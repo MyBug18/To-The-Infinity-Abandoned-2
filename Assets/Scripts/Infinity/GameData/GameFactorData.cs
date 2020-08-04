@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace Infinity.GameData
 {
-    public class ResourceData : IGameData
+    public class GameFactorData : IGameData
     {
         private readonly string _dataPath =
             Path.Combine(Application.streamingAssetsPath, "GameData", "BuildingData", "ResourceData.json");
@@ -45,7 +44,7 @@ namespace Infinity.GameData
             throw new InvalidOperationException();
         }
 
-        public ResourceData(GameInitializedEventSender sender)
+        public GameFactorData(GameInitializedEventSender sender)
         {
             sender.Subscribe(OnGameInitialized);
         }
