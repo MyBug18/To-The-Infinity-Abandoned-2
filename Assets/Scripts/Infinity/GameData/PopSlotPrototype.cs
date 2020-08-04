@@ -31,7 +31,7 @@ namespace Infinity.GameData
 
     public struct FactorChangePrototype
     {
-        public GameFactorType FactorType;
+        public string FactorType;
         public float Amount;
     }
 }

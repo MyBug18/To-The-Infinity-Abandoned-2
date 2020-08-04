@@ -19,13 +19,13 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public readonly float Wage;
 
-        private readonly Dictionary<GameFactorType, float> _baseYield;
+        private readonly Dictionary<string, float> _baseYield;
 
-        public IReadOnlyDictionary<GameFactorType, float> BaseYield => _baseYield;
+        public IReadOnlyDictionary<string, float> BaseYield => _baseYield;
 
-        private readonly Dictionary<GameFactorType, float> _baseUpkeep;
+        private readonly Dictionary<string, float> _baseUpkeep;
 
-        public IReadOnlyDictionary<GameFactorType, float> BaseUpkeep => _baseUpkeep;
+        public IReadOnlyDictionary<string, float> BaseUpkeep => _baseUpkeep;
 
         public int YieldMultiplier { get; private set; }
 

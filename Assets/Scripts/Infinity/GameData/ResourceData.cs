@@ -34,6 +34,17 @@ namespace Infinity.GameData
             }
         }
 
+        public GameFactor GetGameFactor(string name)
+        {
+            if (_planetaryResourceDict.ContainsKey(name))
+                return new GameFactor(true, true, name);
+
+            if (_globalResourceDict.ContainsKey(name))
+                return new GameFactor(false, true, name);
+
+            throw new InvalidOperationException();
+        }
+
         public ResourceData(GameInitializedEventSender sender)
         {
             sender.Subscribe(OnGameInitialized);

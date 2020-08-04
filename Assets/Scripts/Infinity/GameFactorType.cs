@@ -1,24 +1,18 @@
 namespace Infinity
 {
-    [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-    public enum GameFactorType
+    public struct GameFactor
     {
-        Energy,
-        Mineral,
-        Food,
-        Alloy,
-        Money,
-        PopGrowth,
-        SocietyResearch,
-        EngineerResearch,
-        Unity,
-    }
+        public readonly bool IsPlanetary;
 
-    public static class GameFactorExtention
-    {
-        public static bool IsPlanetaryResource(this GameFactorType factorType)
+        public readonly bool IsResource;
+
+        public readonly string FactorName;
+
+        public GameFactor(bool isPlanetary, bool isResource, string factorName)
         {
-            return GameFactorType.Energy <= factorType && factorType <= GameFactorType.Alloy;
+            IsPlanetary = isPlanetary;
+            IsResource = isResource;
+            FactorName = factorName;
         }
     }
 }
