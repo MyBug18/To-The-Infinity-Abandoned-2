@@ -8,14 +8,14 @@ namespace Infinity.PlanetPop
 
         public HexTileCoord HexCoord { get; }
 
-        public PlanetType PlanetType { get; }
+        public string PlanetType { get; }
 
         public UnInhabitablePlanet(string name, HexTileCoord coord)
         {
             Name = name;
             HexCoord = coord;
 
-            PlanetType = PlanetType.Barren;
+            PlanetType = "Barren";
         }
 
         PlanetStatus IPlanet.GetPlanetStatus() => PlanetStatus.UnInhabitable;

@@ -2,16 +2,6 @@ using Infinity.HexTileMap;
 
 namespace Infinity.PlanetPop
 {
-    public enum PlanetType
-    {
-        Gas,
-        Barren,
-        Frozen,
-        Toxic,
-        Molten,
-        InhabitableBarren,
-        Inhabitable,
-    }
 
     public enum PlanetStatus
     {
@@ -22,7 +12,7 @@ namespace Infinity.PlanetPop
 
     public interface IPlanet : IOnHexTileObject
     {
-        PlanetType PlanetType { get; }
+        string PlanetType { get; }
 
         PlanetStatus GetPlanetStatus();
     }

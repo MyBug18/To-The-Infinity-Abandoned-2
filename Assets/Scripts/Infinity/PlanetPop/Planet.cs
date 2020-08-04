@@ -17,7 +17,7 @@ namespace Infinity.PlanetPop
 
         public HexTileCoord HexCoord { get; private set; }
 
-        public PlanetType PlanetType { get; }
+        public string PlanetType { get; }
 
         public readonly int Size;
 
@@ -83,7 +83,7 @@ namespace Infinity.PlanetPop
             HexCoord = coord;
             Name = name;
             Size = size;
-            PlanetType = PlanetType.Inhabitable;
+            PlanetType = "Inhabitable";
 
             _tileMap = new TileMap(6, _neuron);
         }
