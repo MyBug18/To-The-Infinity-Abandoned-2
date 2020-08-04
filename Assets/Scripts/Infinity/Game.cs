@@ -38,6 +38,10 @@ namespace Infinity
 
         public IReadOnlyList<string> AvailableBuildings => _availableBuildings;
 
+        private readonly List<string> _availableResources = new List<string>();
+
+        public IReadOnlyList<string> AvailableResources => _availableResources;
+
         public Game(string dataPath)
         {
             _neuron = Neuron.GetNeuronForGame(this);

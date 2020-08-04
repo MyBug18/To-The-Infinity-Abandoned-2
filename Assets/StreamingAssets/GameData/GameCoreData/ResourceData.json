@@ -1,0 +1,13 @@
+﻿{
+  "PlanetaryResources": [
+    "Energy",
+    "Mineral",
+    "Food",
+    "Alloy"
+  ],
+  "GlobalResources": [
+    "BioMetal",
+    "Derazine",
+    "StemCell"
+  ]
+}
