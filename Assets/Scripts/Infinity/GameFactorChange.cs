@@ -2,7 +2,7 @@
 
 namespace Infinity
 {
-    public class GameFactor
+    public class GameFactorChange
     {
         public float Amount => _amountGetter.Invoke();
 
@@ -10,7 +10,7 @@ namespace Infinity
 
         private readonly Func<float> _amountGetter;
 
-        public GameFactor(Func<float> amountGetter, GameFactorType factorType)
+        public GameFactorChange(Func<float> amountGetter, GameFactorType factorType)
         {
             _amountGetter = amountGetter;
             FactorType = factorType;

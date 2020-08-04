@@ -35,9 +35,9 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public Pop Pop { get; private set; }
 
-        private readonly List<GameFactor> _yield = new List<GameFactor>();
+        private readonly List<GameFactorChange> _yield = new List<GameFactorChange>();
 
-        private readonly List<GameFactor> _upkeep = new List<GameFactor>();
+        private readonly List<GameFactorChange> _upkeep = new List<GameFactorChange>();
 
         public PopWorkingSlot(Neuron buildingNeuron, PopSlotPrototype prototype)
         {
@@ -57,7 +57,7 @@ namespace Infinity.PlanetPop.BuildingCore
                         : 0;
                 }
 
-                _yield.Add(new GameFactor(YieldGetter, y.FactorType));
+                _yield.Add(new GameFactorChange(YieldGetter, y.FactorType));
             }
 
             foreach (var u in prototype.Upkeep)
@@ -71,7 +71,7 @@ namespace Infinity.PlanetPop.BuildingCore
                         : 0;
                 }
 
-                _upkeep.Add(new GameFactor(UpkeepGetter, u.FactorType));
+                _upkeep.Add(new GameFactorChange(UpkeepGetter, u.FactorType));
             }
         }
     }

@@ -48,9 +48,9 @@ namespace Infinity.PlanetPop.BuildingCore
 
         private void EndConstruction()
         {
-            var (Element, _) = _constructionQueue[0];
+            var (element, _) = _constructionQueue[0];
             _constructionQueue.RemoveAt(0);
-            _planetNeuron.SendSignal(new BuildingQueueEndedSignal(_planet, Element), SignalDirection.Local);
+            _planetNeuron.SendSignal(new BuildingQueueEndedSignal(_planet, element), SignalDirection.Local);
         }
 
         public void MoveToSmallerPosition(int index)
