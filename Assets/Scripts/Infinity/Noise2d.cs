@@ -42,7 +42,7 @@ namespace Infinity
 
             Reseed();
 
-            var frequency = 0.5f;
+            var frequency = 5f;
             var amplitude = 1f;
 
             for (var octave = 0; octave < octaves; octave++)
@@ -55,7 +55,7 @@ namespace Infinity
                     {
                         var i = offset % width;
                         var j = offset / width;
-                        var noise = Noise(i*f*1f/width, j*f*1f/height);
+                        var noise = Noise(i * f * 1f / width, j * f * 1f / height);
                         noise = result[i, j] += noise * a;
 
                         min = Math.Min(min, noise);
@@ -96,15 +96,14 @@ namespace Infinity
 
                 do
                 {
-                    gradient = new Vector2((float) (Random.NextDouble() * 2 - 1),
-                        (float) (Random.NextDouble() * 2 - 1));
+                    gradient = new Vector2((float)(Random.NextDouble() * 2 - 1),
+                        (float)(Random.NextDouble() * 2 - 1));
                 } while (gradient.LengthSquared() >= 1);
 
                 gradient = Vector2.Normalize(gradient);
 
                 grad[i] = gradient;
             }
-
         }
 
         private static float Drop(float t)
@@ -120,19 +119,19 @@ namespace Infinity
 
         private static float Noise(float x, float y)
         {
-            var cell = new Vector2((float) Math.Floor(x), (float) Math.Floor(y));
+            var cell = new Vector2((float)Math.Floor(x), (float)Math.Floor(y));
 
             var total = 0f;
 
-            var corners = new[] {new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1)};
+            var corners = new[] { new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1) };
 
             foreach (var n in corners)
             {
                 var ij = cell + n;
                 var uv = new Vector2(x - ij.X, y - ij.Y);
 
-                var index = _permutation[(int) ij.X % _permutation.Length];
-                index = _permutation[(index + (int) ij.Y) % _permutation.Length];
+                var index = _permutation[(int)ij.X % _permutation.Length];
+                index = _permutation[(index + (int)ij.Y) % _permutation.Length];
 
                 var grad = Gradients[index % Gradients.Length];
 

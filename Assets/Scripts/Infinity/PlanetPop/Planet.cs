@@ -88,6 +88,14 @@ namespace Infinity.PlanetPop
             _tileMap = new TileMap(6, _neuron);
         }
 
+        /// <summary>
+        /// Just for test
+        /// </summary>
+        public Planet()
+        {
+            _tileMap = new TileMap(6, null);
+        }
+
         private void OnNextTurnSignal(ISignal s)
         {
             if (!(s is NextTurnSignal)) return;

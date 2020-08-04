@@ -1,6 +1,7 @@
 ﻿using Infinity;
 using Infinity.GameData;
 using Infinity.HexTileMap;
+using Infinity.PlanetPop;
 using UnityEngine;
 
 namespace Tester
@@ -8,13 +9,12 @@ namespace Tester
     public class PlanetTester : MonoBehaviour
     {
         [SerializeField]
-        private GameObject cube;
+        private TileMapWrapper t;
 
         private void Start()
         {
-            TestJson();
-
-            cube.SetActive(false);
+            var map = Instantiate(t, transform);
+            map.Init(new Planet());
         }
 
         private void TestJson()

@@ -12,7 +12,7 @@ namespace Infinity.HexTileMap
         private readonly Dictionary<HexTileCoord, Dictionary<Type, IOnHexTileObject>> _onTileMapObjects =
             new Dictionary<HexTileCoord, Dictionary<Type, IOnHexTileObject>>();
 
-        private Neuron _neuron;
+        private readonly Neuron _neuron;
 
         public readonly int Radius;
 
