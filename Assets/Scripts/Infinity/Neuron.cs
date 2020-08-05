@@ -53,13 +53,13 @@ namespace Infinity
         private readonly Dictionary<Type, List<Action<ISignal>>> _subscribeInfoDict = new Dictionary<Type, List<Action<ISignal>>>();
 
         private readonly Neuron _parentNeuron;
-        private readonly List<Neuron> _childNeurons = new List<Neuron>();
+        private readonly HashSet<Neuron> _childNeurons = new HashSet<Neuron>();
 
-        public readonly ISignalDispatcherHolder Holder;
+        private readonly ISignalDispatcherHolder _holder;
 
         private Neuron(ISignalDispatcherHolder holder)
         {
-            Holder = holder;
+            _holder = holder;
             _parentNeuron = null;
         }
 
@@ -70,7 +70,7 @@ namespace Infinity
 
         private Neuron(ISignalDispatcherHolder holder, Neuron parentNeuron)
         {
-            Holder = holder;
+            _holder = holder;
             _parentNeuron = parentNeuron;
         }
 
@@ -135,7 +135,7 @@ namespace Infinity
 
         public void RemoveChild(ISignalDispatcherHolder holder)
         {
-            _childNeurons.RemoveAll(x => x.Holder == holder);
+            _childNeurons.RemoveWhere(x => x._holder == holder);
         }
     }
 }
