@@ -65,7 +65,7 @@ namespace Infinity
         /// </summary>
         public void StartNewTurn()
         {
-            _neuron.SendSignal(new NextTurnSignal(this), SignalDirection.Downward);
+            _neuron.SendSignal(new GameCommandSignal(this, GameCommandType.StartNewTurn), SignalDirection.Downward);
             MonthsPassed += GameSpeed;
         }
 
@@ -75,13 +75,25 @@ namespace Infinity
         }
     }
 
-    public class NextTurnSignal : ISignal
+    /// <summary>
+    /// This signal will be always sent from Game through all neurons
+    /// </summary>
+    public class GameCommandSignal : ISignal
     {
         public ISignalDispatcherHolder SignalSender { get; }
 
-        public NextTurnSignal(ISignalDispatcherHolder holder)
+        public readonly GameCommandType CommandType;
+
+        public GameCommandSignal(ISignalDispatcherHolder holder, GameCommandType type)
         {
             SignalSender = holder;
+            CommandType = type;
         }
+    }
+
+    public enum GameCommandType
+    {
+        StartNewTurn,
+        CheckEventCondition,
     }
 }

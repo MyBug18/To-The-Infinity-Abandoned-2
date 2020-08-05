@@ -25,7 +25,7 @@ namespace Infinity.PlanetPop.BuildingCore
 
             _buildingData = GameDataStorage.Instance.GetGameData<BuildingData>();
 
-            _planetNeuron.Subscribe<NextTurnSignal>(ProceedConstruction);
+            _planetNeuron.Subscribe<GameCommandSignal>(ProceedConstruction);
         }
 
         public void StartConstruction(string buildingName, HexTileCoord coord)
@@ -38,7 +38,7 @@ namespace Infinity.PlanetPop.BuildingCore
 
         private void ProceedConstruction(ISignal s)
         {
-            if (!(s is NextTurnSignal)) return;
+            if (!(s is GameCommandSignal gcs) || gcs.CommandType != GameCommandType.StartNewTurn) return;
 
             _constructionQueue[0] = (_constructionQueue[0].Element, _constructionQueue[0].LeftTurn - 1);
 
