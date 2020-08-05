@@ -17,6 +17,8 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public readonly string Name;
 
+        public readonly string Group;
+
         public readonly float Wage;
 
         private readonly Dictionary<string, float> _baseYield;
@@ -44,6 +46,7 @@ namespace Infinity.PlanetPop.BuildingCore
             _buildingNeuron = buildingNeuron;
 
             Name = prototype.Name;
+            Group = prototype.Group;
             Wage = prototype.Wage;
 
             foreach (var y in prototype.Yield)

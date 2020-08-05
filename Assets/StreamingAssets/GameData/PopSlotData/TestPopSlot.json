@@ -1,5 +1,6 @@
 ﻿{
-  "Name" : "TestPopSlot",
+  "Name": "TestPopSlot",
+  "Group": "TestGroup",
   "Yield": [
     {
       "FactorType": "Energy",
