@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Infinity.GameData;
 
 namespace Infinity.PlanetPop
 {
@@ -61,6 +62,11 @@ namespace Infinity.PlanetPop
 
         #endregion Pop
 
+        private List<(Pop pop, PopWorkingSlot slot, int RemainTurn)> _trainingCenter =
+            new List<(Pop pop, PopWorkingSlot slot, int RemainTurn)>();
+
+        public IReadOnlyList<(Pop pop, PopWorkingSlot slot, int RemainTurn)> TrainingCenter => _trainingCenter;
+
         public IReadOnlyList<Building> Buildings => GetTileObjectList<Building>();
 
         public readonly PlanetBuildingFactory BuildingFactory;
@@ -77,6 +83,7 @@ namespace Infinity.PlanetPop
             BuildingFactory = new PlanetBuildingFactory(_neuron, this);
 
             _neuron.Subscribe<GameEventSignal<Planet>>(OnGameEventSignal);
+            _neuron.Subscribe<PopStateChangeSignal>(OnPopStateChangeSignal);
             _neuron.Subscribe<BuildingQueueEndedSignal>(OnBuildingQueueEndedSignal);
             _neuron.Subscribe<GameCommandSignal>(OnStartNewTurnSignal);
 
@@ -101,6 +108,7 @@ namespace Infinity.PlanetPop
             if (!(s is GameCommandSignal gcs) || gcs.CommandType != GameCommandType.StartNewTurn) return;
 
             ApplyPopGrowth();
+            ProceedTraining();
             ApplyTurnResource();
         }
 
@@ -117,9 +125,30 @@ namespace Infinity.PlanetPop
 
             if (CurrentPopGrowth < 100) return;
 
-            var newPop = new Pop("TestPop", new HexTileCoord(_tileMap.Radius, _tileMap.Radius));
-            _neuron.SendSignal(new PopBirthSignal(this, newPop), SignalDirection.Upward);
+            var newPop = new Pop(_neuron, "TestPop", new HexTileCoord(_tileMap.Radius, _tileMap.Radius));
+            _neuron.SendSignal(new PopStateChangeSignal(this, newPop, PopStateChangeType.Birth), SignalDirection.Upward);
             _unemployedPops.Add(newPop);
+        }
+
+        private void ProceedTraining()
+        {
+            var removeIdx = new List<int>();
+
+            for (var i = 0; i < _trainingCenter.Count; i++)
+            {
+                var (pop, slot, remainTurn) = _trainingCenter[i];
+                _trainingCenter[i] = (pop, slot, remainTurn - 1);
+
+                if (_trainingCenter[i].RemainTurn != 0) continue;
+
+                removeIdx.Add(i);
+
+                _neuron.SendSignal(new PopStateChangeSignal(this, pop, PopStateChangeType.ToJobSlot, slot),
+                    SignalDirection.Downward);
+            }
+
+            for (var i = removeIdx.Count - 1; i >= 0; i--)
+                _trainingCenter.RemoveAt(i);
         }
 
         private void OnGameEventSignal(ISignal s)
@@ -138,6 +167,20 @@ namespace Infinity.PlanetPop
             _tileMap.AddTileObject(coord, building);
 
             _neuron.SendSignal(new BuildingConstructedSignal(this, building.Name, coord), SignalDirection.Downward);
+        }
+
+        private void OnPopStateChangeSignal(ISignal s)
+        {
+            if (!(s is PopStateChangeSignal pscs)) return;
+
+            switch (pscs.State)
+            {
+                case PopStateChangeType.ToTrainingCenter:
+                    var trainingTime = GameDataStorage.Instance.GetGameData<PopSlotData>()
+                        .GetTrainingTime(pscs.Pop.Aptitude, pscs.DestinationSlot.Name);
+                    _trainingCenter.Add((pscs.Pop, pscs.DestinationSlot, trainingTime));
+                    return;
+            }
         }
 
         PlanetStatus IPlanet.GetPlanetStatus() => _pops.Count > 0 ? PlanetStatus.Colonized : PlanetStatus.Inhabitable;

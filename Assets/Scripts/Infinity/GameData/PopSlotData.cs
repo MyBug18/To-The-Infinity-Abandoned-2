@@ -54,5 +54,13 @@ namespace Infinity.GameData
 
             return prototype.Group;
         }
+
+        public int GetTrainingTime(string fromJob, string toJob)
+        {
+            if (fromJob == toJob)
+                return 2;
+
+            return GetGroupFromJob(fromJob) == GetGroupFromJob(toJob) ? 3 : 6;
+        }
     }
 }

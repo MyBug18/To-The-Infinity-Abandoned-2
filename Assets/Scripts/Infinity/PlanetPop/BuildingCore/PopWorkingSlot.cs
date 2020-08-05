@@ -45,6 +45,8 @@ namespace Infinity.PlanetPop.BuildingCore
         {
             _buildingNeuron = buildingNeuron;
 
+            _buildingNeuron.Subscribe<PopStateChangeSignal>(OnPopStateChangeSignal);
+
             Name = prototype.Name;
             Group = prototype.Group;
             Wage = prototype.Wage;
@@ -75,6 +77,19 @@ namespace Infinity.PlanetPop.BuildingCore
                 }
 
                 _upkeep.Add(new GameFactorChange(UpkeepGetter, u.FactorType));
+            }
+        }
+
+        private void OnPopStateChangeSignal(ISignal s)
+        {
+            if (!(s is PopStateChangeSignal pscs)) return;
+
+            switch (pscs.State)
+            {
+                case PopStateChangeType.ToJobSlot:
+                    if (this != pscs.DestinationSlot) return;
+                    Pop = pscs.Pop;
+                    break;
             }
         }
     }

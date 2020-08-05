@@ -2,16 +2,27 @@
 using Infinity.HexTileMap;
 using Infinity.Modifiers;
 using System.Collections.Generic;
+using Infinity.PlanetPop.BuildingCore;
 
 namespace Infinity.PlanetPop
 {
-    public class Pop : IModifierHolder
+    public class Pop : IModifierHolder, ISignalDispatcherHolder
     {
+        public Type HolderType => typeof(Pop);
+
+        private readonly Neuron _neuron;
+
+        public SignalDispatcher SignalDispatcher { get; }
+
         private readonly Dictionary<string, BasicModifier> _modifiers = new Dictionary<string, BasicModifier>();
 
         public IReadOnlyDictionary<string, BasicModifier> Modifiers => _modifiers;
 
         public string Name { get; private set; }
+
+        public readonly string Aptitude;
+
+        public string CurrentJob { get; private set; } = null;
 
         public HexTileCoord CurrentCoord { get; private set; }
 
@@ -25,23 +36,61 @@ namespace Infinity.PlanetPop
 
         public int UpkeepMultiplier => 0;
 
-        public Pop(string name, HexTileCoord initialCoord)
+        public Pop(Neuron parentNeuron, string name, HexTileCoord initialCoord)
         {
+            _neuron = parentNeuron.GetChildNeuron(this);
+            SignalDispatcher = new SignalDispatcher(_neuron);
+
             Name = name;
             CurrentCoord = initialCoord;
+
+            _neuron.Subscribe<PopStateChangeSignal>(OnPopStateChangeSignal);
+        }
+
+        public void ToTrainingCenter(PopWorkingSlot destinationSlot)
+        {
+            _neuron.SendSignal(new PopStateChangeSignal(this, this, PopStateChangeType.ToTrainingCenter),
+                SignalDirection.Upward);
+        }
+
+        private void OnPopStateChangeSignal(ISignal s)
+        {
+            if (!(s is PopStateChangeSignal pscs)) return;
+
+            switch (pscs.State)
+            {
+                case PopStateChangeType.ToJobSlot:
+                    if (pscs.Pop != this) return;
+                    CurrentJob = pscs.DestinationSlot.Name;
+                    break;
+            }
         }
     }
 
-    public class PopBirthSignal : ISignal
+    public class PopStateChangeSignal : ISignal
     {
         public ISignalDispatcherHolder SignalSender { get; }
 
         public readonly Pop Pop;
 
-        public PopBirthSignal(ISignalDispatcherHolder sender, Pop pop)
+        public readonly PopStateChangeType State;
+
+        public readonly PopWorkingSlot DestinationSlot;
+
+        public PopStateChangeSignal(ISignalDispatcherHolder sender, Pop pop, PopStateChangeType state, PopWorkingSlot slot = null)
         {
             SignalSender = sender;
             Pop = pop;
+            State = state;
+            DestinationSlot = slot;
         }
+    }
+
+    public enum PopStateChangeType
+    {
+        Birth,
+        Killed,
+        ToTrainingCenter,
+        ToJobSlot,
     }
 }
