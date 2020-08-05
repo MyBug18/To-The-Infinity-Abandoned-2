@@ -1,4 +1,5 @@
-﻿using Infinity.HexTileMap;
+﻿using System;
+using Infinity.HexTileMap;
 using Infinity.Modifiers;
 using System.Collections.Generic;
 
@@ -13,6 +14,12 @@ namespace Infinity.PlanetPop
         public string Name { get; private set; }
 
         public HexTileCoord CurrentCoord { get; private set; }
+
+        public const int BaseHappiness = 50;
+
+        public int HappinessAdder { get; private set; }
+
+        public int Happiness => Math.Max(0, Math.Min(100, BaseHappiness + HappinessAdder));
 
         public int YieldMultiplier => 0;
 

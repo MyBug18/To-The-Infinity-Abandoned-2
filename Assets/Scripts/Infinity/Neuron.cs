@@ -111,10 +111,9 @@ namespace Infinity
         {
             var type = typeof(T);
 
-            if (!_subscribeInfoDict.TryGetValue(type, out var infos)) return;
-
-            foreach (var callBack in infos)
-                callBack.Invoke(signal);
+            if (_subscribeInfoDict.TryGetValue(type, out var infos))
+                foreach (var callBack in infos)
+                    callBack.Invoke(signal);
 
             switch (direction)
             {
