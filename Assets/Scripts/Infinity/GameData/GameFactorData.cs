@@ -26,7 +26,11 @@ namespace Infinity.GameData
 
         private readonly Dictionary<string, bool> _planetaryResourceDict = new Dictionary<string, bool>();
 
+        public IReadOnlyDictionary<string, bool> PlanetaryResourceDict => _planetaryResourceDict;
+
         private readonly Dictionary<string, bool> _globalResourceDict = new Dictionary<string, bool>();
+
+        public IReadOnlyDictionary<string, bool> GlobalResourceDict => _globalResourceDict;
 
         public IReadOnlyList<string> AllResourceList
         {

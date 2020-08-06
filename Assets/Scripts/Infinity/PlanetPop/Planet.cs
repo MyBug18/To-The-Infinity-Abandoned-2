@@ -62,7 +62,57 @@ namespace Infinity.PlanetPop
 
         #endregion Pop
 
-        private List<(Pop pop, PopWorkingSlot slot, int RemainTurn)> _trainingCenter =
+        #region Resources
+
+        private readonly Dictionary<string, float> _currentResourceKeep;
+
+        public IReadOnlyDictionary<string, float> CurrentResourceKeep => _currentResourceKeep;
+
+        public IReadOnlyDictionary<string, float> YieldFromJob
+        {
+            get
+            {
+                var result = new Dictionary<string, float>();
+
+                foreach (var b in Buildings)
+                {
+                    foreach (var kv in b.YieldFromJob)
+                    {
+                        if (!result.ContainsKey(kv.Key))
+                            result.Add(kv.Key, 0);
+
+                        result[kv.Key] += kv.Value;
+                    }
+                }
+
+                return result;
+            }
+        }
+
+        public IReadOnlyDictionary<string, float> UpkeepFromJob
+        {
+            get
+            {
+                var result = new Dictionary<string, float>();
+
+                foreach (var b in Buildings)
+                {
+                    foreach (var kv in b.UpkeepFromJob)
+                    {
+                        if (!result.ContainsKey(kv.Key))
+                            result.Add(kv.Key, 0);
+
+                        result[kv.Key] += kv.Value;
+                    }
+                }
+
+                return result;
+            }
+        }
+
+        #endregion Resources
+
+        private readonly List<(Pop pop, PopWorkingSlot slot, int RemainTurn)> _trainingCenter =
             new List<(Pop pop, PopWorkingSlot slot, int RemainTurn)>();
 
         public IReadOnlyList<(Pop pop, PopWorkingSlot slot, int RemainTurn)> TrainingCenter => _trainingCenter;
@@ -93,6 +143,8 @@ namespace Infinity.PlanetPop
             Size = size;
             PlanetType = "Inhabitable";
 
+            InitializeResourceKeep();
+
             _tileMap = new TileMap(6, _neuron);
         }
 
@@ -102,6 +154,15 @@ namespace Infinity.PlanetPop
         public Planet()
         {
             _tileMap = new TileMap(6, null);
+        }
+
+        private void InitializeResourceKeep()
+        {
+            foreach (var kv in GameDataStorage.Instance.GetGameData<GameFactorData>().PlanetaryResourceDict)
+            {
+                if (kv.Value)
+                    _currentResourceKeep.Add(kv.Key, 0);
+            }
         }
 
         private void OnGameCommandSignal(ISignal s)

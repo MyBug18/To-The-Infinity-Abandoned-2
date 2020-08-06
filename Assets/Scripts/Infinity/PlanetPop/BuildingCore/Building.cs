@@ -23,6 +23,48 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public IReadOnlyList<PopWorkingSlot> PopSlots => _popSlots;
 
+        public IReadOnlyDictionary<string, float> YieldFromJob
+        {
+            get
+            {
+                var result = new Dictionary<string, float>();
+                foreach (var s in _popSlots)
+                {
+                    foreach (var y in s.Yield)
+                    {
+                        if (!result.ContainsKey(y.FactorType))
+                            result.Add(y.FactorType, 0);
+
+                        result[y.FactorType] += y.Amount;
+                    }
+                }
+
+                return result;
+            }
+        }
+
+        public IReadOnlyDictionary<string, float> UpkeepFromJob
+        {
+            get
+            {
+                var result = new Dictionary<string, float>();
+                foreach (var s in _popSlots)
+                {
+                    foreach (var y in s.Upkeep)
+                    {
+                        if (!result.ContainsKey(y.FactorType))
+                            result.Add(y.FactorType, 0);
+
+                        result[y.FactorType] += y.Amount;
+                    }
+                }
+
+                return result;
+            }
+        }
+
+        #region AdjacencyBonus
+
         public int AdjacencyBonusLevel { get; private set; }
 
         public int AdjacencyBonusMaxLevel { get; private set; }
@@ -31,6 +73,8 @@ namespace Infinity.PlanetPop.BuildingCore
 
         // <Building Name, Change Level>
         public readonly IReadOnlyDictionary<string, int> AdjacencyBonusDict;
+
+        #endregion AdjacencyBonus
 
         public Building(Neuron parentNeuron, BuildingPrototype prototype, Planet planet, HexTileCoord coord)
         {

@@ -39,7 +39,11 @@ namespace Infinity.PlanetPop.BuildingCore
 
         private readonly List<GameFactorChange> _yield = new List<GameFactorChange>();
 
+        public IReadOnlyList<GameFactorChange> Yield => _yield;
+
         private readonly List<GameFactorChange> _upkeep = new List<GameFactorChange>();
+
+        public IReadOnlyList<GameFactorChange> Upkeep => _upkeep;
 
         public PopWorkingSlot(Neuron buildingNeuron, PopSlotPrototype prototype)
         {
