@@ -28,6 +28,8 @@ namespace Infinity
         /// </summary>
         public int MonthsPassed { get; private set; }
 
+        public bool IsFTLUnlocked { get; private set; }
+
         private readonly Neuron _neuron;
 
         Type ISignalDispatcherHolder.HolderType => typeof(Game);
@@ -82,7 +84,7 @@ namespace Infinity
             var passed = new List<PassiveEventPrototype>();
 
             foreach (var prototype in events.Where(prototype =>
-                prototype.GameConditionChecker.Evaluate(this)))
+                prototype.GameConditionChecker?.Invoke(this) ?? true))
             {
                 if (prototype.EventOwnerType == "Game" && Utils.GetBoolFromChance(prototype.Chance))
                 {

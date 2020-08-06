@@ -11,8 +11,12 @@ namespace Infinity.GameData
 
         public readonly int Chance;
 
-        public readonly IPropositionalLogic<Game> GameConditionChecker;
+        private readonly IPropositionalLogic<Game> _gameConditionChecker;
 
-        public readonly IPropositionalLogic<Planet> PlanetConditionChecker;
+        public readonly Func<Game, bool> GameConditionChecker;
+
+        private readonly IPropositionalLogic<Planet> _planetConditionChecker;
+
+        public readonly Func<Planet, bool> PlanetConditionChecker;
     }
 }

@@ -184,7 +184,7 @@ namespace Infinity.PlanetPop
             var passed = new List<PassiveEventPrototype>();
 
             foreach (var prototype in events.Where(prototype =>
-                prototype.PlanetConditionChecker.Evaluate(this)))
+                prototype.PlanetConditionChecker?.Invoke(this) ?? true))
             {
                 if (prototype.EventOwnerType == "Planet" && Utils.GetBoolFromChance(prototype.Chance))
                 {
