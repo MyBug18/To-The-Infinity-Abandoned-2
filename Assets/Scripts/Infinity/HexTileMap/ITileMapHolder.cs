@@ -6,7 +6,7 @@ namespace Infinity.HexTileMap
     {
         Planet,
         StarSystem,
-        Galaxy,
+        Game,
     }
 
     public interface ITileMapHolder : IEnumerable<HexTile>, ISignalDispatcherHolder

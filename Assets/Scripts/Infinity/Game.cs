@@ -1,7 +1,9 @@
 ﻿using Infinity.GalaxySystem;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using Infinity.HexTileMap;
 
 namespace Infinity
 {
@@ -12,7 +14,7 @@ namespace Infinity
         Fast = 3,
     }
 
-    public class Game : ISignalDispatcherHolder
+    public class Game : ITileMapHolder
     {
         /// <summary>
         /// How many month pass when a turn goes on
@@ -31,8 +33,13 @@ namespace Infinity
         [JsonIgnore]
         public SignalDispatcher SignalDispatcher { get; }
 
-        [JsonIgnore]
-        public readonly Galaxy Galaxy;
+        private readonly TileMap _tileMap;
+
+        public int TileMapRadius => _tileMap.Radius;
+
+        public TileMapType TileMapType => TileMapType.Game;
+
+        public IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] => _tileMap[coord];
 
         private readonly List<string> _availableBuildings = new List<string>();
 
@@ -48,7 +55,7 @@ namespace Infinity
 
             SignalDispatcher = new SignalDispatcher(_neuron);
 
-            Galaxy = new Galaxy(_neuron);
+            _tileMap = new TileMap(6, _neuron);
         }
 
         /// <summary>
@@ -65,6 +72,26 @@ namespace Infinity
         {
             _neuron.SendSignal(new GameCommandSignal(this, GameCommandType.StartNewTurn), SignalDirection.Downward);
             MonthsPassed += GameSpeed;
+        }
+
+        public bool IsValidCoord(HexTileCoord coord) => _tileMap.IsValidCoord(coord);
+
+        public HexTile GetHexTile(HexTileCoord coord) => _tileMap.GetHexTile(coord);
+
+        public T GetTileObject<T>(HexTileCoord coord) where T : IOnHexTileObject =>
+            _tileMap.GetTileObject<T>(coord);
+
+        public IReadOnlyList<T> GetTileObjectList<T>() where T : IOnHexTileObject =>
+            _tileMap.GetTileObjectList<T>();
+
+        public IEnumerator<HexTile> GetEnumerator()
+        {
+            return _tileMap.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 
