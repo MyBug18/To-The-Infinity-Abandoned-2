@@ -22,7 +22,7 @@ namespace Infinity.PlanetPop
 
         public readonly string Aptitude;
 
-        public string CurrentJob { get; private set; } = null;
+        public string CurrentJob { get; private set; }
 
         public HexTileCoord CurrentCoord { get; private set; }
 

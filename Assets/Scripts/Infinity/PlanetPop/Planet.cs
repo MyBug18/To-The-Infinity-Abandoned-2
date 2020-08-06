@@ -85,7 +85,7 @@ namespace Infinity.PlanetPop
             _neuron.Subscribe<GameEventSignal<Planet>>(OnGameEventSignal);
             _neuron.Subscribe<PopStateChangeSignal>(OnPopStateChangeSignal);
             _neuron.Subscribe<BuildingQueueEndedSignal>(OnBuildingQueueEndedSignal);
-            _neuron.Subscribe<GameCommandSignal>(OnStartNewTurnSignal);
+            _neuron.Subscribe<GameCommandSignal>(OnGameCommandSignal);
 
             HexCoord = coord;
             Name = name;
@@ -103,7 +103,7 @@ namespace Infinity.PlanetPop
             _tileMap = new TileMap(6, null);
         }
 
-        private void OnStartNewTurnSignal(ISignal s)
+        private void OnGameCommandSignal(ISignal s)
         {
             if (!(s is GameCommandSignal gcs) || gcs.CommandType != GameCommandType.StartNewTurn) return;
 
