@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Infinity.GameData;
 using Infinity.HexTileMap;
 
 namespace Infinity
@@ -52,8 +54,8 @@ namespace Infinity
         public Game(string dataPath)
         {
             _neuron = Neuron.GetNeuronForGame(this);
-
             SignalDispatcher = new SignalDispatcher(_neuron);
+            _neuron.EventConditionPasser.SetRefiner(OnPassiveEventCheck);
 
             _tileMap = new TileMap(6, _neuron);
         }
@@ -71,7 +73,28 @@ namespace Infinity
         public void StartNewTurn()
         {
             _neuron.SendSignal(new GameCommandSignal(this, GameCommandType.StartNewTurn), SignalDirection.Downward);
+            //TODO: Check events
             MonthsPassed += GameSpeed;
+        }
+
+        private List<PassiveEventPrototype> OnPassiveEventCheck(List<PassiveEventPrototype> events)
+        {
+            var passed = new List<PassiveEventPrototype>();
+
+            foreach (var prototype in events.Where(prototype =>
+                prototype.GameConditionChecker.Evaluate(this)))
+            {
+                if (prototype.EventOwnerType == "Game" && Utils.GetBoolFromChance(prototype.Chance))
+                {
+                    // occur event and send signal
+                }
+                else
+                {
+                    passed.Add(prototype);
+                }
+            }
+
+            return passed;
         }
 
         public bool IsValidCoord(HexTileCoord coord) => _tileMap.IsValidCoord(coord);

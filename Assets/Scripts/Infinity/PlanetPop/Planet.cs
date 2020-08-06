@@ -86,6 +86,8 @@ namespace Infinity.PlanetPop
             _neuron.Subscribe<BuildingQueueEndedSignal>(OnBuildingQueueEndedSignal);
             _neuron.Subscribe<GameCommandSignal>(OnGameCommandSignal);
 
+            _neuron.EventConditionPasser.SetRefiner(OnPassiveEventCheck);
+
             HexCoord = coord;
             Name = name;
             Size = size;
@@ -175,6 +177,26 @@ namespace Infinity.PlanetPop
                     _trainingCenter.Add((pscs.Pop, pscs.DestinationSlot, trainingTime));
                     return;
             }
+        }
+
+        private List<PassiveEventPrototype> OnPassiveEventCheck(List<PassiveEventPrototype> events)
+        {
+            var passed = new List<PassiveEventPrototype>();
+
+            foreach (var prototype in events.Where(prototype =>
+                prototype.PlanetConditionChecker.Evaluate(this)))
+            {
+                if (prototype.EventOwnerType == "Planet" && Utils.GetBoolFromChance(prototype.Chance))
+                {
+                    // occur event and send signal
+                }
+                else
+                {
+                    passed.Add(prototype);
+                }
+            }
+
+            return passed;
         }
 
         PlanetStatus IPlanet.GetPlanetStatus() => _pops.Count > 0 ? PlanetStatus.Colonized : PlanetStatus.Inhabitable;

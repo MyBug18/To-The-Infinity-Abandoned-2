@@ -9,6 +9,8 @@ namespace Infinity.GameData
 
         public readonly string EventOwnerType;
 
+        public readonly int Chance;
+
         public readonly IPropositionalLogic<Game> GameConditionChecker;
 
         public readonly IPropositionalLogic<Planet> PlanetConditionChecker;

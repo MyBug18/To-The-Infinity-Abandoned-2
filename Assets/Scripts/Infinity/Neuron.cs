@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Infinity.GameData;
 
 namespace Infinity
 {
@@ -57,10 +58,13 @@ namespace Infinity
 
         private readonly ISignalDispatcherHolder _holder;
 
+        public readonly EventConditionPasser EventConditionPasser;
+
         private Neuron(ISignalDispatcherHolder holder)
         {
             _holder = holder;
             _parentNeuron = null;
+            EventConditionPasser = new EventConditionPasser(_childNeurons);
         }
 
         /// <summary>
@@ -72,6 +76,7 @@ namespace Infinity
         {
             _holder = holder;
             _parentNeuron = parentNeuron;
+            EventConditionPasser = new EventConditionPasser(_childNeurons);
         }
 
         public Neuron GetChildNeuron(ISignalDispatcherHolder childHolder)
@@ -135,6 +140,33 @@ namespace Infinity
         public void RemoveChild(ISignalDispatcherHolder holder)
         {
             _childNeurons.RemoveAll(x => x._holder == holder);
+        }
+    }
+
+    public class EventConditionPasser
+    {
+        private readonly List<Neuron> _children;
+
+        private Func<List<PassiveEventPrototype>, List<PassiveEventPrototype>> _eventListRefiner;
+
+        public EventConditionPasser(List<Neuron> children)
+        {
+            _children = children;
+        }
+
+        public void OnPassedEventList(List<PassiveEventPrototype> events)
+        {
+            if (events == null || events.Count == 0) return;
+
+            var newEvents = _eventListRefiner != null ? _eventListRefiner(events) : events;
+
+            foreach (var n in _children)
+                n.EventConditionPasser.OnPassedEventList(newEvents);
+        }
+
+        public void SetRefiner(Func<List<PassiveEventPrototype>, List<PassiveEventPrototype>> eventListRefiner)
+        {
+            _eventListRefiner = eventListRefiner;
         }
     }
 }
