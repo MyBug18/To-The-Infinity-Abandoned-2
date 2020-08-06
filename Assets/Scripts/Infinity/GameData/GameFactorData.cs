@@ -7,6 +7,14 @@ using UnityEngine;
 
 namespace Infinity.GameData
 {
+    public enum GameFactorKind
+    {
+        PlanetaryResource,
+        GlobalResource,
+        PlanetaryFactor,
+        GlobalFactor,
+    }
+
     public class GameFactorData : IGameData
     {
         private readonly string _dataPath =
@@ -33,17 +41,6 @@ namespace Infinity.GameData
             }
         }
 
-        public GameFactor GetGameFactor(string name)
-        {
-            if (_planetaryResourceDict.ContainsKey(name))
-                return new GameFactor(true, true, name);
-
-            if (_globalResourceDict.ContainsKey(name))
-                return new GameFactor(false, true, name);
-
-            throw new InvalidOperationException();
-        }
-
         public GameFactorData(GameInitializedEventSender sender)
         {
             sender.Subscribe(OnGameInitialized);
@@ -58,6 +55,17 @@ namespace Infinity.GameData
                 return result;
 
             throw new InvalidOperationException();
+        }
+
+        public GameFactorKind GetFactorKind(string GameFactor)
+        {
+            if (_planetaryResourceDict.ContainsKey(GameFactor))
+                return GameFactorKind.PlanetaryResource;
+
+            if (_globalResourceDict.ContainsKey(GameFactor))
+                return GameFactorKind.GlobalResource;
+
+            return GameFactorKind.PlanetaryFactor;
         }
 
         private void OnGameInitialized(Game game)
