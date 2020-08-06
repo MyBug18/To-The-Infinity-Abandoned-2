@@ -1,13 +1,16 @@
 ﻿using System;
+using Infinity.PlanetPop;
 
 namespace Infinity.GameData
 {
-    public class PassiveEventProtorype
+    public class PassiveEventPrototype
     {
         public readonly string Name;
 
         public readonly string EventOwnerType;
 
         public readonly IPropositionalLogic<Game> GameConditionChecker;
+
+        public readonly IPropositionalLogic<Planet> PlanetConditionChecker;
     }
 }
