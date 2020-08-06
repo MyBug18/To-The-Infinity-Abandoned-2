@@ -29,6 +29,7 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public int AdjacencyBonusPerLevel { get; private set; }
 
+        // <Building Name, Change Level>
         public readonly IReadOnlyDictionary<string, int> AdjacencyBonusDict;
 
         public Building(Neuron parentNeuron, BuildingPrototype prototype, Planet planet, HexTileCoord coord)
