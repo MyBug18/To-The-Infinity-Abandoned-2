@@ -183,30 +183,14 @@ namespace Infinity
         }
     }
 
-    /// <summary>
-    /// Evaluates VALUE operation
-    /// </summary>
-    public class ValueLogic<T> : IPropositionalLogic<T>
-    {
-        private readonly Func<T, bool> _valueChecker;
-
-        public ValueLogic(Func<T, bool> valueChecker)
-        {
-            _valueChecker = valueChecker;
-        }
-
-        public bool Evaluate(T input) => _valueChecker(input);
-
-        public void SetRestExpression(IPropositionalLogic<T> _) => throw new InvalidOperationException("Operator expected!");
-    }
-
     public static class ConditionParser
     {
         public static BinaryComparisonHolder ParseBinaryComparison(string s)
         {
-            var tokens = s.Split(' ');
-            if (tokens.Length != 3)
+            if (!IsBinaryComparison(s))
                 throw new InvalidOperationException();
+
+            var tokens = s.Split(' ');
 
             if (!int.TryParse(tokens[2], out var value)) throw new InvalidOperationException();
 
@@ -222,6 +206,25 @@ namespace Infinity
 
             throw new InvalidOperationException();
         }
+
+        public static bool IsBinaryComparison(string s) => s.Contains('<') || s.Contains('=') || s.Contains('>');
+    }
+
+    /// <summary>
+    /// Evaluates VALUE operation
+    /// </summary>
+    public class ValueLogic<T> : IPropositionalLogic<T>
+    {
+        private readonly Func<T, bool> _valueChecker;
+
+        public ValueLogic(Func<T, bool> valueChecker)
+        {
+            _valueChecker = valueChecker;
+        }
+
+        public bool Evaluate(T input) => _valueChecker(input);
+
+        public void SetRestExpression(IPropositionalLogic<T> _) => throw new InvalidOperationException("Operator expected!");
     }
 
     /// <summary>
