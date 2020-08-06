@@ -1,0 +1,25 @@
+﻿{
+  "Name": "TestPassiveEvent1",
+  "EventOwnerType": "Planet",
+  "Condition": {
+    "Game": "Year > 2100 & !FTLUnlocked",
+    "Technology": "TestTech1 | TestTech2",
+    "Planet": "PopNumber > 20 & Stability < 25"
+  },
+  "OccurChance": 10,
+  "MaxOccurCount": 1,
+  "Effect": {
+    "AddModifier": "TestModifier1",
+    "ShowChoice": {
+      "TestChoice1": {
+        "AddResource": {
+          "Alloy": 500,
+          "Food": 1000
+        }
+      },
+      "TestChoice2": {
+        "AddModifier": "TestChoiceResultModifier"
+      }
+    }
+  }
+}
