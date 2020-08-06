@@ -82,7 +82,6 @@ namespace Infinity.PlanetPop
 
             BuildingFactory = new PlanetBuildingFactory(_neuron, this);
 
-            _neuron.Subscribe<GameEventSignal<Planet>>(OnGameEventSignal);
             _neuron.Subscribe<PopStateChangeSignal>(OnPopStateChangeSignal);
             _neuron.Subscribe<BuildingQueueEndedSignal>(OnBuildingQueueEndedSignal);
             _neuron.Subscribe<GameCommandSignal>(OnGameCommandSignal);
@@ -149,11 +148,6 @@ namespace Infinity.PlanetPop
 
             for (var i = removeIdx.Count - 1; i >= 0; i--)
                 _trainingCenter.RemoveAt(i);
-        }
-
-        private void OnGameEventSignal(ISignal s)
-        {
-            if (!(s is GameEventSignal<Planet> ges)) return;
         }
 
         private void OnBuildingQueueEndedSignal(ISignal s)
