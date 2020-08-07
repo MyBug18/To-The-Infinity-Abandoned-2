@@ -49,7 +49,7 @@ namespace Infinity.PlanetPop.BuildingCore
         {
             _buildingNeuron = buildingNeuron;
 
-            _buildingNeuron.Subscribe<PopStateChangeSignal>(OnPopStateChangeSignal);
+            _buildingNeuron.Subscribe<PopSlotAssignedSignal>(OnPopSlotAssignedSignal);
 
             Name = prototype.Name;
             Group = prototype.Group;
@@ -84,17 +84,12 @@ namespace Infinity.PlanetPop.BuildingCore
             }
         }
 
-        private void OnPopStateChangeSignal(ISignal s)
+        private void OnPopSlotAssignedSignal(ISignal s)
         {
-            if (!(s is PopStateChangeSignal pscs)) return;
+            if (!(s is PopSlotAssignedSignal psas)) return;
 
-            switch (pscs.State)
-            {
-                case PopStateChangeType.ToJobSlot:
-                    if (this != pscs.DestinationSlot) return;
-                    Pop = pscs.Pop;
-                    break;
-            }
+            if (this != psas.AssignedSlot) return;
+            Pop = psas.Pop;
         }
     }
 

@@ -132,7 +132,7 @@ namespace Infinity.PlanetPop
 
             BuildingFactory = new PlanetBuildingFactory(_neuron, this);
 
-            _neuron.Subscribe<PopStateChangeSignal>(OnPopStateChangeSignal);
+            _neuron.Subscribe<PopToTrainingCenterSignal>(OnPopToTrainingCenterSignal);
             _neuron.Subscribe<BuildingQueueEndedSignal>(OnBuildingQueueEndedSignal);
             _neuron.Subscribe<GameCommandSignal>(OnGameCommandSignal);
 
@@ -188,7 +188,7 @@ namespace Infinity.PlanetPop
             if (CurrentPopGrowth < 100) return;
 
             var newPop = new Pop(_neuron, "TestPop", new HexTileCoord(_tileMap.Radius, _tileMap.Radius));
-            _neuron.SendSignal(new PopStateChangeSignal(this, newPop, PopStateChangeType.Birth), SignalDirection.Upward);
+            _neuron.SendSignal(new PopBirthSignal(this, newPop), SignalDirection.Upward);
             _unemployedPops.Add(newPop);
         }
 
@@ -205,8 +205,7 @@ namespace Infinity.PlanetPop
 
                 removeIdx.Add(i);
 
-                _neuron.SendSignal(new PopStateChangeSignal(this, pop, PopStateChangeType.ToJobSlot, slot),
-                    SignalDirection.Downward);
+                _neuron.SendSignal(new PopSlotAssignedSignal(this, pop, slot), SignalDirection.Downward);
             }
 
             for (var i = removeIdx.Count - 1; i >= 0; i--)
@@ -226,18 +225,14 @@ namespace Infinity.PlanetPop
             _neuron.SendSignal(new BuildingConstructedSignal(this, building.Name, coord), SignalDirection.Downward);
         }
 
-        private void OnPopStateChangeSignal(ISignal s)
+        private void OnPopToTrainingCenterSignal(ISignal s)
         {
-            if (!(s is PopStateChangeSignal pscs)) return;
+            if (!(s is PopToTrainingCenterSignal pttcs)) return;
 
-            switch (pscs.State)
-            {
-                case PopStateChangeType.ToTrainingCenter:
-                    var trainingTime = GameDataStorage.Instance.GetGameData<PopSlotData>()
-                        .GetTrainingTime(pscs.Pop.Aptitude, pscs.DestinationSlot.Name);
-                    _trainingCenter.Add((pscs.Pop, pscs.DestinationSlot, trainingTime));
-                    return;
-            }
+            var trainingTime = GameDataStorage.Instance.GetGameData<PopSlotData>()
+                .GetTrainingTime(pttcs.Pop.Aptitude, pttcs.DestinationSlot.Name);
+
+            _trainingCenter.Add((pttcs.Pop, pttcs.DestinationSlot, trainingTime));
         }
 
         private List<PassiveEventPrototype> OnPassiveEventCheck(List<PassiveEventPrototype> events)

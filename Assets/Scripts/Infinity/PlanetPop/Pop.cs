@@ -44,53 +44,20 @@ namespace Infinity.PlanetPop
             Name = name;
             CurrentCoord = initialCoord;
 
-            _neuron.Subscribe<PopStateChangeSignal>(OnPopStateChangeSignal);
+            _neuron.Subscribe<PopSlotAssignedSignal>(OnPopSlotAssignedSignal);
         }
 
         public void ToTrainingCenter(PopWorkingSlot destinationSlot)
         {
-            _neuron.SendSignal(new PopStateChangeSignal(this, this, PopStateChangeType.ToTrainingCenter),
+            _neuron.SendSignal(new PopToTrainingCenterSignal(this, this, destinationSlot),
                 SignalDirection.Upward);
         }
 
-        private void OnPopStateChangeSignal(ISignal s)
+        private void OnPopSlotAssignedSignal(ISignal s)
         {
-            if (!(s is PopStateChangeSignal pscs)) return;
-
-            switch (pscs.State)
-            {
-                case PopStateChangeType.ToJobSlot:
-                    if (pscs.Pop != this) return;
-                    CurrentJob = pscs.DestinationSlot.Name;
-                    break;
-            }
+            if (!(s is PopSlotAssignedSignal psas)) return;
+            if (psas.Pop != this) return;
+            CurrentJob = psas.AssignedSlot.Name;
         }
-    }
-
-    public class PopStateChangeSignal : ISignal
-    {
-        public ISignalDispatcherHolder SignalSender { get; }
-
-        public readonly Pop Pop;
-
-        public readonly PopStateChangeType State;
-
-        public readonly PopWorkingSlot DestinationSlot;
-
-        public PopStateChangeSignal(ISignalDispatcherHolder sender, Pop pop, PopStateChangeType state, PopWorkingSlot slot = null)
-        {
-            SignalSender = sender;
-            Pop = pop;
-            State = state;
-            DestinationSlot = slot;
-        }
-    }
-
-    public enum PopStateChangeType
-    {
-        Birth,
-        Killed,
-        ToTrainingCenter,
-        ToJobSlot,
     }
 }
