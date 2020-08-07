@@ -97,4 +97,22 @@ namespace Infinity.PlanetPop.BuildingCore
             }
         }
     }
+
+    public class PopSlotStateChangeSignal : ISignal
+    {
+        public ISignalDispatcherHolder SignalSender { get; }
+
+        public readonly PopWorkingSlot Slot;
+
+        public readonly IReadOnlyDictionary<string, float> YieldDiff, UpkeepDiff;
+
+        public PopSlotStateChangeSignal(ISignalDispatcherHolder sender, PopWorkingSlot slot,
+            IReadOnlyDictionary<string, float> yieldDiff, IReadOnlyDictionary<string, float> upkeepDiff)
+        {
+            SignalSender = sender;
+            Slot = slot;
+            YieldDiff = yieldDiff;
+            UpkeepDiff = upkeepDiff;
+        }
+    }
 }
