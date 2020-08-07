@@ -68,51 +68,13 @@ namespace Infinity.PlanetPop
 
         public IReadOnlyDictionary<string, float> CurrentResourceKeep => _currentResourceKeep;
 
-        public IReadOnlyDictionary<string, float> YieldFromJob = new Dictionary<string, float>();
+        public IReadOnlyDictionary<string, float> YieldFromJob => _yieldFromJobCache;
 
-        private IReadOnlyDictionary<string, float> _yieldFromJob
-        {
-            get
-            {
-                var result = new Dictionary<string, float>();
+        private Dictionary<string, float> _yieldFromJobCache = new Dictionary<string, float>();
 
-                foreach (var b in Buildings)
-                {
-                    foreach (var kv in b.YieldFromJob)
-                    {
-                        if (!result.ContainsKey(kv.Key))
-                            result.Add(kv.Key, 0);
+        public IReadOnlyDictionary<string, float> UpkeepFromJob => _upkeepFromJobCache;
 
-                        result[kv.Key] += kv.Value;
-                    }
-                }
-
-                return result;
-            }
-        }
-
-        public IReadOnlyDictionary<string, float> UpkeepFromJob = new Dictionary<string, float>();
-
-        private IReadOnlyDictionary<string, float> _upkeepFromJob
-        {
-            get
-            {
-                var result = new Dictionary<string, float>();
-
-                foreach (var b in Buildings)
-                {
-                    foreach (var kv in b.UpkeepFromJob)
-                    {
-                        if (!result.ContainsKey(kv.Key))
-                            result.Add(kv.Key, 0);
-
-                        result[kv.Key] += kv.Value;
-                    }
-                }
-
-                return result;
-            }
-        }
+        private Dictionary<string, float> _upkeepFromJobCache = new Dictionary<string, float>();
 
         #endregion Resources
 
@@ -167,6 +129,48 @@ namespace Infinity.PlanetPop
                 if (kv.Value)
                     _currentResourceKeep.Add(kv.Key, 0);
             }
+        }
+
+        private Dictionary<string, float> GetBuildingYield()
+        {
+            var result = new Dictionary<string, float>();
+
+            foreach (var b in Buildings)
+            {
+                foreach (var kv in b.YieldFromJob)
+                {
+                    if (!result.ContainsKey(kv.Key))
+                        result.Add(kv.Key, 0);
+
+                    result[kv.Key] += kv.Value;
+                }
+            }
+
+            return result;
+        }
+
+        private Dictionary<string, float> GetBuildingUpkeep()
+        {
+            var result = new Dictionary<string, float>();
+
+            foreach (var b in Buildings)
+            {
+                foreach (var kv in b.UpkeepFromJob)
+                {
+                    if (!result.ContainsKey(kv.Key))
+                        result.Add(kv.Key, 0);
+
+                    result[kv.Key] += kv.Value;
+                }
+            }
+
+            return result;
+        }
+
+        private void RecalculateJobResources()
+        {
+            _yieldFromJobCache = GetBuildingYield();
+            _upkeepFromJobCache = GetBuildingUpkeep();
         }
 
         private void OnGameCommandSignal(ISignal s)
