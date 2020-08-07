@@ -26,7 +26,7 @@ namespace Infinity.Modifiers
             LeftTurn = turn;
         }
 
-        public Modifier ReduceLeftTurn() => new Modifier(ModifierInfo, LeftTurn - 1);
+        public Modifier ReduceLeftTurn() => new Modifier(ModifierInfo, LeftTurn != -1 ? LeftTurn - 1 : LeftTurn);
     }
 
     public class ModifierInfo

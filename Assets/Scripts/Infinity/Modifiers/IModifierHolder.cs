@@ -4,6 +4,6 @@ namespace Infinity.Modifiers
 {
     public interface IModifierHolder
     {
-        IReadOnlyDictionary<string, Modifier> Modifiers { get; }
+        IReadOnlyList<Modifier> Modifiers { get; }
     }
 }

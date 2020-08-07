@@ -1,11 +1,13 @@
 ﻿using Infinity.HexTileMap;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Infinity.GameData;
+using Infinity.Modifiers;
 
 namespace Infinity.PlanetPop.BuildingCore
 {
-    public class Building : IOnHexTileObject, ISignalDispatcherHolder
+    public class Building : IOnHexTileObject, ISignalDispatcherHolder, IModifierHolder
     {
         public string Name { get; }
 
@@ -16,6 +18,10 @@ namespace Infinity.PlanetPop.BuildingCore
         private readonly Planet _planet;
 
         private readonly Neuron _neuron;
+
+        private readonly List<Modifier> _modifiers = new List<Modifier>();
+
+        public IReadOnlyList<Modifier> Modifiers => _modifiers;
 
         public SignalDispatcher SignalDispatcher { get; }
 
@@ -76,7 +82,8 @@ namespace Infinity.PlanetPop.BuildingCore
 
         #endregion AdjacencyBonus
 
-        public Building(Neuron parentNeuron, BuildingPrototype prototype, Planet planet, HexTileCoord coord)
+        public Building(Neuron parentNeuron, BuildingPrototype prototype, Planet planet, HexTileCoord coord,
+            IReadOnlyList<Modifier> modifiers = null)
         {
             _neuron = parentNeuron.GetChildNeuron(this);
             SignalDispatcher = new SignalDispatcher(_neuron);
@@ -100,6 +107,13 @@ namespace Infinity.PlanetPop.BuildingCore
             AdjacencyBonusMaxLevel = adj.MaxLevel;
             AdjacencyBonusPerLevel = adj.BonusPerLevel;
             AdjacencyBonusDict = adj.BonusChangeInfo;
+
+            if (modifiers != null)
+                foreach (var m in modifiers)
+                {
+                    _modifiers.Add(m);
+                    ApplyModifier(m);
+                }
 
             _neuron.Subscribe<BuildingConstructedSignal>(OnBuildingConstructedSignal);
         }
@@ -125,6 +139,11 @@ namespace Infinity.PlanetPop.BuildingCore
             if (!AdjacencyBonusDict.TryGetValue(bcs.BuildingName, out var level)) return;
 
             AdjacencyBonusLevel += level;
+        }
+
+        private void ApplyModifier(Modifier modifier)
+        {
+
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Infinity.Modifiers;
 
 namespace Infinity.HexTileMap
 {
@@ -95,7 +96,7 @@ namespace Infinity.HexTileMap
         }
     }
 
-    public class HexTile
+    public class HexTile : IModifierHolder
     {
         public readonly HexTileCoord Coord;
 
@@ -104,6 +105,10 @@ namespace Infinity.HexTileMap
         public readonly string SpecialResource;
 
         public int WayCost { get; private set; } = 1;
+
+        private List<Modifier> _modifiers = new List<Modifier>();
+
+        public IReadOnlyList<Modifier> Modifiers => _modifiers;
 
         public HexTile(HexTileCoord coord)
         {

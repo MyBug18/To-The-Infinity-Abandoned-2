@@ -87,9 +87,9 @@ namespace Infinity.PlanetPop
 
         public readonly PlanetBuildingFactory BuildingFactory;
 
-        private readonly Dictionary<string, Modifier> _modifiers = new Dictionary<string, Modifier>();
+        private readonly List<Modifier> _modifiers = new List<Modifier>();
 
-        public IReadOnlyDictionary<string, Modifier> Modifiers => _modifiers;
+        public IReadOnlyList<Modifier> Modifiers => _modifiers;
 
         public Planet(Neuron parentNeuron, string name, HexTileCoord coord, int size)
         {
@@ -226,7 +226,10 @@ namespace Infinity.PlanetPop
 
             var coord = bqes.QueueElement.Coord;
 
-            var building = new Building(_neuron, bqes.QueueElement.Prototype, this, coord);
+            var modifiers = _modifiers.ToList();
+            modifiers.AddRange(GetHexTile(coord).Modifiers);
+
+            var building = new Building(_neuron, bqes.QueueElement.Prototype, this, coord, modifiers);
 
             _tileMap.AddTileObject(coord, building);
 
