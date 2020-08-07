@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Infinity.GameData
 {
@@ -19,6 +20,8 @@ namespace Infinity.GameData
         public IReadOnlyList<FactorChangePrototype> Upkeep => _upkeep;
 
         public readonly float Wage;
+
+        public IReadOnlyList<string> YieldResourceKind => _yield.Select(x => x.FactorType).ToList();
 
         public PopSlotPrototype(string jsonData)
         {

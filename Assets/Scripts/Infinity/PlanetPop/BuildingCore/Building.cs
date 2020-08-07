@@ -82,6 +82,8 @@ namespace Infinity.PlanetPop.BuildingCore
 
         #endregion AdjacencyBonus
 
+        public readonly IReadOnlyCollection<string> YieldResourceKind;
+
         public Building(Neuron parentNeuron, BuildingPrototype prototype, Planet planet, HexTileCoord coord,
             IReadOnlyList<Modifier> modifiers = null)
         {
@@ -95,12 +97,21 @@ namespace Infinity.PlanetPop.BuildingCore
 
             var slotData = GameDataStorage.Instance.GetGameData<PopSlotData>();
 
+            var yieldKind = new HashSet<string>();
+
             foreach (var kv in prototype.BasePopSlots)
             {
-                var slot = new PopWorkingSlot(_neuron, slotData[kv.Key]);
+                var p = slotData[kv.Key];
+
+                foreach (var k in p.YieldResourceKind)
+                    yieldKind.Add(k);
+
+                var slot = new PopWorkingSlot(_neuron, p);
                 for (var i = 0; i < kv.Value; i++)
                     _popSlots.Add(slot);
             }
+
+            YieldResourceKind = yieldKind;
 
             var adj = prototype.AdjacencyBonus;
 
@@ -108,9 +119,18 @@ namespace Infinity.PlanetPop.BuildingCore
             AdjacencyBonusPerLevel = adj.BonusPerLevel;
             AdjacencyBonusDict = adj.BonusChangeInfo;
 
+            var resourceData = GameDataStorage.Instance.GetGameData<GameFactorData>();
+
             if (modifiers != null)
                 foreach (var m in modifiers)
                 {
+                    var isRelevant =
+                        m.ModifierInfo.GameFactorMultiplier.Keys.Any(x =>
+                            x == "AnyResource" || resourceData.AllResourceList.Contains(x));
+
+                    if (!isRelevant)
+                        continue;
+
                     _modifiers.Add(m);
                     ApplyModifier(m);
                 }
