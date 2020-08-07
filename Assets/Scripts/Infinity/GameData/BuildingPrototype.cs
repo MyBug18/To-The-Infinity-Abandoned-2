@@ -82,24 +82,18 @@ namespace Infinity.GameData
 
         public bool CheckTileState(HexTile tile)
         {
-            if (!_conditions.ContainsKey("TileState")) return true;
-
-            return _tileStateChecker.Evaluate(tile);
+            return !_conditions.ContainsKey("TileState") || _tileStateChecker.Evaluate(tile);
         }
 
         public bool CheckAroundBuildings(Planet planet, HexTileCoord coord)
         {
-            if (!_conditions.ContainsKey("AroundBuildings")) return true;
-
-            return _aroundBuildingsChecker.Evaluate((planet, coord));
+            return !_conditions.ContainsKey("AroundBuildings") || _aroundBuildingsChecker.Evaluate((planet, coord));
         }
 
         private bool PlanetTileStateChecker(string state, HexTile tile)
         {
             if (state == tile.TileClimate) return true;
-            if (state == tile.SpecialResource) return true;
-
-            return false;
+            return state == tile.SpecialResource;
         }
 
         private bool PlanetAroundBuildingsChecker(string comparisonDataHolder, (Planet planet, HexTileCoord coord) data)
@@ -115,24 +109,18 @@ namespace Infinity.GameData
 
             foreach (var kv in buildingDict)
             {
-                if (kv.Key.Name == holder.Name)
-                {
-                    leftValue = kv.Value;
-                    break;
-                }
+                if (kv.Key.Name != holder.Name) continue;
+                leftValue = kv.Value;
+                break;
             }
 
-            switch (holder.Operator)
+            return holder.Operator switch
             {
-                case -1:
-                    return leftValue < rightValue;
-                case 0:
-                    return leftValue == rightValue;
-                case 1:
-                    return leftValue > rightValue;
-            }
-
-            throw new InvalidOperationException();
+                -1 => leftValue < rightValue,
+                0 => leftValue == rightValue,
+                1 => leftValue > rightValue,
+                _ => throw new InvalidOperationException()
+            };
         }
     }
 
