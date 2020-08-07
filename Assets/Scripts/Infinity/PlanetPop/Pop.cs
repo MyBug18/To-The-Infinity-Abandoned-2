@@ -14,9 +14,9 @@ namespace Infinity.PlanetPop
 
         public SignalDispatcher SignalDispatcher { get; }
 
-        private readonly Dictionary<string, BasicModifier> _modifiers = new Dictionary<string, BasicModifier>();
+        private readonly Dictionary<string, Modifier> _modifiers = new Dictionary<string, Modifier>();
 
-        public IReadOnlyDictionary<string, BasicModifier> Modifiers => _modifiers;
+        public IReadOnlyDictionary<string, Modifier> Modifiers => _modifiers;
 
         public string Name { get; private set; }
 

@@ -68,7 +68,9 @@ namespace Infinity.PlanetPop
 
         public IReadOnlyDictionary<string, float> CurrentResourceKeep => _currentResourceKeep;
 
-        public IReadOnlyDictionary<string, float> YieldFromJob
+        public IReadOnlyDictionary<string, float> YieldFromJob = new Dictionary<string, float>();
+
+        private IReadOnlyDictionary<string, float> _yieldFromJob
         {
             get
             {
@@ -89,7 +91,9 @@ namespace Infinity.PlanetPop
             }
         }
 
-        public IReadOnlyDictionary<string, float> UpkeepFromJob
+        public IReadOnlyDictionary<string, float> UpkeepFromJob = new Dictionary<string, float>();
+
+        private IReadOnlyDictionary<string, float> _upkeepFromJob
         {
             get
             {
@@ -121,9 +125,9 @@ namespace Infinity.PlanetPop
 
         public readonly PlanetBuildingFactory BuildingFactory;
 
-        private readonly Dictionary<string, BasicModifier> _modifiers = new Dictionary<string, BasicModifier>();
+        private readonly Dictionary<string, Modifier> _modifiers = new Dictionary<string, Modifier>();
 
-        public IReadOnlyDictionary<string, BasicModifier> Modifiers => _modifiers;
+        public IReadOnlyDictionary<string, Modifier> Modifiers => _modifiers;
 
         public Planet(Neuron parentNeuron, string name, HexTileCoord coord, int size)
         {
