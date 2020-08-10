@@ -23,7 +23,7 @@ namespace Tester
 
             var data = GameDataStorage.Instance.GetGameData<BuildingData>();
 
-            Debug.Log(data["TestBuilding"].CheckTileState(new HexTile(new HexTileCoord(1, 3))));
+            Debug.Log(data["TestBuilding"].CheckTileState(new HexTile(new HexTileCoord(1, 3), null)));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Infinity.Modifiers;
 
 namespace Infinity.HexTileMap
@@ -110,9 +111,22 @@ namespace Infinity.HexTileMap
 
         public IReadOnlyList<Modifier> Modifiers => _modifiers;
 
-        public HexTile(HexTileCoord coord)
+        public HexTile(HexTileCoord coord, Neuron tilemapNeuron)
         {
             Coord = coord;
+
+            tilemapNeuron.Subscribe<ModifierSignal>(OnModifierSignal);
+        }
+
+        private void OnModifierSignal(ISignal s)
+        {
+            if (!(s is ModifierSignal ms)) return;
+
+            if (!ms.IsForTile) return;
+
+            if (!ms.Modifier.AffectedTiles.Contains(Coord)) return;
+
+            _modifiers.Add(ms.Modifier);
         }
     }
 }

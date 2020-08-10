@@ -21,19 +21,15 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public readonly float Wage;
 
-        private readonly Dictionary<string, float> _baseYield;
+        private readonly Dictionary<string, float> _baseYield = new Dictionary<string, float>();
 
         public IReadOnlyDictionary<string, float> BaseYield => _baseYield;
 
-        private readonly Dictionary<string, float> _baseUpkeep;
+        private readonly Dictionary<string, float> _baseUpkeep = new Dictionary<string, float>();
 
         public IReadOnlyDictionary<string, float> BaseUpkeep => _baseUpkeep;
 
-        private Dictionary<string, int> _yieldMultiplier = new Dictionary<string, int>();
-
         private Dictionary<string, int> _upkeepMultiplier = new Dictionary<string, int>();
-
-        private readonly Neuron _buildingNeuron;
 
         public Pop Pop { get; private set; }
 
@@ -45,30 +41,15 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public IReadOnlyList<GameFactorChange> Upkeep => _upkeep;
 
-        public PopSlot(Neuron buildingNeuron, PopSlotPrototype prototype, IReadOnlyList<Modifier> modifiers = null)
+        public PopSlot(Neuron buildingNeuron, Building building, PopSlotPrototype prototype, IReadOnlyList<Modifier> modifiers = null)
         {
-            _buildingNeuron = buildingNeuron;
-
-            _buildingNeuron.Subscribe<PopSlotAssignedSignal>(OnPopSlotAssignedSignal);
+            buildingNeuron.Subscribe<PopSlotAssignedSignal>(OnPopSlotAssignedSignal);
 
             Name = prototype.Name;
             Group = prototype.Group;
             Wage = prototype.Wage;
 
-            if (modifiers != null)
-                foreach (var m in modifiers)
-                {
-                    var mDict = m.ModifierInfo.GameFactorAmount;
-
-                    foreach (var kv in mDict)
-                    {
-                        if (!_yieldMultiplier.ContainsKey(kv.Key) &&
-                            (_baseYield.ContainsKey(kv.Key) || kv.Key == "AnyResource"))
-                            _yieldMultiplier.Add(kv.Key, 0);
-
-                        _yieldMultiplier[kv.Key] += kv.Value;
-                    }
-                }
+            var yieldModifierMultiplier = building.YieldMultiplierFromModifier;
 
             foreach (var y in prototype.Yield)
             {
@@ -76,10 +57,10 @@ namespace Infinity.PlanetPop.BuildingCore
 
                 float YieldGetter()
                 {
-                    if (!_yieldMultiplier.TryGetValue(y.FactorType, out var yieldMultiplier))
+                    if (!yieldModifierMultiplier.TryGetValue(y.FactorType, out var yieldMultiplier))
                         yieldMultiplier = 0;
 
-                    if (_yieldMultiplier.TryGetValue("AnyResource", out var anyResource))
+                    if (yieldModifierMultiplier.TryGetValue("AnyResource", out var anyResource))
                         yieldMultiplier += anyResource;
 
                     return CurrentState == PopSlotState.Occupied
@@ -96,10 +77,10 @@ namespace Infinity.PlanetPop.BuildingCore
 
                 float UpkeepGetter()
                 {
-                    if (!_yieldMultiplier.TryGetValue(u.FactorType, out var upkeepMultiplier))
+                    if (!_upkeepMultiplier.TryGetValue(u.FactorType, out var upkeepMultiplier))
                         upkeepMultiplier = 0;
 
-                    if (_yieldMultiplier.TryGetValue("AnyResource", out var anyResource))
+                    if (_upkeepMultiplier.TryGetValue("AnyResource", out var anyResource))
                         upkeepMultiplier += anyResource;
 
                     return CurrentState == PopSlotState.Occupied
@@ -111,17 +92,14 @@ namespace Infinity.PlanetPop.BuildingCore
             }
         }
 
-        private void AddModifier(Modifier m)
-        {
-
-        }
-
         private void OnPopSlotAssignedSignal(ISignal s)
         {
             if (!(s is PopSlotAssignedSignal psas)) return;
 
             if (this != psas.AssignedSlot) return;
             Pop = psas.Pop;
+
+            CurrentState = PopSlotState.Occupied;
         }
     }
 

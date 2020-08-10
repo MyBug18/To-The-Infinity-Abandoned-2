@@ -12,17 +12,17 @@ namespace Infinity.HexTileMap
         private readonly Dictionary<HexTileCoord, Dictionary<Type, IOnHexTileObject>> _onTileMapObjects =
             new Dictionary<HexTileCoord, Dictionary<Type, IOnHexTileObject>>();
 
-        private readonly Neuron _neuron;
+        private readonly Neuron _holderNeuron;
 
         public readonly int Radius;
 
         public IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] =>
             IsValidCoord(coord) ? GetAllTileObjects(coord) : null;
 
-        public TileMap(int radius, Neuron neuron)
+        public TileMap(int radius, Neuron holderNeuron)
         {
             Radius = radius;
-            _neuron = neuron;
+            _holderNeuron = holderNeuron;
 
             _tileMap = new HexTile[radius * 2 + 1][];
             ConstructTileMap();
@@ -36,7 +36,7 @@ namespace Infinity.HexTileMap
                 for (var q = Radius - r; q <= 2 * Radius; q++)
                 {
                     var qIdx = q - Radius + r;
-                    _tileMap[r][qIdx] = new HexTile(new HexTileCoord(q, r));
+                    _tileMap[r][qIdx] = new HexTile(new HexTileCoord(q, r), _holderNeuron);
                 }
             }
 
@@ -45,7 +45,7 @@ namespace Infinity.HexTileMap
                 _tileMap[r] = new HexTile[3 * Radius - r + 1];
                 for (var q = 0; q <= 3 * Radius - r; q++)
                 {
-                    _tileMap[r][q] = new HexTile(new HexTileCoord(q, r));
+                    _tileMap[r][q] = new HexTile(new HexTileCoord(q, r), _holderNeuron);
                 }
             }
         }

@@ -60,6 +60,11 @@ namespace Infinity.PlanetPop
 
         public float CurrentPopGrowth { get; private set; }
 
+        private readonly List<(Pop pop, PopSlot slot, int RemainTurn)> _trainingCenter =
+            new List<(Pop pop, PopSlot slot, int RemainTurn)>();
+
+        public IReadOnlyList<(Pop pop, PopSlot slot, int RemainTurn)> TrainingCenter => _trainingCenter;
+
         #endregion Pop
 
         #region Resources
@@ -77,11 +82,6 @@ namespace Infinity.PlanetPop
         private Dictionary<string, float> _upkeepFromJobCache = new Dictionary<string, float>();
 
         #endregion Resources
-
-        private readonly List<(Pop pop, PopSlot slot, int RemainTurn)> _trainingCenter =
-            new List<(Pop pop, PopSlot slot, int RemainTurn)>();
-
-        public IReadOnlyList<(Pop pop, PopSlot slot, int RemainTurn)> TrainingCenter => _trainingCenter;
 
         public IReadOnlyList<Building> Buildings => GetTileObjectList<Building>();
 
@@ -101,6 +101,7 @@ namespace Infinity.PlanetPop
             _neuron.Subscribe<PopToTrainingCenterSignal>(OnPopToTrainingCenterSignal);
             _neuron.Subscribe<BuildingQueueEndedSignal>(OnBuildingQueueEndedSignal);
             _neuron.Subscribe<GameCommandSignal>(OnGameCommandSignal);
+            _neuron.Subscribe<ModifierSignal>(OnModifierSignal);
 
             _neuron.EventConditionPasser.SetRefiner(OnPassiveEventCheck);
 
@@ -128,6 +129,45 @@ namespace Infinity.PlanetPop
             {
                 if (kv.Value)
                     _currentResourceKeep.Add(kv.Key, 0);
+            }
+        }
+
+        private void AddRemoveModifier(Modifier m, bool isAdding)
+        {
+            _neuron.SendSignal(new ModifierSignal(this, m, isAdding), SignalDirection.Downward);
+        }
+
+        private void OnModifierSignal(ISignal s)
+        {
+            if (!(s is ModifierSignal ms)) return;
+
+            var m = ms.Modifier;
+
+            if (ms.IsForTile) return;
+
+            if (ms.IsAdding)
+            {
+                _modifiers.Add(m);
+            }
+            else
+            {
+                _modifiers.Remove(m);
+            }
+
+
+            ApplyModifierChange(m, ms.IsAdding);
+        }
+
+        private void ApplyModifierChange(Modifier m, bool IsAdding)
+        {
+            var resourceData = GameDataStorage.Instance.GetGameData<GameFactorData>();
+
+            foreach (var kv in m.ModifierInfo.GameFactorAmount)
+            {
+                if (resourceData.GetFactorKind(kv.Key) == GameFactorKind.PlanetaryFactor)
+                {
+
+                }
             }
         }
 

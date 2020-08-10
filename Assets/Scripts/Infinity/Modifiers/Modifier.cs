@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Infinity.HexTileMap;
 
 namespace Infinity.Modifiers
 {
@@ -20,13 +21,20 @@ namespace Infinity.Modifiers
         /// </summary>
         public readonly int LeftTurn;
 
-        public Modifier(ModifierInfo info, int turn)
+        /// <summary>
+        /// Null if not for tiles
+        /// </summary>
+        public readonly IReadOnlyCollection<HexTileCoord> AffectedTiles;
+
+        public Modifier(ModifierInfo info, int turn, IReadOnlyCollection<HexTileCoord> affectedTiles = null)
         {
             ModifierInfo = info;
             LeftTurn = turn;
+            AffectedTiles = affectedTiles;
         }
 
-        public Modifier ReduceLeftTurn() => new Modifier(ModifierInfo, LeftTurn != -1 ? LeftTurn - 1 : LeftTurn);
+        public Modifier ReduceLeftTurn() =>
+            new Modifier(ModifierInfo, LeftTurn != -1 ? LeftTurn - 1 : LeftTurn, AffectedTiles);
     }
 
     public class ModifierInfo
@@ -47,6 +55,24 @@ namespace Infinity.Modifiers
         public override int GetHashCode()
         {
             return ModifierKey.GetHashCode();
+        }
+    }
+
+    public class ModifierSignal : ISignal
+    {
+        public ISignalDispatcherHolder SignalSender { get; }
+
+        public readonly Modifier Modifier;
+
+        public readonly bool IsAdding;
+
+        public bool IsForTile => Modifier.AffectedTiles != null;
+
+        public ModifierSignal(ISignalDispatcherHolder sender, Modifier modifier, bool isAdding)
+        {
+            SignalSender = sender;
+            Modifier = modifier;
+            IsAdding = isAdding;
         }
     }
 }

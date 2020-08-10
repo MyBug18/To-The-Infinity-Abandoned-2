@@ -69,6 +69,10 @@ namespace Infinity.PlanetPop.BuildingCore
             }
         }
 
+        private readonly Dictionary<string, float> _yieldMultiplierFromModifier = new Dictionary<string, float>();
+
+        public IReadOnlyDictionary<string, float> YieldMultiplierFromModifier => _yieldMultiplierFromModifier;
+
         #region AdjacencyBonus
 
         public int AdjacencyBonusLevel { get; private set; }
@@ -126,7 +130,7 @@ namespace Infinity.PlanetPop.BuildingCore
             {
                 var p = slotData[kv.Key];
 
-                var slot = new PopSlot(_neuron, p, modifiers);
+                var slot = new PopSlot(_neuron, this, p, modifiers);
                 for (var i = 0; i < kv.Value; i++)
                     _popSlots.Add(slot);
             }
@@ -165,9 +169,38 @@ namespace Infinity.PlanetPop.BuildingCore
             AdjacencyBonusLevel += level;
         }
 
-        private void AddModifier(Modifier modifier)
+        private void AddRemoveModifier(Modifier m, bool isAdding)
         {
+            _neuron.SendSignal(new ModifierSignal(this, m, isAdding), SignalDirection.Local);
+        }
 
+        private void OnModifierSignal(ISignal s)
+        {
+            if (!(s is ModifierSignal ms)) return;
+
+            if (ms.IsForTile && !ms.Modifier.AffectedTiles.Contains(HexCoord)) return;
+
+            foreach (var kv in ms.Modifier.ModifierInfo.GameFactorAmount)
+            {
+                if (!YieldResourceKind.Contains(kv.Key) && kv.Key != "AnyResource") continue;
+
+                if (!_yieldMultiplierFromModifier.ContainsKey(kv.Key))
+                    _yieldMultiplierFromModifier[kv.Key] = 0;
+
+                if (ms.IsAdding)
+                {
+                    _yieldMultiplierFromModifier[kv.Key] += kv.Value;
+                }
+                else
+                {
+                    _yieldMultiplierFromModifier[kv.Key] -= kv.Value;
+                }
+            }
+
+            if (ms.IsAdding)
+                _modifiers.Add(ms.Modifier);
+            else
+                _modifiers.Remove(ms.Modifier);
         }
     }
 
