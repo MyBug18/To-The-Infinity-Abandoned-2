@@ -284,7 +284,7 @@ namespace Infinity.PlanetPop
 
             foreach (var c in _tileMap.GetRing(1, coord))
             {
-                var building = GetTileObject<Building>(coord);
+                var building = GetTileObject<Building>(c);
                 if (building == null) continue;
 
                 if (result.ContainsKey(building))

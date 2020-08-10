@@ -96,13 +96,24 @@ namespace Infinity.PlanetPop.BuildingCore
             _planet = planet;
 
             var resourceData = GameDataStorage.Instance.GetGameData<GameFactorData>();
+            var slotData = GameDataStorage.Instance.GetGameData<PopSlotData>();
 
+            // Initialize yield kind
+            var yieldKind = new HashSet<string>();
+
+            foreach (var kv in prototype.BasePopSlots)
+                foreach (var k in slotData[kv.Key].YieldResourceKind)
+                    yieldKind.Add(k);
+
+            YieldResourceKind = yieldKind;
+
+            // Initialize modifiers
             if (modifiers != null)
                 foreach (var m in modifiers)
                 {
                     var isRelevant =
-                        m.ModifierInfo.GameFactorMultiplier.Keys.Any(x =>
-                            x == "AnyResource" || resourceData.AllResourceList.Contains(x));
+                        m.ModifierInfo.GameFactorAmount.Keys.Any(x =>
+                            x == "AnyResource" || resourceData.AllResourceList.Contains(x) && yieldKind.Contains(x));
 
                     if (!isRelevant)
                         continue;
@@ -110,30 +121,24 @@ namespace Infinity.PlanetPop.BuildingCore
                     _modifiers.Add(m);
                 }
 
-            var slotData = GameDataStorage.Instance.GetGameData<PopSlotData>();
-
-            var yieldKind = new HashSet<string>();
-
+            // Initialize slots
             foreach (var kv in prototype.BasePopSlots)
             {
                 var p = slotData[kv.Key];
-
-                foreach (var k in p.YieldResourceKind)
-                    yieldKind.Add(k);
 
                 var slot = new PopSlot(_neuron, p, modifiers);
                 for (var i = 0; i < kv.Value; i++)
                     _popSlots.Add(slot);
             }
 
-            YieldResourceKind = yieldKind;
-
+            // Initialize adjacency bonus
             var adj = prototype.AdjacencyBonus;
 
             AdjacencyBonusMaxLevel = adj.MaxLevel;
             AdjacencyBonusPerLevel = adj.BonusPerLevel;
             AdjacencyBonusDict = adj.BonusChangeInfo;
 
+            // Initialize callbacks
             _neuron.Subscribe<BuildingConstructedSignal>(OnBuildingConstructedSignal);
         }
 

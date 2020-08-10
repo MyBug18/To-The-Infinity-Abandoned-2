@@ -32,6 +32,19 @@ namespace Infinity.GameData
 
         public IReadOnlyDictionary<string, bool> GlobalResourceDict => _globalResourceDict;
 
+        private HashSet<string> _planetaryGameFactor = new HashSet<string>
+        {
+            "PopGrowth",
+            "Amenity",
+            "Crime",
+        };
+
+        private HashSet<string> _globalGameFactor = new HashSet<string>
+        {
+            "XenophobeOpinion",
+            "XenophileOpinion",
+        };
+
         public IReadOnlyList<string> AllResourceList
         {
             get
@@ -69,7 +82,13 @@ namespace Infinity.GameData
             if (_globalResourceDict.ContainsKey(GameFactor))
                 return GameFactorKind.GlobalResource;
 
-            return GameFactorKind.PlanetaryFactor;
+            if (_planetaryGameFactor.Contains(GameFactor))
+                return GameFactorKind.PlanetaryFactor;
+
+            if (_globalGameFactor.Contains(GameFactor))
+                return GameFactorKind.GlobalFactor;
+
+            throw new InvalidOperationException();
         }
 
         private void OnGameInitialized(Game game)

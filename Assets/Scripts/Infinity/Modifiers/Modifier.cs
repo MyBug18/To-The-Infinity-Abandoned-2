@@ -37,7 +37,7 @@ namespace Infinity.Modifiers
 
         public readonly ModifierHolderKind TopHolder;
 
-        public readonly IReadOnlyDictionary<string, int> GameFactorMultiplier;
+        public readonly IReadOnlyDictionary<string, int> GameFactorAmount;
 
         public override bool Equals(object obj)
         {

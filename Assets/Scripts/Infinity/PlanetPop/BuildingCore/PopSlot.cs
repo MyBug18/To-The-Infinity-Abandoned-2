@@ -58,11 +58,12 @@ namespace Infinity.PlanetPop.BuildingCore
             if (modifiers != null)
                 foreach (var m in modifiers)
                 {
-                    var mDict = m.ModifierInfo.GameFactorMultiplier;
+                    var mDict = m.ModifierInfo.GameFactorAmount;
 
                     foreach (var kv in mDict)
                     {
-                        if (!_yieldMultiplier.ContainsKey(kv.Key))
+                        if (!_yieldMultiplier.ContainsKey(kv.Key) &&
+                            (_baseYield.ContainsKey(kv.Key) || kv.Key == "AnyResource"))
                             _yieldMultiplier.Add(kv.Key, 0);
 
                         _yieldMultiplier[kv.Key] += kv.Value;
