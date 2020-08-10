@@ -21,9 +21,9 @@ namespace Infinity.PlanetPop
 
         public readonly Pop Pop;
 
-        public readonly PopWorkingSlot DestinationSlot;
+        public readonly PopSlot DestinationSlot;
 
-        public PopToTrainingCenterSignal(ISignalDispatcherHolder sender, Pop pop, PopWorkingSlot destinationSlot)
+        public PopToTrainingCenterSignal(ISignalDispatcherHolder sender, Pop pop, PopSlot destinationSlot)
         {
             SignalSender = sender;
             Pop = pop;
@@ -37,9 +37,9 @@ namespace Infinity.PlanetPop
 
         public readonly Pop Pop;
 
-        public readonly PopWorkingSlot AssignedSlot;
+        public readonly PopSlot AssignedSlot;
 
-        public PopSlotAssignedSignal(ISignalDispatcherHolder sender, Pop pop, PopWorkingSlot slot)
+        public PopSlotAssignedSignal(ISignalDispatcherHolder sender, Pop pop, PopSlot slot)
         {
             SignalSender = sender;
             Pop = pop;

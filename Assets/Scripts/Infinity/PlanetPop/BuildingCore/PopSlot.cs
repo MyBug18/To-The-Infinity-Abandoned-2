@@ -11,7 +11,7 @@ namespace Infinity.PlanetPop.BuildingCore
         TrainingForHere,
     }
 
-    public class PopWorkingSlot
+    public class PopSlot
     {
         public PopSlotState CurrentState { get; private set; } = PopSlotState.Empty;
 
@@ -45,7 +45,7 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public IReadOnlyList<GameFactorChange> Upkeep => _upkeep;
 
-        public PopWorkingSlot(Neuron buildingNeuron, PopSlotPrototype prototype)
+        public PopSlot(Neuron buildingNeuron, PopSlotPrototype prototype)
         {
             _buildingNeuron = buildingNeuron;
 
@@ -97,11 +97,11 @@ namespace Infinity.PlanetPop.BuildingCore
     {
         public ISignalDispatcherHolder SignalSender { get; }
 
-        public readonly PopWorkingSlot Slot;
+        public readonly PopSlot Slot;
 
         public readonly IReadOnlyDictionary<string, float> YieldDiff, UpkeepDiff;
 
-        public PopSlotStateChangeSignal(ISignalDispatcherHolder sender, PopWorkingSlot slot,
+        public PopSlotStateChangeSignal(ISignalDispatcherHolder sender, PopSlot slot,
             IReadOnlyDictionary<string, float> yieldDiff, IReadOnlyDictionary<string, float> upkeepDiff)
         {
             SignalSender = sender;

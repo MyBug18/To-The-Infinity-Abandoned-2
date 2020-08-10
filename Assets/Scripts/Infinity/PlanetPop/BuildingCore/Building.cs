@@ -25,9 +25,9 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public SignalDispatcher SignalDispatcher { get; }
 
-        private readonly List<PopWorkingSlot> _popSlots = new List<PopWorkingSlot>();
+        private readonly List<PopSlot> _popSlots = new List<PopSlot>();
 
-        public IReadOnlyList<PopWorkingSlot> PopSlots => _popSlots;
+        public IReadOnlyList<PopSlot> PopSlots => _popSlots;
 
         public IReadOnlyDictionary<string, float> YieldFromJob
         {
@@ -106,7 +106,7 @@ namespace Infinity.PlanetPop.BuildingCore
                 foreach (var k in p.YieldResourceKind)
                     yieldKind.Add(k);
 
-                var slot = new PopWorkingSlot(_neuron, p);
+                var slot = new PopSlot(_neuron, p);
                 for (var i = 0; i < kv.Value; i++)
                     _popSlots.Add(slot);
             }

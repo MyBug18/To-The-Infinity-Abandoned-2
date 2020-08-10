@@ -78,10 +78,10 @@ namespace Infinity.PlanetPop
 
         #endregion Resources
 
-        private readonly List<(Pop pop, PopWorkingSlot slot, int RemainTurn)> _trainingCenter =
-            new List<(Pop pop, PopWorkingSlot slot, int RemainTurn)>();
+        private readonly List<(Pop pop, PopSlot slot, int RemainTurn)> _trainingCenter =
+            new List<(Pop pop, PopSlot slot, int RemainTurn)>();
 
-        public IReadOnlyList<(Pop pop, PopWorkingSlot slot, int RemainTurn)> TrainingCenter => _trainingCenter;
+        public IReadOnlyList<(Pop pop, PopSlot slot, int RemainTurn)> TrainingCenter => _trainingCenter;
 
         public IReadOnlyList<Building> Buildings => GetTileObjectList<Building>();
 

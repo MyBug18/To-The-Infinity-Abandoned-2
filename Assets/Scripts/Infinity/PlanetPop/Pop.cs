@@ -47,7 +47,7 @@ namespace Infinity.PlanetPop
             _neuron.Subscribe<PopSlotAssignedSignal>(OnPopSlotAssignedSignal);
         }
 
-        public void ToTrainingCenter(PopWorkingSlot destinationSlot)
+        public void ToTrainingCenter(PopSlot destinationSlot)
         {
             _neuron.SendSignal(new PopToTrainingCenterSignal(this, this, destinationSlot),
                 SignalDirection.Upward);
