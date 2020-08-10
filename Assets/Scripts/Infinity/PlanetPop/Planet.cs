@@ -284,6 +284,8 @@ namespace Infinity.PlanetPop
                 .GetTrainingTime(pttcs.Pop.Aptitude, pttcs.DestinationSlot.Name);
 
             _trainingCenter.Add((pttcs.Pop, pttcs.DestinationSlot, trainingTime));
+            _neuron.SendSignal(new PopTrainingStatusChangeSignal(this, pttcs.DestinationSlot, false),
+                SignalDirection.Downward);
         }
 
         private List<PassiveEventPrototype> OnPassiveEventCheck(List<PassiveEventPrototype> events)

@@ -31,6 +31,22 @@ namespace Infinity.PlanetPop
         }
     }
 
+    public class PopTrainingStatusChangeSignal : ISignal
+    {
+        public ISignalDispatcherHolder SignalSender { get; }
+
+        public readonly PopSlot DestinationSlot;
+
+        public readonly bool IsQuiting;
+
+        public PopTrainingStatusChangeSignal(ISignalDispatcherHolder sender, PopSlot destinationSlot, bool isQuiting)
+        {
+            SignalSender = sender;
+            DestinationSlot = destinationSlot;
+            IsQuiting = isQuiting;
+        }
+    }
+
     public class PopSlotAssignedSignal : ISignal
     {
         public ISignalDispatcherHolder SignalSender { get; }

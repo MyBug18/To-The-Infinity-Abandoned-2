@@ -44,6 +44,7 @@ namespace Infinity.PlanetPop.BuildingCore
         public PopSlot(Neuron buildingNeuron, Building building, PopSlotPrototype prototype, IReadOnlyList<Modifier> modifiers = null)
         {
             buildingNeuron.Subscribe<PopSlotAssignedSignal>(OnPopSlotAssignedSignal);
+            buildingNeuron.Subscribe<PopTrainingStatusChangeSignal>(OnPopTrainingStatusChangeSignal);
 
             Name = prototype.Name;
             Group = prototype.Group;
@@ -100,6 +101,14 @@ namespace Infinity.PlanetPop.BuildingCore
             Pop = psas.Pop;
 
             CurrentState = PopSlotState.Occupied;
+        }
+
+        private void OnPopTrainingStatusChangeSignal(ISignal s)
+        {
+            if (!(s is PopTrainingStatusChangeSignal ptscs)) return;
+            if (ptscs.DestinationSlot != this) return;
+
+            CurrentState = ptscs.IsQuiting ? PopSlotState.Empty : PopSlotState.TrainingForHere;
         }
     }
 

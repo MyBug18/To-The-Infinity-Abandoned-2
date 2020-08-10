@@ -49,6 +49,9 @@ namespace Infinity.PlanetPop
 
         public void ToTrainingCenter(PopSlot destinationSlot)
         {
+            if (destinationSlot.CurrentState != PopSlotState.Empty)
+                throw new InvalidOperationException();
+
             _neuron.SendSignal(new PopToTrainingCenterSignal(this, this, destinationSlot),
                 SignalDirection.Upward);
         }
