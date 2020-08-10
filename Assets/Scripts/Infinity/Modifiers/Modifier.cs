@@ -11,7 +11,7 @@ namespace Infinity.Modifiers
         IndividualPop,
     }
 
-    public struct Modifier
+    public readonly struct Modifier
     {
         public readonly ModifierInfo ModifierInfo;
 

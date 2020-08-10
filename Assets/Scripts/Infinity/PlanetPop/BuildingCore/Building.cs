@@ -95,30 +95,6 @@ namespace Infinity.PlanetPop.BuildingCore
 
             _planet = planet;
 
-            var slotData = GameDataStorage.Instance.GetGameData<PopSlotData>();
-
-            var yieldKind = new HashSet<string>();
-
-            foreach (var kv in prototype.BasePopSlots)
-            {
-                var p = slotData[kv.Key];
-
-                foreach (var k in p.YieldResourceKind)
-                    yieldKind.Add(k);
-
-                var slot = new PopSlot(_neuron, p);
-                for (var i = 0; i < kv.Value; i++)
-                    _popSlots.Add(slot);
-            }
-
-            YieldResourceKind = yieldKind;
-
-            var adj = prototype.AdjacencyBonus;
-
-            AdjacencyBonusMaxLevel = adj.MaxLevel;
-            AdjacencyBonusPerLevel = adj.BonusPerLevel;
-            AdjacencyBonusDict = adj.BonusChangeInfo;
-
             var resourceData = GameDataStorage.Instance.GetGameData<GameFactorData>();
 
             if (modifiers != null)
@@ -132,8 +108,31 @@ namespace Infinity.PlanetPop.BuildingCore
                         continue;
 
                     _modifiers.Add(m);
-                    ApplyModifier(m);
                 }
+
+            var slotData = GameDataStorage.Instance.GetGameData<PopSlotData>();
+
+            var yieldKind = new HashSet<string>();
+
+            foreach (var kv in prototype.BasePopSlots)
+            {
+                var p = slotData[kv.Key];
+
+                foreach (var k in p.YieldResourceKind)
+                    yieldKind.Add(k);
+
+                var slot = new PopSlot(_neuron, p, modifiers);
+                for (var i = 0; i < kv.Value; i++)
+                    _popSlots.Add(slot);
+            }
+
+            YieldResourceKind = yieldKind;
+
+            var adj = prototype.AdjacencyBonus;
+
+            AdjacencyBonusMaxLevel = adj.MaxLevel;
+            AdjacencyBonusPerLevel = adj.BonusPerLevel;
+            AdjacencyBonusDict = adj.BonusChangeInfo;
 
             _neuron.Subscribe<BuildingConstructedSignal>(OnBuildingConstructedSignal);
         }
@@ -161,7 +160,7 @@ namespace Infinity.PlanetPop.BuildingCore
             AdjacencyBonusLevel += level;
         }
 
-        private void ApplyModifier(Modifier modifier)
+        private void AddModifier(Modifier modifier)
         {
 
         }

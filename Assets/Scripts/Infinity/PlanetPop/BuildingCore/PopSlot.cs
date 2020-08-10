@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Infinity.GameData;
+using Infinity.Modifiers;
 
 namespace Infinity.PlanetPop.BuildingCore
 {
@@ -29,9 +29,9 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public IReadOnlyDictionary<string, float> BaseUpkeep => _baseUpkeep;
 
-        public int YieldMultiplier { get; private set; }
+        private Dictionary<string, int> _yieldMultiplier = new Dictionary<string, int>();
 
-        public int UpkeepMultiplier { get; private set; }
+        private Dictionary<string, int> _upkeepMultiplier = new Dictionary<string, int>();
 
         private readonly Neuron _buildingNeuron;
 
@@ -45,7 +45,7 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public IReadOnlyList<GameFactorChange> Upkeep => _upkeep;
 
-        public PopSlot(Neuron buildingNeuron, PopSlotPrototype prototype)
+        public PopSlot(Neuron buildingNeuron, PopSlotPrototype prototype, IReadOnlyList<Modifier> modifiers = null)
         {
             _buildingNeuron = buildingNeuron;
 
@@ -55,14 +55,34 @@ namespace Infinity.PlanetPop.BuildingCore
             Group = prototype.Group;
             Wage = prototype.Wage;
 
+            if (modifiers != null)
+                foreach (var m in modifiers)
+                {
+                    var mDict = m.ModifierInfo.GameFactorMultiplier;
+
+                    foreach (var kv in mDict)
+                    {
+                        if (!_yieldMultiplier.ContainsKey(kv.Key))
+                            _yieldMultiplier.Add(kv.Key, 0);
+
+                        _yieldMultiplier[kv.Key] += kv.Value;
+                    }
+                }
+
             foreach (var y in prototype.Yield)
             {
                 _baseYield.Add(y.FactorType, y.Amount);
 
                 float YieldGetter()
                 {
+                    if (!_yieldMultiplier.TryGetValue(y.FactorType, out var yieldMultiplier))
+                        yieldMultiplier = 0;
+
+                    if (_yieldMultiplier.TryGetValue("AnyResource", out var anyResource))
+                        yieldMultiplier += anyResource;
+
                     return CurrentState == PopSlotState.Occupied
-                        ? _baseYield[y.FactorType] * (1 + YieldMultiplier / 100f) * (1 + Pop.YieldMultiplier / 100f)
+                        ? _baseYield[y.FactorType] * (1 + yieldMultiplier / 100f) * (1 + Pop.YieldMultiplier / 100f)
                         : 0;
                 }
 
@@ -75,13 +95,24 @@ namespace Infinity.PlanetPop.BuildingCore
 
                 float UpkeepGetter()
                 {
+                    if (!_yieldMultiplier.TryGetValue(u.FactorType, out var upkeepMultiplier))
+                        upkeepMultiplier = 0;
+
+                    if (_yieldMultiplier.TryGetValue("AnyResource", out var anyResource))
+                        upkeepMultiplier += anyResource;
+
                     return CurrentState == PopSlotState.Occupied
-                        ? _baseUpkeep[u.FactorType] * (1 + UpkeepMultiplier / 100f) * (1 + Pop.UpkeepMultiplier / 100f)
+                        ? _baseUpkeep[u.FactorType] * (1 + upkeepMultiplier / 100f) * (1 + Pop.UpkeepMultiplier / 100f)
                         : 0;
                 }
 
                 _upkeep.Add(new GameFactorChange(UpkeepGetter, u.FactorType));
             }
+        }
+
+        private void AddModifier(Modifier m)
+        {
+
         }
 
         private void OnPopSlotAssignedSignal(ISignal s)
