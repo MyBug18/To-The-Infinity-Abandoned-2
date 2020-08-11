@@ -12,6 +12,8 @@ namespace Infinity.PlanetPop
 
         private readonly Neuron _planetNeuron;
 
+        private Planet _planet;
+
         public IReadOnlyList<Modifier> Modifiers => _modifiers;
 
         public string Name { get; private set; }
@@ -24,7 +26,15 @@ namespace Infinity.PlanetPop
 
         public const int BaseHappiness = 50;
 
-        public int HappinessAdder { get; private set; }
+        public int HappinessAdder
+        {
+            get
+            {
+                var fromPlanet = 0;
+
+                return fromPlanet;
+            }
+        }
 
         public int Happiness => Math.Max(0, Math.Min(100, BaseHappiness + HappinessAdder));
 
@@ -32,8 +42,9 @@ namespace Infinity.PlanetPop
 
         public int UpkeepMultiplier => 0;
 
-        public Pop(Neuron planetNeuron, string name, HexTileCoord initialCoord)
+        public Pop(Planet planet, Neuron planetNeuron, string name, HexTileCoord initialCoord)
         {
+            _planet = planet;
             _planetNeuron = planetNeuron;
 
             Name = name;

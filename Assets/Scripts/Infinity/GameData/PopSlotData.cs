@@ -7,8 +7,6 @@ namespace Infinity.GameData
 {
     public class PopSlotData : IGameData
     {
-        public string DataName => nameof(PopSlotData);
-
         private readonly string _dataPath = Path.Combine(Application.streamingAssetsPath, "GameData", "PopSlotData");
 
         private readonly Dictionary<string, PopSlotPrototype> _prototypeDict =

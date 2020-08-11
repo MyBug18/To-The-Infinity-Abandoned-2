@@ -7,8 +7,6 @@ namespace Infinity.GameData
 {
     public class BuildingData : IGameData
     {
-        public string DataName => nameof(BuildingData);
-
         private readonly string _dataPath = Path.Combine(Application.streamingAssetsPath, "GameData", "BuildingData");
 
         private readonly Dictionary<string, BuildingPrototype> _prototypeDict = new Dictionary<string, BuildingPrototype>();

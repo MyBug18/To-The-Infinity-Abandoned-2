@@ -41,7 +41,7 @@ namespace Infinity
 
         private void InitializeGameData()
         {
-            _gameDataDict[typeof(GameFactorData)] = new GameFactorData(_gameInitializedSender);
+            _gameDataDict[typeof(GameFactorResourceData)] = new GameFactorResourceData(_gameInitializedSender);
             _gameDataDict[typeof(BuildingData)] = new BuildingData(_gameInitializedSender);
             _gameDataDict[typeof(PopSlotData)] = new PopSlotData();
 

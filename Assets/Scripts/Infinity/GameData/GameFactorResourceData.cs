@@ -15,14 +15,12 @@ namespace Infinity.GameData
         GlobalFactor,
     }
 
-    public class GameFactorData : IGameData
+    public class GameFactorResourceData : IGameData
     {
         private readonly string _dataPath =
             Path.Combine(Application.streamingAssetsPath, "GameData", "BuildingData", "ResourceData.json");
 
         private Game _game;
-
-        public string DataName { get; }
 
         private readonly Dictionary<string, bool> _planetaryResourceDict = new Dictionary<string, bool>();
 
@@ -32,33 +30,36 @@ namespace Infinity.GameData
 
         public IReadOnlyDictionary<string, bool> GlobalResourceDict => _globalResourceDict;
 
-        private HashSet<string> _planetaryGameFactor = new HashSet<string>
+        private readonly HashSet<string> _planetaryGameFactor = new HashSet<string>
         {
             "PopGrowth",
             "Amenity",
             "Crime",
         };
 
-        private HashSet<string> _globalGameFactor = new HashSet<string>
+        private readonly HashSet<string> _globalGameFactor = new HashSet<string>
         {
             "XenophobeOpinion",
             "XenophileOpinion",
         };
 
-        public IReadOnlyList<string> AllResourceList
+        public IReadOnlyCollection<string> AllResourceSet
         {
             get
             {
-                var result = new List<string>();
+                var result = new HashSet<string>();
 
-                result.AddRange(_planetaryResourceDict.Keys);
-                result.AddRange(_globalResourceDict.Keys);
+                foreach (var s in _planetaryResourceDict.Keys)
+                    result.Add(s);
+
+                foreach (var s in _globalResourceDict.Keys)
+                    result.Add(s);
 
                 return result;
             }
         }
 
-        public GameFactorData(GameInitializedEventSender sender)
+        public GameFactorResourceData(GameInitializedEventSender sender)
         {
             sender.Subscribe(OnGameInitialized);
         }

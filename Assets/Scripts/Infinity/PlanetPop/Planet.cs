@@ -125,7 +125,7 @@ namespace Infinity.PlanetPop
 
         private void InitializeResourceKeep()
         {
-            foreach (var kv in GameDataStorage.Instance.GetGameData<GameFactorData>().PlanetaryResourceDict)
+            foreach (var kv in GameDataStorage.Instance.GetGameData<GameFactorResourceData>().PlanetaryResourceDict)
             {
                 if (kv.Value)
                     _currentResourceKeep.Add(kv.Key, 0);
@@ -160,7 +160,7 @@ namespace Infinity.PlanetPop
 
         private void ApplyModifierChange(Modifier m, bool IsAdding)
         {
-            var resourceData = GameDataStorage.Instance.GetGameData<GameFactorData>();
+            var resourceData = GameDataStorage.Instance.GetGameData<GameFactorResourceData>();
 
             foreach (var kv in m.ModifierInfo.GameFactorAmount)
             {
@@ -235,7 +235,7 @@ namespace Infinity.PlanetPop
 
             if (CurrentPopGrowth < 100) return;
 
-            var newPop = new Pop(_neuron, "TestPop", new HexTileCoord(_tileMap.Radius, _tileMap.Radius));
+            var newPop = new Pop(this, _neuron, "TestPop", new HexTileCoord(_tileMap.Radius, _tileMap.Radius));
             _neuron.SendSignal(new PopBirthSignal(this, newPop), SignalDirection.Upward);
             _unemployedPops.Add(newPop);
         }

@@ -99,7 +99,7 @@ namespace Infinity.PlanetPop.BuildingCore
 
             _planet = planet;
 
-            var resourceData = GameDataStorage.Instance.GetGameData<GameFactorData>();
+            var resourceData = GameDataStorage.Instance.GetGameData<GameFactorResourceData>();
             var slotData = GameDataStorage.Instance.GetGameData<PopSlotData>();
 
             // Initialize yield kind
@@ -117,7 +117,7 @@ namespace Infinity.PlanetPop.BuildingCore
                 {
                     var isRelevant =
                         m.ModifierInfo.GameFactorAmount.Keys.Any(x =>
-                            x == "AnyResource" || resourceData.AllResourceList.Contains(x) && yieldKind.Contains(x));
+                            x == "AnyResource" || resourceData.AllResourceSet.Contains(x) && yieldKind.Contains(x));
 
                     if (!isRelevant)
                         continue;

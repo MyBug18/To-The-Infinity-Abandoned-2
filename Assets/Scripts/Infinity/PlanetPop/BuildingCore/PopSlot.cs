@@ -51,7 +51,7 @@ namespace Infinity.PlanetPop.BuildingCore
             Group = prototype.Group;
             Wage = prototype.Wage;
 
-            var resourceData = GameDataStorage.Instance.GetGameData<GameFactorData>();
+            var resourceData = GameDataStorage.Instance.GetGameData<GameFactorResourceData>();
 
             var yieldModifierMultiplier = building.YieldMultiplierFromModifier;
 
@@ -64,7 +64,7 @@ namespace Infinity.PlanetPop.BuildingCore
                     if (CurrentState != PopSlotState.Occupied) return 0;
 
                     // do not apply any multiplier if it's not a resource
-                    if (!resourceData.AllResourceList.Contains(y.FactorType))
+                    if (!resourceData.AllResourceSet.Contains(y.FactorType))
                         return _baseYield[y.FactorType];
 
                     if (!yieldModifierMultiplier.TryGetValue(y.FactorType, out var yieldMultiplier))

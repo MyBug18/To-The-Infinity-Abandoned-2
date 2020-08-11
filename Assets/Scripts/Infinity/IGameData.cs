@@ -2,8 +2,6 @@
 {
     public interface IGameData
     {
-        string DataName { get; }
-
         void Load();
     }
 }
