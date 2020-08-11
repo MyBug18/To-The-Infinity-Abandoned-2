@@ -94,9 +94,18 @@ namespace Infinity.PlanetPop
 
         #endregion GameFactor
 
+        #region Building
+
         public IReadOnlyList<Building> Buildings => GetTileObjectList<Building>();
 
         public readonly PlanetBuildingFactory BuildingFactory;
+
+        private readonly Dictionary<HexTileCoord, BuildingPrototype> _ongoingConstructions =
+            new Dictionary<HexTileCoord, BuildingPrototype>();
+
+        public IReadOnlyDictionary<HexTileCoord, BuildingPrototype> OngoingConstructions => _ongoingConstructions;
+
+        #endregion Building
 
         private readonly List<Modifier> _modifiers = new List<Modifier>();
 
@@ -113,6 +122,7 @@ namespace Infinity.PlanetPop
             _neuron.Subscribe<BuildingQueueEndedSignal>(OnBuildingQueueEndedSignal);
             _neuron.Subscribe<GameCommandSignal>(OnGameCommandSignal);
             _neuron.Subscribe<ModifierSignal>(OnModifierSignal);
+            _neuron.Subscribe<BuildingQueueChangeSignal>(OnBuildingQueueChangeSignal);
 
             _neuron.EventConditionPasser.SetRefiner(OnPassiveEventCheck);
 
@@ -317,6 +327,20 @@ namespace Infinity.PlanetPop
             }
 
             return passed;
+        }
+
+        private void OnBuildingQueueChangeSignal(ISignal s)
+        {
+            if (!(s is BuildingQueueChangeSignal bqcs)) return;
+
+            if (bqcs.IsRemoved)
+            {
+                _ongoingConstructions.Remove(bqcs.Coord);
+            }
+            else
+            {
+                _ongoingConstructions.Add(bqcs.Coord, bqcs.Prototype);
+            }
         }
 
         PlanetStatus IPlanet.GetPlanetStatus() => _pops.Count > 0 ? PlanetStatus.Colonized : PlanetStatus.Inhabitable;

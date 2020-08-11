@@ -11,7 +11,7 @@ namespace Infinity.PlanetPop.BuildingCore
 
         private readonly Planet _planet;
 
-        private BuildingData _buildingData;
+        private readonly BuildingData _buildingData;
 
         private readonly List<(BuildingQueueElement Element, int LeftTurn)> _constructionQueue =
             new List<(BuildingQueueElement Element, int LeftTurn)>();
@@ -30,10 +30,54 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public void StartConstruction(string buildingName, HexTileCoord coord)
         {
+            if (_planet.OngoingConstructions.ContainsKey(coord))
+                throw new InvalidOperationException();
+
             //TODO: Add resource consumption
             var prototype = _buildingData[buildingName];
             var newElement = new BuildingQueueElement(prototype, coord);
             _constructionQueue.Add((newElement, prototype.BaseConstructTime));
+
+            _planetNeuron.SendSignal(new BuildingQueueChangeSignal(_planet, coord, prototype, false),
+                SignalDirection.Local);
+        }
+
+        public void CancelConstruction(int index)
+        {
+            if (index < 0 || index > _constructionQueue.Count - 1)
+                throw new IndexOutOfRangeException();
+
+            var (element, _) = _constructionQueue[index];
+            _constructionQueue.RemoveAt(index);
+
+            _planetNeuron.SendSignal(new BuildingQueueChangeSignal(_planet, element.Coord, element.Prototype, true),
+                SignalDirection.Local);
+        }
+
+        public void CancelConstruction(HexTileCoord coord)
+        {
+            if (!_planet.OngoingConstructions.ContainsKey(coord))
+                throw new InvalidOperationException();
+
+            BuildingQueueElement element = null;
+
+            var walker = 0;
+            for (; walker < _constructionQueue.Count; walker++)
+            {
+                var (elem, _) = _constructionQueue[walker];
+                if (elem.Coord != coord) continue;
+
+                element = elem;
+                break;
+            }
+
+            if (element == null)
+                throw new InvalidOperationException();
+
+            _constructionQueue.RemoveAt(walker);
+
+            _planetNeuron.SendSignal(new BuildingQueueChangeSignal(_planet, element.Coord, element.Prototype, true),
+                SignalDirection.Local);
         }
 
         private void ProceedConstruction(ISignal s)
@@ -87,6 +131,26 @@ namespace Infinity.PlanetPop.BuildingCore
             Prototype = prototype;
             Coord = coord;
             IsUpgrading = isUpgrading;
+        }
+    }
+
+    public class BuildingQueueChangeSignal : ISignal
+    {
+        public ISignalDispatcherHolder SignalSender { get; }
+
+        public readonly HexTileCoord Coord;
+
+        public readonly BuildingPrototype Prototype;
+
+        public readonly bool IsRemoved;
+
+        public BuildingQueueChangeSignal(ISignalDispatcherHolder sender, HexTileCoord coord,
+            BuildingPrototype prototype, bool isRemoved)
+        {
+            SignalSender = sender;
+            Coord = coord;
+            Prototype = prototype;
+            IsRemoved = isRemoved;
         }
     }
 
