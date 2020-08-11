@@ -34,5 +34,7 @@ namespace Infinity
 
             return result;
         }
+
+        public static int ClampInt(int min, int max, int n) => Mathf.Min(Mathf.Max(n, min), max);
     }
 }

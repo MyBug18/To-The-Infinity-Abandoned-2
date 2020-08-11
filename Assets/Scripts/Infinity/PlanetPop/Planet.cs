@@ -67,13 +67,11 @@ namespace Infinity.PlanetPop
 
         #endregion Pop
 
-        #region Resources
+        #region GameFactor
 
         private readonly Dictionary<string, float> _currentResourceKeep;
 
         public IReadOnlyDictionary<string, float> CurrentResourceKeep => _currentResourceKeep;
-
-        public IReadOnlyDictionary<string, float> YieldFromJob => _yieldFromJobCache;
 
         private Dictionary<string, float> _yieldFromJobCache = new Dictionary<string, float>();
 
@@ -81,7 +79,20 @@ namespace Infinity.PlanetPop
 
         private Dictionary<string, float> _upkeepFromJobCache = new Dictionary<string, float>();
 
-        #endregion Resources
+        public float AmenitySupplyFromJob
+        {
+            get
+            {
+                if (!_yieldFromJobCache.TryGetValue("Amenity", out var result))
+                    return 0;
+
+                return result;
+            }
+        }
+
+        public float Amenity => AmenitySupplyFromJob - _pops.Count;
+
+        #endregion GameFactor
 
         public IReadOnlyList<Building> Buildings => GetTileObjectList<Building>();
 

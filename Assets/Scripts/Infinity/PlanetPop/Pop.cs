@@ -30,9 +30,9 @@ namespace Infinity.PlanetPop
         {
             get
             {
-                var fromPlanet = 0;
+                var fromPlanetAmenity = _planet.Amenity / (_planet.Pops.Count / 5f);
 
-                return fromPlanet;
+                return (int) fromPlanetAmenity;
             }
         }
 
