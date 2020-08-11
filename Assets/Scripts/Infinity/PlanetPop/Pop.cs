@@ -6,15 +6,11 @@ using Infinity.PlanetPop.BuildingCore;
 
 namespace Infinity.PlanetPop
 {
-    public class Pop : IModifierHolder, ISignalDispatcherHolder
+    public class Pop : IModifierHolder
     {
-        public Type HolderType => typeof(Pop);
-
-        private readonly Neuron _neuron;
-
-        public SignalDispatcher SignalDispatcher { get; }
-
         private readonly List<Modifier> _modifiers = new List<Modifier>();
+
+        private readonly Neuron _planetNeuron;
 
         public IReadOnlyList<Modifier> Modifiers => _modifiers;
 
@@ -36,15 +32,14 @@ namespace Infinity.PlanetPop
 
         public int UpkeepMultiplier => 0;
 
-        public Pop(Neuron parentNeuron, string name, HexTileCoord initialCoord)
+        public Pop(Neuron planetNeuron, string name, HexTileCoord initialCoord)
         {
-            _neuron = parentNeuron.GetChildNeuron(this);
-            SignalDispatcher = new SignalDispatcher(_neuron);
+            _planetNeuron = planetNeuron;
 
             Name = name;
             CurrentCoord = initialCoord;
 
-            _neuron.Subscribe<PopSlotAssignedSignal>(OnPopSlotAssignedSignal);
+            _planetNeuron.Subscribe<PopSlotAssignedSignal>(OnPopSlotAssignedSignal);
         }
 
         public void ToTrainingCenter(PopSlot destinationSlot)
@@ -52,8 +47,8 @@ namespace Infinity.PlanetPop
             if (destinationSlot.CurrentState != PopSlotState.Empty)
                 throw new InvalidOperationException();
 
-            _neuron.SendSignal(new PopToTrainingCenterSignal(this, this, destinationSlot),
-                SignalDirection.Upward);
+            _planetNeuron.SendSignal(new PopToTrainingCenterSignal(_planetNeuron.Holder, this, destinationSlot),
+                SignalDirection.Local);
         }
 
         private void OnPopSlotAssignedSignal(ISignal s)

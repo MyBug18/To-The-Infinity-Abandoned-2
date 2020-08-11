@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Infinity.GameData;
 using Infinity.Modifiers;
 
@@ -50,6 +51,8 @@ namespace Infinity.PlanetPop.BuildingCore
             Group = prototype.Group;
             Wage = prototype.Wage;
 
+            var resourceData = GameDataStorage.Instance.GetGameData<GameFactorData>();
+
             var yieldModifierMultiplier = building.YieldMultiplierFromModifier;
 
             foreach (var y in prototype.Yield)
@@ -58,15 +61,19 @@ namespace Infinity.PlanetPop.BuildingCore
 
                 float YieldGetter()
                 {
+                    if (CurrentState != PopSlotState.Occupied) return 0;
+
+                    // do not apply any multiplier if it's not a resource
+                    if (!resourceData.AllResourceList.Contains(y.FactorType))
+                        return _baseYield[y.FactorType];
+
                     if (!yieldModifierMultiplier.TryGetValue(y.FactorType, out var yieldMultiplier))
                         yieldMultiplier = 0;
 
                     if (yieldModifierMultiplier.TryGetValue("AnyResource", out var anyResource))
                         yieldMultiplier += anyResource;
 
-                    return CurrentState == PopSlotState.Occupied
-                        ? _baseYield[y.FactorType] * (1 + yieldMultiplier / 100f) * (1 + Pop.YieldMultiplier / 100f)
-                        : 0;
+                    return _baseYield[y.FactorType] * (1 + yieldMultiplier / 100f) * (1 + Pop.YieldMultiplier / 100f);
                 }
 
                 _yield.Add(new GameFactorChange(YieldGetter, y.FactorType));
@@ -78,6 +85,8 @@ namespace Infinity.PlanetPop.BuildingCore
 
                 float UpkeepGetter()
                 {
+                    if (CurrentState != PopSlotState.Occupied) return 0;
+
                     if (!_upkeepMultiplier.TryGetValue(u.FactorType, out var upkeepMultiplier))
                         upkeepMultiplier = 0;
 

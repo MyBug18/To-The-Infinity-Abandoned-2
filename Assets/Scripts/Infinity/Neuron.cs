@@ -56,13 +56,13 @@ namespace Infinity
         private readonly Neuron _parentNeuron;
         private readonly List<Neuron> _childNeurons = new List<Neuron>();
 
-        private readonly ISignalDispatcherHolder _holder;
+        public readonly ISignalDispatcherHolder Holder;
 
         public readonly EventConditionPasser EventConditionPasser;
 
         private Neuron(ISignalDispatcherHolder holder)
         {
-            _holder = holder;
+            Holder = holder;
             _parentNeuron = null;
             EventConditionPasser = new EventConditionPasser(_childNeurons);
         }
@@ -74,7 +74,7 @@ namespace Infinity
 
         private Neuron(ISignalDispatcherHolder holder, Neuron parentNeuron)
         {
-            _holder = holder;
+            Holder = holder;
             _parentNeuron = parentNeuron;
             EventConditionPasser = new EventConditionPasser(_childNeurons);
         }
@@ -139,7 +139,7 @@ namespace Infinity
 
         public void RemoveChild(ISignalDispatcherHolder holder)
         {
-            _childNeurons.RemoveAll(x => x._holder == holder);
+            _childNeurons.RemoveAll(x => x.Holder == holder);
         }
     }
 
