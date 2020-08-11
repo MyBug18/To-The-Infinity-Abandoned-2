@@ -79,9 +79,9 @@ namespace Infinity.PlanetPop
 
         public IReadOnlyDictionary<string, float> UpkeepFromJob => _upkeepFromJobCache;
 
-        private Dictionary<string, float> _yieldFromBuilding = new Dictionary<string, float>();
+        private readonly Dictionary<string, float> _yieldFromBuilding = new Dictionary<string, float>();
 
-        private Dictionary<string, float> _upkeepFromBuilding = new Dictionary<string, float>();
+        private readonly Dictionary<string, float> _upkeepFromBuilding = new Dictionary<string, float>();
 
         public float AmenitySupplyFromJob
         {
@@ -290,6 +290,23 @@ namespace Infinity.PlanetPop
                 removeIdx.Add(i);
 
                 _neuron.SendSignal(new PopSlotAssignedSignal(this, pop, slot), SignalDirection.Downward);
+
+                // Apply resource changes occured by pop assignment
+                foreach (var change in slot.Yield)
+                {
+                    if (!_yieldFromJobCache.ContainsKey(change.FactorType))
+                        _yieldFromJobCache.Add(change.FactorType, 0);
+
+                    _yieldFromJobCache[change.FactorType] += change.Amount;
+                }
+
+                foreach (var change in slot.Upkeep)
+                {
+                    if (!_upkeepFromJobCache.ContainsKey(change.FactorType))
+                        _upkeepFromJobCache.Add(change.FactorType, 0);
+
+                    _upkeepFromJobCache[change.FactorType] += change.Amount;
+                }
             }
 
             for (var i = removeIdx.Count - 1; i >= 0; i--)
@@ -311,18 +328,18 @@ namespace Infinity.PlanetPop
 
             foreach (var kv in building.YieldFromBuilding)
             {
-                if (!_yieldFromBuilding.TryGetValue(kv.Key, out var value))
+                if (!_yieldFromBuilding.ContainsKey(kv.Key))
                     _yieldFromBuilding.Add(kv.Key, 0);
 
-                _yieldFromBuilding[kv.Key] += value;
+                _yieldFromBuilding[kv.Key] += kv.Value;
             }
 
             foreach (var kv in building.UpkeepFromBuilding)
             {
-                if (!_upkeepFromBuilding.TryGetValue(kv.Key, out var value))
+                if (!_upkeepFromBuilding.ContainsKey(kv.Key))
                     _upkeepFromBuilding.Add(kv.Key, 0);
 
-                _upkeepFromBuilding[kv.Key] += value;
+                _upkeepFromBuilding[kv.Key] += kv.Value;
             }
 
             _neuron.SendSignal(new BuildingConstructedSignal(this, building.Name, coord), SignalDirection.Downward);
