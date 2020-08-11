@@ -69,15 +69,19 @@ namespace Infinity.PlanetPop
 
         #region GameFactor
 
-        private readonly Dictionary<string, float> _currentResourceKeep;
+        private readonly Dictionary<string, float> _currentResourceKeep = new Dictionary<string, float>();
 
         public IReadOnlyDictionary<string, float> CurrentResourceKeep => _currentResourceKeep;
 
         private Dictionary<string, float> _yieldFromJobCache = new Dictionary<string, float>();
 
+        private Dictionary<string, float> _upkeepFromJobCache = new Dictionary<string, float>();
+
         public IReadOnlyDictionary<string, float> UpkeepFromJob => _upkeepFromJobCache;
 
-        private Dictionary<string, float> _upkeepFromJobCache = new Dictionary<string, float>();
+        private Dictionary<string, float> _yieldFromBuilding = new Dictionary<string, float>();
+
+        private Dictionary<string, float> _upkeepFromBuilding = new Dictionary<string, float>();
 
         public float AmenitySupplyFromJob
         {
@@ -90,7 +94,18 @@ namespace Infinity.PlanetPop
             }
         }
 
-        public float Amenity => AmenitySupplyFromJob - _pops.Count;
+        public float AmenitySupplyFromBuilding
+        {
+            get
+            {
+                if (!_yieldFromBuilding.TryGetValue("Amenity", out var result))
+                    return 0;
+
+                return result;
+            }
+        }
+
+        public float Amenity => AmenitySupplyFromJob + AmenitySupplyFromBuilding - _pops.Count;
 
         #endregion GameFactor
 
@@ -119,9 +134,9 @@ namespace Infinity.PlanetPop
             BuildingFactory = new PlanetBuildingFactory(_neuron, this);
 
             _neuron.Subscribe<PopToTrainingCenterSignal>(OnPopToTrainingCenterSignal);
-            _neuron.Subscribe<BuildingQueueEndedSignal>(OnBuildingQueueEndedSignal);
             _neuron.Subscribe<GameCommandSignal>(OnGameCommandSignal);
             _neuron.Subscribe<ModifierSignal>(OnModifierSignal);
+            _neuron.Subscribe<BuildingQueueEndedSignal>(OnBuildingQueueEndedSignal);
             _neuron.Subscribe<BuildingQueueChangeSignal>(OnBuildingQueueChangeSignal);
 
             _neuron.EventConditionPasser.SetRefiner(OnPassiveEventCheck);
@@ -192,7 +207,7 @@ namespace Infinity.PlanetPop
             }
         }
 
-        private Dictionary<string, float> GetBuildingYield()
+        private Dictionary<string, float> GetBuildingYieldFromJob()
         {
             var result = new Dictionary<string, float>();
 
@@ -210,7 +225,7 @@ namespace Infinity.PlanetPop
             return result;
         }
 
-        private Dictionary<string, float> GetBuildingUpkeep()
+        private Dictionary<string, float> GetBuildingUpkeepFromJob()
         {
             var result = new Dictionary<string, float>();
 
@@ -230,8 +245,8 @@ namespace Infinity.PlanetPop
 
         private void RecalculateJobResources()
         {
-            _yieldFromJobCache = GetBuildingYield();
-            _upkeepFromJobCache = GetBuildingUpkeep();
+            _yieldFromJobCache = GetBuildingYieldFromJob();
+            _upkeepFromJobCache = GetBuildingUpkeepFromJob();
         }
 
         private void OnGameCommandSignal(ISignal s)
@@ -293,6 +308,22 @@ namespace Infinity.PlanetPop
             var building = new Building(_neuron, bqes.QueueElement.Prototype, this, coord, modifiers);
 
             _tileMap.AddTileObject(coord, building);
+
+            foreach (var kv in building.YieldFromBuilding)
+            {
+                if (!_yieldFromBuilding.TryGetValue(kv.Key, out var value))
+                    _yieldFromBuilding.Add(kv.Key, 0);
+
+                _yieldFromBuilding[kv.Key] += value;
+            }
+
+            foreach (var kv in building.UpkeepFromBuilding)
+            {
+                if (!_upkeepFromBuilding.TryGetValue(kv.Key, out var value))
+                    _upkeepFromBuilding.Add(kv.Key, 0);
+
+                _upkeepFromBuilding[kv.Key] += value;
+            }
 
             _neuron.SendSignal(new BuildingConstructedSignal(this, building.Name, coord), SignalDirection.Downward);
         }

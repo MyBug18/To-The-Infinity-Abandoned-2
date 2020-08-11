@@ -7,7 +7,14 @@
     "TileState": "(!Mountain & (!Plain | Sea)) | Plain",
     "AroundBuildings": "AlloyBuilding > 1 & Generator > 0"
   },
-  "BaseSlots":{
+  "BuildingYield": {
+    "Amenity": 10,
+    "Energy": 3
+  },
+  "BuildingUpkeep": {
+    "Energy": 3
+  },
+  "BaseSlots": {
     "TestPopSlot" : 2
   },
   "AdjacencyBonus": {

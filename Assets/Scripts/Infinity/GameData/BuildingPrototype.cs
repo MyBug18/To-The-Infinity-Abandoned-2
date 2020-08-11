@@ -17,6 +17,14 @@ namespace Infinity.GameData
 
         public readonly int BaseConstructCost;
 
+        private readonly Dictionary<string, float> _buildingYield;
+
+        public IReadOnlyDictionary<string, float> BuildingYield => _buildingYield;
+
+        private readonly Dictionary<string, float> _buildingUpkeep;
+
+        public IReadOnlyDictionary<string, float> BuildingUpkeep => _buildingUpkeep;
+
         private readonly Dictionary<string, int> _basePopSlots;
 
         public IReadOnlyDictionary<string, int> BasePopSlots => _basePopSlots;
@@ -38,6 +46,9 @@ namespace Infinity.GameData
             Name = (string)primary["Name"];
             BaseConstructTime = Convert.ToInt32(primary["BaseConstructTime"]);
             BaseConstructCost = Convert.ToInt32(primary["BaseConstructCost"]);
+
+            _buildingYield = JObject.FromObject(primary["BuildingYield"]).ToObject<Dictionary<string, float>>();
+            _buildingUpkeep = JObject.FromObject(primary["BuildingUpkeep"]).ToObject<Dictionary<string, float>>();
 
             // TODO: Should check whether the slot really exists
             _basePopSlots = JObject.FromObject(primary["BaseSlots"]).ToObject<Dictionary<string, int>>();

@@ -73,6 +73,10 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public IReadOnlyDictionary<string, float> YieldMultiplierFromModifier => _yieldMultiplierFromModifier;
 
+        public IReadOnlyDictionary<string, float> YieldFromBuilding;
+
+        public IReadOnlyDictionary<string, float> UpkeepFromBuilding;
+
         #region AdjacencyBonus
 
         public int AdjacencyBonusLevel { get; private set; }
@@ -98,6 +102,9 @@ namespace Infinity.PlanetPop.BuildingCore
             HexCoord = coord;
 
             _planet = planet;
+
+            YieldFromBuilding = prototype.BuildingYield;
+            UpkeepFromBuilding = prototype.BuildingUpkeep;
 
             var resourceData = GameDataStorage.Instance.GetGameData<GameFactorResourceData>();
             var slotData = GameDataStorage.Instance.GetGameData<PopSlotData>();
