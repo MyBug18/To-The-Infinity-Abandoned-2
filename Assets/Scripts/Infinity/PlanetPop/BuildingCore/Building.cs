@@ -23,8 +23,6 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public IReadOnlyList<Modifier> Modifiers => _modifiers;
 
-        public SignalDispatcher SignalDispatcher { get; }
-
         private readonly List<PopSlot> _popSlots = new List<PopSlot>();
 
         public IReadOnlyList<PopSlot> PopSlots => _popSlots;
@@ -96,7 +94,6 @@ namespace Infinity.PlanetPop.BuildingCore
             IReadOnlyList<Modifier> modifiers = null)
         {
             _neuron = parentNeuron.GetChildNeuron(this);
-            SignalDispatcher = new SignalDispatcher(_neuron);
 
             Name = prototype.Name;
             HexCoord = coord;

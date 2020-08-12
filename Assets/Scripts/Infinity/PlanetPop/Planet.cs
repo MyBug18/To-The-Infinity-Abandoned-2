@@ -34,15 +34,9 @@ namespace Infinity.PlanetPop
 
         #endregion ITileMapHolder
 
-        #region ISignalDispatcher
-
         private readonly Neuron _neuron;
 
         Type ISignalDispatcherHolder.HolderType => typeof(Planet);
-
-        public SignalDispatcher SignalDispatcher { get; }
-
-        #endregion ISignalDispatcher
 
         #region Pop
 
@@ -110,7 +104,6 @@ namespace Infinity.PlanetPop
         public Planet(Neuron parentNeuron, string name, HexTileCoord coord, int size)
         {
             _neuron = parentNeuron.GetChildNeuron(this);
-            SignalDispatcher = new SignalDispatcher(_neuron);
 
             BuildingFactory = new PlanetBuildingFactory(_neuron, this);
 

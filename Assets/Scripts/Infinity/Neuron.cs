@@ -22,31 +22,6 @@ namespace Infinity
     public interface ISignalDispatcherHolder
     {
         Type HolderType { get; }
-
-        SignalDispatcher SignalDispatcher { get; }
-    }
-
-    /// <summary>
-    /// Wrapper class of Neuron, without sending signal
-    /// </summary>
-    public class SignalDispatcher
-    {
-        private readonly Neuron _neuron;
-
-        public SignalDispatcher(Neuron neuron)
-        {
-            _neuron = neuron;
-        }
-
-        public void Subscribe<T>(Action<ISignal> c) where T : ISignal
-        {
-            _neuron.Subscribe<T>(c);
-        }
-
-        public void UnSubscribe<T>(Action<ISignal> c) where T : ISignal
-        {
-            _neuron.UnSubscribe<T>(c);
-        }
     }
 
     public class Neuron

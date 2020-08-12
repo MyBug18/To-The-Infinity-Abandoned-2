@@ -34,9 +34,6 @@ namespace Infinity
 
         Type ISignalDispatcherHolder.HolderType => typeof(Game);
 
-        [JsonIgnore]
-        public SignalDispatcher SignalDispatcher { get; }
-
         private readonly TileMap _tileMap;
 
         public int TileMapRadius => _tileMap.Radius;
@@ -56,7 +53,6 @@ namespace Infinity
         public Game(string dataPath)
         {
             _neuron = Neuron.GetNeuronForGame(this);
-            SignalDispatcher = new SignalDispatcher(_neuron);
             _neuron.EventConditionPasser.SetRefiner(OnPassiveEventCheck);
 
             _tileMap = new TileMap(6, _neuron);

@@ -31,14 +31,11 @@ namespace Infinity.GalaxySystem
 
         Type ISignalDispatcherHolder.HolderType => typeof(StarSystem);
 
-        public SignalDispatcher SignalDispatcher { get; }
-
         private readonly Neuron _neuron;
 
         public StarSystem(Neuron parentNeuron)
         {
             _neuron = parentNeuron.GetChildNeuron(this);
-            SignalDispatcher = new SignalDispatcher(_neuron);
 
             Size = 6;
             Name = "TestSystem";
