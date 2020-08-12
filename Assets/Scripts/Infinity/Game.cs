@@ -42,13 +42,9 @@ namespace Infinity
 
         public IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] => _tileMap[coord];
 
-        private readonly List<string> _availableBuildings = new List<string>();
+        private readonly HashSet<string> _availableBuildings = new HashSet<string>();
 
-        public IReadOnlyList<string> AvailableBuildings => _availableBuildings;
-
-        private readonly List<string> _availableResources = new List<string>();
-
-        public IReadOnlyList<string> AvailableResources => _availableResources;
+        public IReadOnlyCollection<string> AvailableBuildings => _availableBuildings;
 
         public Game(string dataPath)
         {

@@ -21,19 +21,17 @@ namespace Infinity.GameData
         private readonly string _dataPath =
             Path.Combine(Application.streamingAssetsPath, "GameData", "BuildingData", "ResourceData.json");
 
-        private Game _game;
+        private readonly HashSet<string> _planetaryResourceSet = new HashSet<string>();
 
-        private readonly Dictionary<string, bool> _planetaryResourceDict = new Dictionary<string, bool>();
+        public IReadOnlyCollection<string> PlanetaryResourceSet => _planetaryResourceSet;
 
-        public IReadOnlyDictionary<string, bool> PlanetaryResourceDict => _planetaryResourceDict;
+        private readonly HashSet<string> _globalResourceSet = new HashSet<string>();
 
-        private readonly Dictionary<string, bool> _globalResourceDict = new Dictionary<string, bool>();
+        public IReadOnlyCollection<string> GlobalResourceSet => _globalResourceSet;
 
-        public IReadOnlyDictionary<string, bool> GlobalResourceDict => _globalResourceDict;
+        private readonly HashSet<string> _researchResourceSet = new HashSet<string>();
 
-        private readonly HashSet<string> _researchResourceDict = new HashSet<string>();
-
-        public IReadOnlyCollection<string> ResearchResourceDict => _researchResourceDict;
+        public IReadOnlyCollection<string> ResearchResourceSet => _researchResourceSet;
 
         private readonly HashSet<string> _planetaryGameFactor = new HashSet<string>
         {
@@ -54,44 +52,28 @@ namespace Infinity.GameData
             {
                 var result = new HashSet<string>();
 
-                foreach (var s in _planetaryResourceDict.Keys)
+                foreach (var s in _planetaryResourceSet)
                     result.Add(s);
 
-                foreach (var s in _globalResourceDict.Keys)
+                foreach (var s in _globalResourceSet)
                     result.Add(s);
 
-                foreach (var s in _researchResourceDict)
+                foreach (var s in _researchResourceSet)
                     result.Add(s);
 
                 return result;
             }
         }
 
-        public GameFactorResourceData(GameInitializedEventSender sender)
-        {
-            sender.Subscribe(OnGameInitialized);
-        }
-
-        public bool IsResourceAvailable(string resource)
-        {
-            if (_planetaryResourceDict.TryGetValue(resource, out var result))
-                return result;
-
-            if (_globalResourceDict.TryGetValue(resource, out result))
-                return result;
-
-            throw new InvalidOperationException();
-        }
-
         public GameFactorKind GetFactorKind(string GameFactor)
         {
-            if (_planetaryResourceDict.ContainsKey(GameFactor))
+            if (_planetaryResourceSet.Contains(GameFactor))
                 return GameFactorKind.PlanetaryResource;
 
-            if (_globalResourceDict.ContainsKey(GameFactor))
+            if (_globalResourceSet.Contains(GameFactor))
                 return GameFactorKind.GlobalResource;
 
-            if (_researchResourceDict.Contains(GameFactor))
+            if (_researchResourceSet.Contains(GameFactor))
                 return GameFactorKind.ResearchResource;
 
             if (_planetaryGameFactor.Contains(GameFactor))
@@ -101,27 +83,6 @@ namespace Infinity.GameData
                 return GameFactorKind.GlobalFactor;
 
             throw new InvalidOperationException();
-        }
-
-        private void OnGameInitialized(Game game)
-        {
-            _game = game;
-
-            foreach (var name in game.AvailableResources)
-            {
-                if (_planetaryResourceDict.ContainsKey(name))
-                {
-                    _planetaryResourceDict[name] = true;
-                    continue;
-                }
-
-                if (!_globalResourceDict.ContainsKey(name))
-                    throw new InvalidOperationException();
-
-                _globalResourceDict[name] = true;
-            }
-
-            // Should receive events which enables building
         }
 
         public void Load()
@@ -136,10 +97,10 @@ namespace Infinity.GameData
                 throw new NullReferenceException();
 
             foreach (var r in planetResource)
-                _planetaryResourceDict.Add(r, false);
+                _planetaryResourceSet.Add(r);
 
             foreach (var r in globalResource)
-                _globalResourceDict.Add(r, false);
+                _globalResourceSet.Add(r);
         }
     }
 }
