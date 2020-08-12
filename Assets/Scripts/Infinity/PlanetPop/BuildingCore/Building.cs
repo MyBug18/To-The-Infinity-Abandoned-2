@@ -73,9 +73,9 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public IReadOnlyDictionary<string, float> YieldMultiplierFromModifier => _yieldMultiplierFromModifier;
 
-        public IReadOnlyDictionary<string, float> YieldFromBuilding;
+        public readonly IReadOnlyDictionary<string, float> YieldFromBuilding;
 
-        public IReadOnlyDictionary<string, float> UpkeepFromBuilding;
+        public readonly IReadOnlyDictionary<string, float> UpkeepFromBuilding;
 
         #region AdjacencyBonus
 
@@ -137,7 +137,7 @@ namespace Infinity.PlanetPop.BuildingCore
             {
                 var p = slotData[kv.Key];
 
-                var slot = new PopSlot(_neuron, this, p, modifiers);
+                var slot = new PopSlot(_neuron, this, p);
                 for (var i = 0; i < kv.Value; i++)
                     _popSlots.Add(slot);
             }
@@ -164,7 +164,7 @@ namespace Infinity.PlanetPop.BuildingCore
                 {
                     if (!AdjacencyBonusDict.TryGetValue(kv.Key.Name, out var thisLevel)) continue;
 
-                    AdjacencyBonusLevel += thisLevel * kv.Value;
+                    AdjacencyBonusLevel = Math.Min(AdjacencyBonusMaxLevel, AdjacencyBonusLevel + thisLevel * kv.Value);
                 }
             }
 

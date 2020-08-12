@@ -42,7 +42,7 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public IReadOnlyList<GameFactorChange> Upkeep => _upkeep;
 
-        public PopSlot(Neuron buildingNeuron, Building building, PopSlotPrototype prototype, IReadOnlyList<Modifier> modifiers = null)
+        public PopSlot(Neuron buildingNeuron, Building building, PopSlotPrototype prototype)
         {
             buildingNeuron.Subscribe<PopSlotAssignedSignal>(OnPopSlotAssignedSignal);
             buildingNeuron.Subscribe<PopTrainingStatusChangeSignal>(OnPopTrainingStatusChangeSignal);
@@ -54,6 +54,7 @@ namespace Infinity.PlanetPop.BuildingCore
             var resourceData = GameDataStorage.Instance.GetGameData<GameFactorResourceData>();
 
             var yieldModifierMultiplier = building.YieldMultiplierFromModifier;
+            var yieldAdjacencyMultiplier = building.AdjacencyBonusLevel * building.AdjacencyBonusPerLevel;
 
             foreach (var y in prototype.Yield)
             {
@@ -73,7 +74,8 @@ namespace Infinity.PlanetPop.BuildingCore
                     if (yieldModifierMultiplier.TryGetValue("AnyResource", out var anyResource))
                         yieldMultiplier += anyResource;
 
-                    return _baseYield[y.FactorType] * (1 + yieldMultiplier / 100f) * (1 + Pop.YieldMultiplier / 100f);
+                    return _baseYield[y.FactorType] * (1 + yieldMultiplier / 100f) * (1 + Pop.YieldMultiplier / 100f) *
+                           (1 + yieldAdjacencyMultiplier / 100f);
                 }
 
                 _yield.Add(new GameFactorChange(YieldGetter, y.FactorType));
@@ -93,9 +95,8 @@ namespace Infinity.PlanetPop.BuildingCore
                     if (_upkeepMultiplier.TryGetValue("AnyResource", out var anyResource))
                         upkeepMultiplier += anyResource;
 
-                    return CurrentState == PopSlotState.Occupied
-                        ? _baseUpkeep[u.FactorType] * (1 + upkeepMultiplier / 100f) * (1 + Pop.UpkeepMultiplier / 100f)
-                        : 0;
+                    return _baseUpkeep[u.FactorType] * (1 + upkeepMultiplier / 100f) *
+                           (1 + Pop.UpkeepMultiplier / 100f);
                 }
 
                 _upkeep.Add(new GameFactorChange(UpkeepGetter, u.FactorType));

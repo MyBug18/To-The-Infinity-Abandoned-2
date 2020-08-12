@@ -36,5 +36,11 @@ namespace Infinity
         }
 
         public static int ClampInt(int min, int max, int n) => Mathf.Min(Mathf.Max(n, min), max);
+
+        public static TValue GetValueOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key,
+            TValue value = default)
+        {
+            return dict.ContainsKey(key) ? dict[key] : value;
+        }
     }
 }

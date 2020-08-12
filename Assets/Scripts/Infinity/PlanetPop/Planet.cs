@@ -75,6 +75,8 @@ namespace Infinity.PlanetPop
 
         private Dictionary<string, float> _yieldFromJobCache = new Dictionary<string, float>();
 
+        public IReadOnlyDictionary<string, float> YieldFromJob => _yieldFromJobCache;
+
         private Dictionary<string, float> _upkeepFromJobCache = new Dictionary<string, float>();
 
         public IReadOnlyDictionary<string, float> UpkeepFromJob => _upkeepFromJobCache;
@@ -83,29 +85,8 @@ namespace Infinity.PlanetPop
 
         private readonly Dictionary<string, float> _upkeepFromBuilding = new Dictionary<string, float>();
 
-        public float AmenitySupplyFromJob
-        {
-            get
-            {
-                if (!_yieldFromJobCache.TryGetValue("Amenity", out var result))
-                    return 0;
-
-                return result;
-            }
-        }
-
-        public float AmenitySupplyFromBuilding
-        {
-            get
-            {
-                if (!_yieldFromBuilding.TryGetValue("Amenity", out var result))
-                    return 0;
-
-                return result;
-            }
-        }
-
-        public float Amenity => AmenitySupplyFromJob + AmenitySupplyFromBuilding - _pops.Count;
+        public float Amenity => _yieldFromJobCache.GetValueOrDefault("Amenity") +
+            _yieldFromBuilding.GetValueOrDefault("Amenity") - _pops.Count;
 
         #endregion GameFactor
 
@@ -200,10 +181,7 @@ namespace Infinity.PlanetPop
 
             foreach (var kv in m.ModifierInfo.GameFactorAmount)
             {
-                if (resourceData.GetFactorKind(kv.Key) == GameFactorKind.PlanetaryFactor)
-                {
-
-                }
+                if (resourceData.GetFactorKind(kv.Key) != GameFactorKind.PlanetaryFactor) continue;
             }
         }
 
@@ -291,22 +269,8 @@ namespace Infinity.PlanetPop
 
                 _neuron.SendSignal(new PopSlotAssignedSignal(this, pop, slot), SignalDirection.Downward);
 
-                // Apply resource changes occured by pop assignment
-                foreach (var change in slot.Yield)
-                {
-                    if (!_yieldFromJobCache.ContainsKey(change.FactorType))
-                        _yieldFromJobCache.Add(change.FactorType, 0);
-
-                    _yieldFromJobCache[change.FactorType] += change.Amount;
-                }
-
-                foreach (var change in slot.Upkeep)
-                {
-                    if (!_upkeepFromJobCache.ContainsKey(change.FactorType))
-                        _upkeepFromJobCache.Add(change.FactorType, 0);
-
-                    _upkeepFromJobCache[change.FactorType] += change.Amount;
-                }
+                // Because a pop has assigned to a pop slot
+                RecalculateJobResources();
             }
 
             for (var i = removeIdx.Count - 1; i >= 0; i--)
@@ -342,6 +306,9 @@ namespace Infinity.PlanetPop
                 _upkeepFromBuilding[kv.Key] += kv.Value;
             }
 
+            // Because adjacency bonus may have been changed
+            RecalculateJobResources();
+
             _neuron.SendSignal(new BuildingConstructedSignal(this, building.Name, coord), SignalDirection.Downward);
         }
 
@@ -355,6 +322,9 @@ namespace Infinity.PlanetPop
             _trainingCenter.Add((pttcs.Pop, pttcs.DestinationSlot, trainingTime));
             _neuron.SendSignal(new PopTrainingStatusChangeSignal(this, pttcs.DestinationSlot, false),
                 SignalDirection.Downward);
+
+            // Because a pop from pop slot has been emptied
+            RecalculateJobResources();
         }
 
         private List<PassiveEventPrototype> OnPassiveEventCheck(List<PassiveEventPrototype> events)
