@@ -22,6 +22,10 @@ namespace Infinity.PlanetPop
 
         public readonly int Size;
 
+        private readonly Neuron _neuron;
+
+        Type ISignalDispatcherHolder.HolderType => typeof(Planet);
+
         #region ITileMapHolder
 
         private readonly TileMap _tileMap;
@@ -34,10 +38,6 @@ namespace Infinity.PlanetPop
 
         #endregion ITileMapHolder
 
-        private readonly Neuron _neuron;
-
-        Type ISignalDispatcherHolder.HolderType => typeof(Planet);
-
         #region Pop
 
         private readonly List<Pop> _pops = new List<Pop>();
@@ -49,8 +49,6 @@ namespace Infinity.PlanetPop
         public IReadOnlyList<Pop> UnemployedPops => _unemployedPops;
 
         public const float InitialPopGrowth = 5f;
-
-        private readonly Dictionary<string, int> _popGrowthMultipliers = new Dictionary<string, int>();
 
         public float CurrentPopGrowth { get; private set; }
 
@@ -120,8 +118,6 @@ namespace Infinity.PlanetPop
             Size = size;
             PlanetType = "Inhabitable";
 
-            InitializeResourceKeep();
-
             _tileMap = new TileMap(6, _neuron);
         }
 
@@ -131,15 +127,6 @@ namespace Infinity.PlanetPop
         public Planet()
         {
             _tileMap = new TileMap(6, null);
-        }
-
-        private void InitializeResourceKeep()
-        {
-            foreach (var kv in GameDataStorage.Instance.GetGameData<GameFactorResourceData>().PlanetaryResourceDict)
-            {
-                if (kv.Value)
-                    _currentResourceKeep.Add(kv.Key, 0);
-            }
         }
 
         private void AddRemoveModifier(Modifier m, bool isAdding)
@@ -178,6 +165,12 @@ namespace Infinity.PlanetPop
             }
         }
 
+        private void RecalculateJobResources()
+        {
+            _yieldFromJobCache = GetBuildingYieldFromJob();
+            _upkeepFromJobCache = GetBuildingUpkeepFromJob();
+        }
+
         private Dictionary<string, float> GetBuildingYieldFromJob()
         {
             var result = new Dictionary<string, float>();
@@ -214,12 +207,6 @@ namespace Infinity.PlanetPop
             return result;
         }
 
-        private void RecalculateJobResources()
-        {
-            _yieldFromJobCache = GetBuildingYieldFromJob();
-            _upkeepFromJobCache = GetBuildingUpkeepFromJob();
-        }
-
         private void OnGameCommandSignal(ISignal s)
         {
             if (!(s is GameCommandSignal gcs) || gcs.CommandType != GameCommandType.StartNewTurn) return;
@@ -238,7 +225,10 @@ namespace Infinity.PlanetPop
 
         private void ApplyPopGrowth()
         {
-            CurrentPopGrowth += InitialPopGrowth * (_popGrowthMultipliers.Values.Sum() / 100f + 1);
+            var popGrowthMultipliers =
+                _yieldFromJobCache.GetValueOrDefault("PopGrowth") + _yieldFromBuilding.GetValueOrDefault("PopGrowth");
+
+            CurrentPopGrowth += InitialPopGrowth * (popGrowthMultipliers / 100f + 1);
 
             if (CurrentPopGrowth < 100) return;
 

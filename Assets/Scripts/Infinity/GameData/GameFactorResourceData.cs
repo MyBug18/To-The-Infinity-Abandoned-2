@@ -11,6 +11,7 @@ namespace Infinity.GameData
     {
         PlanetaryResource,
         GlobalResource,
+        ResearchResource,
         PlanetaryFactor,
         GlobalFactor,
     }
@@ -29,6 +30,10 @@ namespace Infinity.GameData
         private readonly Dictionary<string, bool> _globalResourceDict = new Dictionary<string, bool>();
 
         public IReadOnlyDictionary<string, bool> GlobalResourceDict => _globalResourceDict;
+
+        private readonly HashSet<string> _researchResourceDict = new HashSet<string>();
+
+        public IReadOnlyCollection<string> ResearchResourceDict => _researchResourceDict;
 
         private readonly HashSet<string> _planetaryGameFactor = new HashSet<string>
         {
@@ -53,6 +58,9 @@ namespace Infinity.GameData
                     result.Add(s);
 
                 foreach (var s in _globalResourceDict.Keys)
+                    result.Add(s);
+
+                foreach (var s in _researchResourceDict)
                     result.Add(s);
 
                 return result;
@@ -82,6 +90,9 @@ namespace Infinity.GameData
 
             if (_globalResourceDict.ContainsKey(GameFactor))
                 return GameFactorKind.GlobalResource;
+
+            if (_researchResourceDict.Contains(GameFactor))
+                return GameFactorKind.ResearchResource;
 
             if (_planetaryGameFactor.Contains(GameFactor))
                 return GameFactorKind.PlanetaryFactor;

@@ -9,5 +9,9 @@
     "BioMetal",
     "Derazine",
     "StemCell"
+  ],
+  "ResearchResources": [
+    "SocietyResearch",
+    "EngineerResearch"
   ]
 }
