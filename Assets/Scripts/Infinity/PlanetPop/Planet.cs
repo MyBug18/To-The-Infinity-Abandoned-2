@@ -205,9 +205,12 @@ namespace Infinity.PlanetPop
         {
             if (!(s is GameCommandSignal gcs) || gcs.CommandType != GameCommandType.StartNewTurn) return;
 
+            ApplyTurnResource();
             ApplyPopGrowth();
             ProceedTraining();
-            ApplyTurnResource();
+
+            // Because may trainings have ended
+            RecalculateJobResources();
         }
 
         /// <summary>
@@ -215,6 +218,51 @@ namespace Infinity.PlanetPop
         /// </summary>
         private void ApplyTurnResource()
         {
+            var resourceData = GameDataStorage.Instance.GetGameData<GameFactorResourceData>();
+
+            foreach (var kv in _yieldFromJobCache.Where(kv => resourceData.PlanetaryResourceSet.Contains(kv.Key)))
+            {
+                if (!_currentResourceKeep.ContainsKey(kv.Key))
+                    _currentResourceKeep.Add(kv.Key, 0);
+
+                _currentResourceKeep[kv.Key] += kv.Value;
+            }
+
+            foreach (var kv in _yieldFromBuilding.Where(kv => resourceData.PlanetaryResourceSet.Contains(kv.Key)))
+            {
+                if (!_currentResourceKeep.ContainsKey(kv.Key))
+                    _currentResourceKeep.Add(kv.Key, 0);
+
+                _currentResourceKeep[kv.Key] += kv.Value;
+            }
+
+            foreach (var kv in _upkeepFromJobCache.Where(kv => resourceData.PlanetaryResourceSet.Contains(kv.Key)))
+            {
+                if (!_currentResourceKeep.ContainsKey(kv.Key))
+                    _currentResourceKeep.Add(kv.Key, 0);
+
+                _currentResourceKeep[kv.Key] -= kv.Value;
+            }
+
+            foreach (var kv in _upkeepFromBuilding.Where(kv => resourceData.PlanetaryResourceSet.Contains(kv.Key)))
+            {
+                if (!_currentResourceKeep.ContainsKey(kv.Key))
+                    _currentResourceKeep.Add(kv.Key, 0);
+
+                _currentResourceKeep[kv.Key] -= kv.Value;
+            }
+
+            var deficitResources = new List<string>();
+
+            foreach (var kv in _currentResourceKeep)
+            {
+                if (kv.Value >= 0) continue;
+
+                _currentResourceKeep[kv.Key] = 0;
+                deficitResources.Add(kv.Key);
+            }
+
+            // TODO: Send resource deficit signal to upward
         }
 
         private void ApplyPopGrowth()
