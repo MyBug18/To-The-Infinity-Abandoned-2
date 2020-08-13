@@ -35,10 +35,14 @@ namespace Infinity.PlanetPop.BuildingCore
 
             //TODO: Add resource consumption
             var prototype = _buildingData[buildingName];
+
+            if (!prototype.CheckWholeCondition(_planet, coord))
+                throw new InvalidOperationException();
+
             var newElement = new BuildingQueueElement(prototype, coord);
             _constructionQueue.Add((newElement, prototype.BaseConstructTime));
 
-            _planetNeuron.SendSignal(new BuildingQueueChangeSignal(_planet, coord, prototype, false),
+            _planetNeuron.SendSignal(new BuildingQueueChangeSignal(_planet, newElement, BuildingQueueChangeType.Added),
                 SignalDirection.Local);
         }
 
@@ -50,7 +54,7 @@ namespace Infinity.PlanetPop.BuildingCore
             var (element, _) = _constructionQueue[index];
             _constructionQueue.RemoveAt(index);
 
-            _planetNeuron.SendSignal(new BuildingQueueChangeSignal(_planet, element.Coord, element.Prototype, true),
+            _planetNeuron.SendSignal(new BuildingQueueChangeSignal(_planet, element, BuildingQueueChangeType.Canceled),
                 SignalDirection.Local);
         }
 
@@ -76,7 +80,7 @@ namespace Infinity.PlanetPop.BuildingCore
 
             _constructionQueue.RemoveAt(walker);
 
-            _planetNeuron.SendSignal(new BuildingQueueChangeSignal(_planet, element.Coord, element.Prototype, true),
+            _planetNeuron.SendSignal(new BuildingQueueChangeSignal(_planet, element, BuildingQueueChangeType.Canceled),
                 SignalDirection.Local);
         }
 
@@ -94,7 +98,8 @@ namespace Infinity.PlanetPop.BuildingCore
         {
             var (element, _) = _constructionQueue[0];
             _constructionQueue.RemoveAt(0);
-            _planetNeuron.SendSignal(new BuildingQueueEndedSignal(_planet, element), SignalDirection.Local);
+            _planetNeuron.SendSignal(new BuildingQueueChangeSignal(_planet, element, BuildingQueueChangeType.Ended),
+                SignalDirection.Local);
         }
 
         public void MoveToSmallerPosition(int index)
@@ -138,32 +143,23 @@ namespace Infinity.PlanetPop.BuildingCore
     {
         public ISignalDispatcherHolder SignalSender { get; }
 
-        public readonly HexTileCoord Coord;
-
-        public readonly BuildingPrototype Prototype;
-
-        public readonly bool IsRemoved;
-
-        public BuildingQueueChangeSignal(ISignalDispatcherHolder sender, HexTileCoord coord,
-            BuildingPrototype prototype, bool isRemoved)
-        {
-            SignalSender = sender;
-            Coord = coord;
-            Prototype = prototype;
-            IsRemoved = isRemoved;
-        }
-    }
-
-    public class BuildingQueueEndedSignal : ISignal
-    {
-        public ISignalDispatcherHolder SignalSender { get; }
-
         public readonly BuildingQueueElement QueueElement;
 
-        public BuildingQueueEndedSignal(ISignalDispatcherHolder sender, BuildingQueueElement building)
+        public readonly BuildingQueueChangeType Type;
+
+        public BuildingQueueChangeSignal(ISignalDispatcherHolder sender, BuildingQueueElement building,
+            BuildingQueueChangeType type)
         {
             SignalSender = sender;
             QueueElement = building;
+            Type = type;
         }
+    }
+
+    public enum BuildingQueueChangeType
+    {
+        Ended,
+        Canceled,
+        Added,
     }
 }

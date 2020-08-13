@@ -15,7 +15,7 @@ namespace Infinity.GameData
 
         public readonly int BaseConstructTime;
 
-        public readonly int BaseConstructCost;
+        public readonly IReadOnlyDictionary<string, float> BaseConstructCost;
 
         private readonly Dictionary<string, float> _buildingYield;
 
@@ -45,7 +45,7 @@ namespace Infinity.GameData
 
             Name = (string)primary["Name"];
             BaseConstructTime = Convert.ToInt32(primary["BaseConstructTime"]);
-            BaseConstructCost = Convert.ToInt32(primary["BaseConstructCost"]);
+            BaseConstructCost = JObject.FromObject(primary["BaseConstructCost"]).ToObject<Dictionary<string, float>>();
 
             _buildingYield = JObject.FromObject(primary["BuildingYield"]).ToObject<Dictionary<string, float>>();
             _buildingUpkeep = JObject.FromObject(primary["BuildingUpkeep"]).ToObject<Dictionary<string, float>>();
@@ -73,16 +73,20 @@ namespace Infinity.GameData
                         Convert.ToString(aroundBuildingsCondition), PlanetAroundBuildingsChecker);
         }
 
-        public Building GetBuilding()
-        {
-            // TODO
-            return null;
-        }
+        public bool CheckWholeCondition(Planet planet, HexTileCoord coord) =>
+            CheckResource(planet) && CheckPopNumber(planet) && CheckTileState(planet.GetHexTile(coord)) &&
+            CheckAroundBuildings(planet, coord);
 
-        public List<HexTileCoord> GetBuildableTile(Planet planet)
-        {
-            return null;
-        }
+        public List<HexTileCoord> GetBuildableTile(Planet planet) =>
+            (from t in planet
+                where CheckTileState(t)
+                where planet.GetTileObject<Building>(t.Coord) == null
+                where CheckAroundBuildings(planet, t.Coord)
+                select t.Coord).ToList();
+
+        public bool CheckResource(Planet planet) =>
+            BaseConstructCost.All(kv => !(planet.CurrentResourceKeep.GetValueOrDefault(kv.Key) < kv.Value));
+
 
         public bool CheckPopNumber(Planet planet)
         {

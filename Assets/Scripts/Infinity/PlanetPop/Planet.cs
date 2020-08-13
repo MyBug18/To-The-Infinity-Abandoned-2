@@ -108,7 +108,6 @@ namespace Infinity.PlanetPop
             _neuron.Subscribe<PopToTrainingCenterSignal>(OnPopToTrainingCenterSignal);
             _neuron.Subscribe<GameCommandSignal>(OnGameCommandSignal);
             _neuron.Subscribe<ModifierSignal>(OnModifierSignal);
-            _neuron.Subscribe<BuildingQueueEndedSignal>(OnBuildingQueueEndedSignal);
             _neuron.Subscribe<BuildingQueueChangeSignal>(OnBuildingQueueChangeSignal);
 
             _neuron.EventConditionPasser.SetRefiner(OnPassiveEventCheck);
@@ -260,41 +259,6 @@ namespace Infinity.PlanetPop
                 _trainingCenter.RemoveAt(i);
         }
 
-        private void OnBuildingQueueEndedSignal(ISignal s)
-        {
-            if (!(s is BuildingQueueEndedSignal bqes)) return;
-
-            var coord = bqes.QueueElement.Coord;
-
-            var modifiers = _modifiers.ToList();
-            modifiers.AddRange(GetHexTile(coord).Modifiers);
-
-            var building = new Building(_neuron, bqes.QueueElement.Prototype, this, coord, modifiers);
-
-            _tileMap.AddTileObject(coord, building);
-
-            foreach (var kv in building.YieldFromBuilding)
-            {
-                if (!_yieldFromBuilding.ContainsKey(kv.Key))
-                    _yieldFromBuilding.Add(kv.Key, 0);
-
-                _yieldFromBuilding[kv.Key] += kv.Value;
-            }
-
-            foreach (var kv in building.UpkeepFromBuilding)
-            {
-                if (!_upkeepFromBuilding.ContainsKey(kv.Key))
-                    _upkeepFromBuilding.Add(kv.Key, 0);
-
-                _upkeepFromBuilding[kv.Key] += kv.Value;
-            }
-
-            // Because adjacency bonus may have been changed
-            RecalculateJobResources();
-
-            _neuron.SendSignal(new BuildingConstructedSignal(this, building.Name, coord), SignalDirection.Downward);
-        }
-
         private void OnPopToTrainingCenterSignal(ISignal s)
         {
             if (!(s is PopToTrainingCenterSignal pttcs)) return;
@@ -334,13 +298,50 @@ namespace Infinity.PlanetPop
         {
             if (!(s is BuildingQueueChangeSignal bqcs)) return;
 
-            if (bqcs.IsRemoved)
+            switch (bqcs.Type)
             {
-                _ongoingConstructions.Remove(bqcs.Coord);
-            }
-            else
-            {
-                _ongoingConstructions.Add(bqcs.Coord, bqcs.Prototype);
+                case BuildingQueueChangeType.Added:
+                    _ongoingConstructions.Add(bqcs.QueueElement.Coord, bqcs.QueueElement.Prototype);
+                    break;
+                case BuildingQueueChangeType.Canceled:
+                    _ongoingConstructions.Remove(bqcs.QueueElement.Coord);
+                    break;
+                case BuildingQueueChangeType.Ended:
+                    var coord = bqcs.QueueElement.Coord;
+
+                    var modifiers = _modifiers.ToList();
+                    modifiers.AddRange(GetHexTile(coord).Modifiers);
+
+                    var building = new Building(_neuron, bqcs.QueueElement.Prototype, this, coord, modifiers);
+
+                    _tileMap.AddTileObject(coord, building);
+
+                    foreach (var kv in building.YieldFromBuilding)
+                    {
+                        if (!_yieldFromBuilding.ContainsKey(kv.Key))
+                            _yieldFromBuilding.Add(kv.Key, 0);
+
+                        _yieldFromBuilding[kv.Key] += kv.Value;
+                    }
+
+                    foreach (var kv in building.UpkeepFromBuilding)
+                    {
+                        if (!_upkeepFromBuilding.ContainsKey(kv.Key))
+                            _upkeepFromBuilding.Add(kv.Key, 0);
+
+                        _upkeepFromBuilding[kv.Key] += kv.Value;
+                    }
+
+                    // Because adjacency bonus may have been changed
+                    RecalculateJobResources();
+
+                    _ongoingConstructions.Remove(bqcs.QueueElement.Coord);
+
+                    _neuron.SendSignal(new BuildingConstructedSignal(this, building.Name, coord), SignalDirection.Downward);
+
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 

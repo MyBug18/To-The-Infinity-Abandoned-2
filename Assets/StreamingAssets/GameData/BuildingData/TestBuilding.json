@@ -1,7 +1,9 @@
 ﻿{
   "Name": "TestBuilding",
   "BaseConstructTime": 12,
-  "BaseConstructCost": 500,
+  "BaseConstructCost": {
+    "Mineral": 500
+  },
   "Condition": {
     "MinPopNumber": 10,
     "TileState": "(!Mountain & (!Plain | Sea)) | Plain",
