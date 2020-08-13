@@ -88,11 +88,6 @@ namespace Infinity.PlanetPop
 
         public readonly PlanetBuildingFactory BuildingFactory;
 
-        private readonly Dictionary<HexTileCoord, BuildingPrototype> _ongoingConstructions =
-            new Dictionary<HexTileCoord, BuildingPrototype>();
-
-        public IReadOnlyDictionary<HexTileCoord, BuildingPrototype> OngoingConstructions => _ongoingConstructions;
-
         #endregion Building
 
         private readonly List<Modifier> _modifiers = new List<Modifier>();
@@ -298,21 +293,25 @@ namespace Infinity.PlanetPop
         {
             if (!(s is BuildingQueueChangeSignal bqcs)) return;
 
+            var element = bqcs.QueueElement;
+
             switch (bqcs.Type)
             {
                 case BuildingQueueChangeType.Added:
-                    _ongoingConstructions.Add(bqcs.QueueElement.Coord, bqcs.QueueElement.Prototype);
+                    foreach (var kv in element.Prototype.BaseConstructCost)
+                        _currentResourceKeep[kv.Key] -= kv.Value;
                     break;
                 case BuildingQueueChangeType.Canceled:
-                    _ongoingConstructions.Remove(bqcs.QueueElement.Coord);
+                    foreach (var kv in element.Prototype.BaseConstructCost)
+                        _currentResourceKeep[kv.Key] += kv.Value;
                     break;
                 case BuildingQueueChangeType.Ended:
-                    var coord = bqcs.QueueElement.Coord;
+                    var coord = element.Coord;
 
                     var modifiers = _modifiers.ToList();
                     modifiers.AddRange(GetHexTile(coord).Modifiers);
 
-                    var building = new Building(_neuron, bqcs.QueueElement.Prototype, this, coord, modifiers);
+                    var building = new Building(_neuron, element.Prototype, this, coord, modifiers);
 
                     _tileMap.AddTileObject(coord, building);
 
@@ -334,8 +333,6 @@ namespace Infinity.PlanetPop
 
                     // Because adjacency bonus may have been changed
                     RecalculateJobResources();
-
-                    _ongoingConstructions.Remove(bqcs.QueueElement.Coord);
 
                     _neuron.SendSignal(new BuildingConstructedSignal(this, building.Name, coord), SignalDirection.Downward);
 

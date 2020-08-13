@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Infinity.GameData;
 using Infinity.HexTileMap;
 
@@ -30,7 +31,7 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public void StartConstruction(string buildingName, HexTileCoord coord)
         {
-            if (_planet.OngoingConstructions.ContainsKey(coord))
+            if (_constructionQueue.Any(q => q.Element.Coord == coord))
                 throw new InvalidOperationException();
 
             //TODO: Add resource consumption
@@ -60,7 +61,7 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public void CancelConstruction(HexTileCoord coord)
         {
-            if (!_planet.OngoingConstructions.ContainsKey(coord))
+            if (_constructionQueue.All(q => q.Element.Coord != coord))
                 throw new InvalidOperationException();
 
             BuildingQueueElement element = null;
