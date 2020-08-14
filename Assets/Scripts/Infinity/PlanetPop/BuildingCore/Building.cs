@@ -107,7 +107,7 @@ namespace Infinity.PlanetPop.BuildingCore
             var yieldKind = new HashSet<string>();
 
             foreach (var kv in prototype.BasePopSlots)
-                foreach (var k in slotData[kv.Key].YieldResourceKind)
+                foreach (var k in slotData[kv.Key].YieldFactorKind.Where(x => resourceData.AllResourceSet.Contains(x)))
                     yieldKind.Add(k);
 
             YieldResourceKind = yieldKind;
@@ -116,14 +116,10 @@ namespace Infinity.PlanetPop.BuildingCore
             if (modifiers != null)
                 foreach (var m in modifiers)
                 {
-                    var isRelevant =
-                        m.ModifierInfo.GameFactorAmount.Keys.Any(x =>
-                            x == "AnyResource" || resourceData.AllResourceSet.Contains(x) && yieldKind.Contains(x));
-
-                    if (!isRelevant)
+                    if (!m.ModifierInfo.GameFactorAmount.Keys.Any(x => x == "AnyResource" || yieldKind.Contains(x)))
                         continue;
-
                     _modifiers.Add(m);
+                    ApplyModifierChange(m, true);
                 }
 
             // Initialize slots
@@ -143,8 +139,8 @@ namespace Infinity.PlanetPop.BuildingCore
             AdjacencyBonusPerLevel = adj.BonusPerLevel;
             AdjacencyBonusDict = adj.BonusChangeInfo;
 
-            // Initialize callbacks
             _neuron.Subscribe<BuildingConstructedSignal>(OnBuildingConstructedSignal);
+            _neuron.Subscribe<GameCommandSignal>(OnGameCommandSignal);
         }
 
         private void OnBuildingConstructedSignal(ISignal s)
@@ -179,29 +175,69 @@ namespace Infinity.PlanetPop.BuildingCore
         {
             if (!(s is ModifierSignal ms)) return;
 
-            if (ms.IsForTile && !ms.Modifier.AffectedTiles.Contains(HexCoord)) return;
+            var m = ms.Modifier;
 
-            foreach (var kv in ms.Modifier.ModifierInfo.GameFactorAmount)
+            if (ms.IsForTile && !m.AffectedTiles.Contains(HexCoord)) return;
+
+            var isRelevant = m.ModifierInfo.GameFactorAmount.Keys.Any(
+                x => x == "AnyResource" || YieldResourceKind.Contains(x));
+
+            if (isRelevant && ms.IsAdding)
             {
-                if (!YieldResourceKind.Contains(kv.Key) && kv.Key != "AnyResource") continue;
+                var sameGroup = _modifiers.FindIndex(x => x.ModifierInfo.ModifierGroup == m.ModifierInfo.ModifierGroup);
 
-                if (!_jobYieldMultiplierFromModifier.ContainsKey(kv.Key))
-                    _jobYieldMultiplierFromModifier[kv.Key] = 0;
-
-                if (ms.IsAdding)
+                if (sameGroup != -1)
                 {
-                    _jobYieldMultiplierFromModifier[kv.Key] += kv.Value;
+                    ApplyModifierChange(_modifiers[sameGroup], false);
+                    _modifiers[sameGroup] = m;
                 }
                 else
                 {
-                    _jobYieldMultiplierFromModifier[kv.Key] -= kv.Value;
+                    _modifiers.Add(m);
                 }
-            }
 
-            if (ms.IsAdding)
-                _modifiers.Add(ms.Modifier);
-            else
-                _modifiers.Remove(ms.Modifier);
+                ApplyModifierChange(m, true);
+            }
+            else if (isRelevant && !ms.IsAdding)
+            {
+                _modifiers.Remove(m);
+                ApplyModifierChange(m, false);
+            }
+            // If trying to add irrelevant modifier, have to remove the modifier with the same group anyway
+            else if (ms.IsAdding)
+            {
+                var sameGroup = _modifiers.FindIndex(x => x.ModifierInfo.ModifierGroup == m.ModifierInfo.ModifierGroup);
+
+                if (sameGroup != -1)
+                    _modifiers.RemoveAt(sameGroup);
+            }
+        }
+
+        private void ApplyModifierChange(Modifier m, bool isAdding)
+        {
+            foreach (var kv in m.ModifierInfo.GameFactorAmount)
+            {
+                // Ignore game factor and irrelevant resources
+                if (kv.Key != "AnyResource" && !YieldResourceKind.Contains(kv.Key)) continue;
+
+                if (isAdding)
+                    _jobYieldMultiplierFromModifier[kv.Key] += kv.Value;
+                else
+                    _jobYieldMultiplierFromModifier[kv.Key] -= kv.Value;
+            }
+        }
+
+        private void OnGameCommandSignal(ISignal s)
+        {
+            if (!(s is GameCommandSignal gcs) || gcs.CommandType != GameCommandType.StartNewTurn) return;
+
+            DecreaseModifierLeftTurn();
+        }
+
+        private void DecreaseModifierLeftTurn()
+        {
+            for (var i = 0; i < _modifiers.Count; i++)
+                _modifiers[i] = _modifiers[i].ReduceLeftTurn();
         }
     }
 

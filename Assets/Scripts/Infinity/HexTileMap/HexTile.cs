@@ -107,7 +107,7 @@ namespace Infinity.HexTileMap
 
         public int WayCost { get; private set; } = 1;
 
-        private List<Modifier> _modifiers = new List<Modifier>();
+        private readonly List<Modifier> _modifiers = new List<Modifier>();
 
         public IReadOnlyList<Modifier> Modifiers => _modifiers;
 
@@ -116,6 +116,7 @@ namespace Infinity.HexTileMap
             Coord = coord;
 
             tilemapNeuron.Subscribe<ModifierSignal>(OnModifierSignal);
+            tilemapNeuron.Subscribe<GameCommandSignal>(OnGameCommandSignal);
         }
 
         private void OnModifierSignal(ISignal s)
@@ -127,6 +128,19 @@ namespace Infinity.HexTileMap
             if (!ms.Modifier.AffectedTiles.Contains(Coord)) return;
 
             _modifiers.Add(ms.Modifier);
+        }
+
+        private void OnGameCommandSignal(ISignal s)
+        {
+            if (!(s is GameCommandSignal gcs) || gcs.CommandType != GameCommandType.StartNewTurn) return;
+
+            DecreaseModifierLeftTurn();
+        }
+
+        private void DecreaseModifierLeftTurn()
+        {
+            for (var i = 0; i < _modifiers.Count; i++)
+                _modifiers[i] = _modifiers[i].ReduceLeftTurn();
         }
     }
 }

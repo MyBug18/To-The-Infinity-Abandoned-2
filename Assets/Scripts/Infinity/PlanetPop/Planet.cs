@@ -138,7 +138,19 @@ namespace Infinity.PlanetPop
 
             if (ms.IsAdding)
             {
-                _modifiers.Add(m);
+                var sameGroup = _modifiers.FindIndex(x => x.ModifierInfo.ModifierGroup == m.ModifierInfo.ModifierGroup);
+
+                // If the modifier of same group already exists
+                if (sameGroup != -1)
+                {
+                    // Remove it's effect and replace it with new one
+                    ApplyModifierChange(_modifiers[sameGroup], false);
+                    _modifiers[sameGroup] = m;
+                }
+                else
+                {
+                    _modifiers.Add(m);
+                }
             }
             else
             {
@@ -208,6 +220,7 @@ namespace Infinity.PlanetPop
             ApplyTurnResource();
             ApplyPopGrowth();
             ProceedTraining();
+            DecreaseModifierLeftTurn();
 
             // Because may trainings have ended
             RecalculateJobResources();
@@ -302,6 +315,12 @@ namespace Infinity.PlanetPop
 
             for (var i = trainFinishedIdx.Count - 1; i >= 0; i--)
                 _trainingCenter.RemoveAt(i);
+        }
+
+        private void DecreaseModifierLeftTurn()
+        {
+            for (var i = 0; i < _modifiers.Count; i++)
+                _modifiers[i] = _modifiers[i].ReduceLeftTurn();
         }
 
         private void OnPopToTrainingCenterSignal(ISignal s)

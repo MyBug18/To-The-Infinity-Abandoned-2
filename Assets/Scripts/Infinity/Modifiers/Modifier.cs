@@ -41,6 +41,8 @@ namespace Infinity.Modifiers
     {
         public readonly string ModifierKey;
 
+        public readonly string ModifierGroup;
+
         public readonly string Description;
 
         public readonly ModifierHolderKind TopHolder;

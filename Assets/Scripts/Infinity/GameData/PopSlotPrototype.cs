@@ -19,7 +19,7 @@ namespace Infinity.GameData
 
         public IReadOnlyList<FactorChangePrototype> Upkeep => _upkeep;
 
-        public IReadOnlyList<string> YieldResourceKind => _yield.Select(x => x.FactorType).ToList();
+        public IReadOnlyList<string> YieldFactorKind => _yield.Select(x => x.FactorType).ToList();
 
         public PopSlotPrototype(string jsonData)
         {
