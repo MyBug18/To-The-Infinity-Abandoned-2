@@ -169,8 +169,6 @@ namespace Infinity.HexTileMap
                 throw new InvalidOperationException($"There are already {nameof(type)} on the coordinate!");
 
             typeObjectDict[type] = onHexTileObject;
-
-            // TODO: publish event (maybe)
         }
 
         public void RemoveTileObject<T>(HexTileCoord coord)
@@ -180,8 +178,6 @@ namespace Infinity.HexTileMap
 
             if (typeObjectDict.Remove(type) && typeObjectDict.Count == 0)
                 _onTileMapObjects.Remove(coord);
-
-            // TODO: publish event (maybe)
         }
 
         public IEnumerator<HexTile> GetEnumerator()
