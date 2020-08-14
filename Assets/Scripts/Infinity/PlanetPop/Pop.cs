@@ -40,8 +40,6 @@ namespace Infinity.PlanetPop
 
         public int YieldMultiplier => 0;
 
-        public int UpkeepMultiplier => 0;
-
         public Pop(Planet planet, Neuron planetNeuron, string name, HexTileCoord initialCoord)
         {
             _planet = planet;

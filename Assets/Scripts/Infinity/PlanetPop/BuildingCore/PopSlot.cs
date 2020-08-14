@@ -20,8 +20,6 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public readonly string Group;
 
-        public readonly float Wage;
-
         private readonly Dictionary<string, float> _baseYield = new Dictionary<string, float>();
 
         public IReadOnlyDictionary<string, float> BaseYield => _baseYield;
@@ -29,8 +27,6 @@ namespace Infinity.PlanetPop.BuildingCore
         private readonly Dictionary<string, float> _baseUpkeep = new Dictionary<string, float>();
 
         public IReadOnlyDictionary<string, float> BaseUpkeep => _baseUpkeep;
-
-        private Dictionary<string, int> _upkeepMultiplier = new Dictionary<string, int>();
 
         public Pop Pop { get; private set; }
 
@@ -49,11 +45,10 @@ namespace Infinity.PlanetPop.BuildingCore
 
             Name = prototype.Name;
             Group = prototype.Group;
-            Wage = prototype.Wage;
 
             var resourceData = GameDataStorage.Instance.GetGameData<GameFactorResourceData>();
 
-            var yieldModifierMultiplier = building.YieldMultiplierFromModifier;
+            var yieldModifierMultiplier = building.JobYieldMultiplierFromModifier;
             var yieldAdjacencyMultiplier = building.AdjacencyBonusLevel * building.AdjacencyBonusPerLevel;
 
             foreach (var y in prototype.Yield)
@@ -89,14 +84,7 @@ namespace Infinity.PlanetPop.BuildingCore
                 {
                     if (CurrentState != PopSlotState.Occupied) return 0;
 
-                    if (!_upkeepMultiplier.TryGetValue(u.FactorType, out var upkeepMultiplier))
-                        upkeepMultiplier = 0;
-
-                    if (_upkeepMultiplier.TryGetValue("AnyResource", out var anyResource))
-                        upkeepMultiplier += anyResource;
-
-                    return _baseUpkeep[u.FactorType] * (1 + upkeepMultiplier / 100f) *
-                           (1 + Pop.UpkeepMultiplier / 100f);
+                    return _baseUpkeep[u.FactorType];
                 }
 
                 _upkeep.Add(new GameFactorChange(UpkeepGetter, u.FactorType));

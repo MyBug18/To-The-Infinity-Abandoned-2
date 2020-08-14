@@ -19,8 +19,6 @@ namespace Infinity.GameData
 
         public IReadOnlyList<FactorChangePrototype> Upkeep => _upkeep;
 
-        public readonly float Wage;
-
         public IReadOnlyList<string> YieldResourceKind => _yield.Select(x => x.FactorType).ToList();
 
         public PopSlotPrototype(string jsonData)
@@ -32,7 +30,6 @@ namespace Infinity.GameData
 
             _yield = JArray.FromObject(primary["Yield"]).ToObject<List<FactorChangePrototype>>();
             _upkeep = JArray.FromObject(primary["Upkeep"]).ToObject<List<FactorChangePrototype>>();
-            Wage = Convert.ToSingle(primary["Wage"]);
         }
     }
 

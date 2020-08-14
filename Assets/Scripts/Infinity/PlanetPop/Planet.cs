@@ -281,7 +281,7 @@ namespace Infinity.PlanetPop
 
         private void ProceedTraining()
         {
-            var removeIdx = new List<int>();
+            var trainFinishedIdx = new List<int>();
 
             for (var i = 0; i < _trainingCenter.Count; i++)
             {
@@ -290,15 +290,17 @@ namespace Infinity.PlanetPop
 
                 if (_trainingCenter[i].RemainTurn != 0) continue;
 
-                removeIdx.Add(i);
+                trainFinishedIdx.Add(i);
 
                 _neuron.SendSignal(new PopSlotAssignedSignal(this, pop, slot), SignalDirection.Downward);
-
-                // Because a pop has assigned to a pop slot
-                RecalculateJobResources();
             }
 
-            for (var i = removeIdx.Count - 1; i >= 0; i--)
+            if (trainFinishedIdx.Count == 0) return;
+
+            // Because a pop has assigned to a pop slot
+            RecalculateJobResources();
+
+            for (var i = trainFinishedIdx.Count - 1; i >= 0; i--)
                 _trainingCenter.RemoveAt(i);
         }
 

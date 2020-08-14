@@ -52,24 +52,21 @@ namespace Infinity.PlanetPop.BuildingCore
             get
             {
                 var result = new Dictionary<string, float>();
-                foreach (var s in _popSlots)
+                foreach (var y in _popSlots.SelectMany(s => s.Upkeep))
                 {
-                    foreach (var y in s.Upkeep)
-                    {
-                        if (!result.ContainsKey(y.FactorType))
-                            result.Add(y.FactorType, 0);
+                    if (!result.ContainsKey(y.FactorType))
+                        result.Add(y.FactorType, 0);
 
-                        result[y.FactorType] += y.Amount;
-                    }
+                    result[y.FactorType] += y.Amount;
                 }
 
                 return result;
             }
         }
 
-        private readonly Dictionary<string, float> _yieldMultiplierFromModifier = new Dictionary<string, float>();
+        private readonly Dictionary<string, float> _jobYieldMultiplierFromModifier = new Dictionary<string, float>();
 
-        public IReadOnlyDictionary<string, float> YieldMultiplierFromModifier => _yieldMultiplierFromModifier;
+        public IReadOnlyDictionary<string, float> JobYieldMultiplierFromModifier => _jobYieldMultiplierFromModifier;
 
         public readonly IReadOnlyDictionary<string, float> YieldFromBuilding;
 
@@ -188,16 +185,16 @@ namespace Infinity.PlanetPop.BuildingCore
             {
                 if (!YieldResourceKind.Contains(kv.Key) && kv.Key != "AnyResource") continue;
 
-                if (!_yieldMultiplierFromModifier.ContainsKey(kv.Key))
-                    _yieldMultiplierFromModifier[kv.Key] = 0;
+                if (!_jobYieldMultiplierFromModifier.ContainsKey(kv.Key))
+                    _jobYieldMultiplierFromModifier[kv.Key] = 0;
 
                 if (ms.IsAdding)
                 {
-                    _yieldMultiplierFromModifier[kv.Key] += kv.Value;
+                    _jobYieldMultiplierFromModifier[kv.Key] += kv.Value;
                 }
                 else
                 {
-                    _yieldMultiplierFromModifier[kv.Key] -= kv.Value;
+                    _jobYieldMultiplierFromModifier[kv.Key] -= kv.Value;
                 }
             }
 
