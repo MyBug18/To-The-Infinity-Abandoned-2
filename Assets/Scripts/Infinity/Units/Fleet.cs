@@ -19,7 +19,11 @@ namespace Infinity.Units
 
         public int FleetCapacity { get; private set; }
 
-        public int AttackPower { get; }
+        public IReadOnlyDictionary<PowerType, float> FleetPowers { get; }
+
+        private readonly List<StarShip> _starShips = new List<StarShip>();
+
+        public IReadOnlyList<StarShip> StarShips => _starShips;
 
         public int MovableRange { get; private set; } = 2;
 
