@@ -17,6 +17,8 @@ namespace Infinity.GalaxySystem
         public string Name { get; private set; }
         public HexTileCoord HexCoord { get; }
 
+        public OwnerType OwnerType { get; }
+
         public readonly StarType StarType;
 
         public readonly int Size;

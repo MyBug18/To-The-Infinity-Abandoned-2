@@ -13,6 +13,8 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public HexTileCoord HexCoord { get; }
 
+        public OwnerType OwnerType { get; }
+
         public Type HolderType => typeof(Building);
 
         private readonly Planet _planet;
@@ -141,6 +143,12 @@ namespace Infinity.PlanetPop.BuildingCore
 
             _neuron.Subscribe<BuildingConstructedSignal>(OnBuildingConstructedSignal);
             _neuron.Subscribe<GameCommandSignal>(OnGameCommandSignal);
+        }
+
+        private void BeforeDestruction()
+        {
+            _neuron.UnSubscribe<BuildingConstructedSignal>(OnBuildingConstructedSignal);
+            _neuron.UnSubscribe<GameCommandSignal>(OnGameCommandSignal);
         }
 
         private void OnBuildingConstructedSignal(ISignal s)

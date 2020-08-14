@@ -5,5 +5,14 @@
         string Name { get; }
 
         HexTileCoord HexCoord { get; }
+
+        OwnerType OwnerType { get; }
+    }
+
+    public enum OwnerType
+    {
+        NoOne,
+        Me,
+        Enemy,
     }
 }

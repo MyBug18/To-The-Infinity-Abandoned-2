@@ -8,6 +8,8 @@ namespace Infinity.PlanetPop
 
         public HexTileCoord HexCoord { get; }
 
+        public OwnerType OwnerType { get; }
+
         public string PlanetType { get; }
 
         public UnInhabitablePlanet(string name, HexTileCoord coord)
