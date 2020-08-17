@@ -6,7 +6,7 @@ namespace Infinity.HexTileMap
     {
         UnitState CurrentState { get; }
 
-        void Move(HexTileCoord destination);
+        int RemainMovePoint { get; }
 
         List<HexTileCoord> GetMovableTiles();
     }

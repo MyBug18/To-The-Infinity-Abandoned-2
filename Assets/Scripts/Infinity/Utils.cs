@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Infinity.HexTileMap;
 using UnityEngine;
 
 namespace Infinity
@@ -42,5 +43,8 @@ namespace Infinity
         {
             return dict.ContainsKey(key) ? dict[key] : value;
         }
+
+        public static int GetDistance(this HexTileCoord c1, HexTileCoord c2) =>
+            (Mathf.Abs(c1.Q - c2.Q) + Mathf.Abs(c1.Q + c1.R - c2.Q - c2.R) + Mathf.Abs(c1.R - c2.R)) / 2;
     }
 }

@@ -18,23 +18,20 @@ namespace Infinity.HexTileMap.Units
 
         public int FleetCapacity { get; private set; }
 
-        public IReadOnlyDictionary<PowerType, float> FleetPowers { get; }
-
         private readonly List<StarShip> _starShips = new List<StarShip>();
 
         public IReadOnlyList<StarShip> StarShips => _starShips;
 
         public int MovableRange { get; private set; } = 2;
 
-        public void Move(HexTileCoord destination)
+        public int RemainMovePoint { get; private set; }
+
+        public Fleet(List<StarShip> ships, TileMap tileMap, Neuron tileMapNeuron, HexTileCoord coord)
         {
-            var f = _currentTileMap.GetTileObject<Fleet>(destination);
-
-            // TODO: Temporary
-            if (f != null) return;
-
-            _currentTileMap.RemoveTileObject<Fleet>(HexCoord);
-            _currentTileMap.AddTileObject(destination, this);
+            _starShips = ships;
+            _currentTileMap = tileMap;
+            _currentTileMapNeuron = tileMapNeuron;
+            HexCoord = coord;
         }
 
         /// <summary>
