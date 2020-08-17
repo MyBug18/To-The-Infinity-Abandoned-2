@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Infinity.Units
+namespace Infinity.HexTileMap.Units
 {
     public class StarShip
     {

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Infinity.HexTileMap;
 
-namespace Infinity.Units
+namespace Infinity.HexTileMap.Units
 {
     public class Fleet : IMovableUnit
     {
