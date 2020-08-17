@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Infinity.GameData;
-using Infinity.Modifiers;
 
 namespace Infinity.PlanetPop.BuildingCore
 {

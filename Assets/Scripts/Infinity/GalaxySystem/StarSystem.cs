@@ -1,8 +1,5 @@
 using Infinity.HexTileMap;
 using Infinity.PlanetPop;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace Infinity.GalaxySystem
 {
@@ -23,13 +20,7 @@ namespace Infinity.GalaxySystem
 
         public readonly int Size;
 
-        private readonly TileMap _tileMap;
-
-        public int TileMapRadius => _tileMap.Radius;
-
-        public TileMapType TileMapType => TileMapType.StarSystem;
-
-        public IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] => _tileMap[coord];
+        public TileMap TileMap { get; }
 
         private readonly Neuron _neuron;
 
@@ -41,7 +32,7 @@ namespace Infinity.GalaxySystem
             Name = "TestSystem";
             HexCoord = new HexTileCoord(3, 3);
 
-            _tileMap = new TileMap(6, _neuron);
+            TileMap = new TileMap(6, _neuron);
             SetPlanets();
         }
 
@@ -51,7 +42,7 @@ namespace Infinity.GalaxySystem
             {
                 IPlanet planet;
 
-                var pos = _tileMap.GetRandomCoordFromRing(i);
+                var pos = TileMap.GetRandomCoordFromRing(i);
 
                 if (i == 3)
                 {
@@ -62,28 +53,9 @@ namespace Infinity.GalaxySystem
                     planet = new UnInhabitablePlanet("test_uninhabitable", pos);
                 }
 
-                _tileMap.AddTileObject(pos, planet);
+                _neuron.SendSignal(new TileMapObjectAddSignal(_neuron, typeof(IPlanet), planet, HexCoord),
+                    SignalDirection.Local);
             }
-        }
-
-        public bool IsValidCoord(HexTileCoord coord) => _tileMap.IsValidCoord(coord);
-
-        public HexTile GetHexTile(HexTileCoord coord) => _tileMap.GetHexTile(coord);
-
-        public T GetTileObject<T>(HexTileCoord coord) where T : IOnHexTileObject =>
-            _tileMap.GetTileObject<T>(coord);
-
-        public IReadOnlyList<T> GetTileObjectList<T>() where T : IOnHexTileObject =>
-            _tileMap.GetTileObjectList<T>();
-
-        public IEnumerator<HexTile> GetEnumerator()
-        {
-            return _tileMap.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }

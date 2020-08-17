@@ -2,7 +2,6 @@
 using Infinity.Modifiers;
 using Infinity.PlanetPop.BuildingCore;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Infinity.GameData;
@@ -26,17 +25,7 @@ namespace Infinity.PlanetPop
 
         private readonly Neuron _neuron;
 
-        #region ITileMapHolder
-
-        private readonly TileMap _tileMap;
-
-        public int TileMapRadius => _tileMap.Radius;
-
-        public TileMapType TileMapType => TileMapType.Planet;
-
-        public IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] => _tileMap[coord];
-
-        #endregion ITileMapHolder
+        public TileMap TileMap { get; }
 
         #region Pop
 
@@ -84,7 +73,7 @@ namespace Infinity.PlanetPop
 
         #region Building
 
-        public IReadOnlyList<Building> Buildings => GetTileObjectList<Building>();
+        public IReadOnlyList<Building> Buildings => TileMap.GetTileObjectList<Building>();
 
         public readonly PlanetBuildingFactory BuildingFactory;
 
@@ -112,7 +101,7 @@ namespace Infinity.PlanetPop
             Size = size;
             PlanetType = "Inhabitable";
 
-            _tileMap = new TileMap(6, _neuron);
+            TileMap = new TileMap(6, _neuron);
         }
 
         /// <summary>
@@ -120,7 +109,7 @@ namespace Infinity.PlanetPop
         /// </summary>
         public Planet()
         {
-            _tileMap = new TileMap(6, null);
+            TileMap = new TileMap(6, null);
         }
 
         private void AddRemoveModifier(Modifier m, bool isAdding)
@@ -287,7 +276,7 @@ namespace Infinity.PlanetPop
 
             if (CurrentPopGrowth < 100) return;
 
-            var newPop = new Pop(this, _neuron, "TestPop", new HexTileCoord(_tileMap.Radius, _tileMap.Radius));
+            var newPop = new Pop(this, _neuron, "TestPop", new HexTileCoord(TileMap.Radius, TileMap.Radius));
             _neuron.SendSignal(new PopBirthSignal(_neuron, newPop), SignalDirection.Upward);
             _unemployedPops.Add(newPop);
         }
@@ -378,11 +367,12 @@ namespace Infinity.PlanetPop
                     var coord = element.Coord;
 
                     var modifiers = _modifiers.ToList();
-                    modifiers.AddRange(GetHexTile(coord).Modifiers);
+                    modifiers.AddRange(TileMap.GetHexTile(coord).Modifiers);
 
                     var building = new Building(_neuron, element.Prototype, this, coord, modifiers);
 
-                    _tileMap.AddTileObject(coord, building);
+                    _neuron.SendSignal(new TileMapObjectAddSignal(_neuron, typeof(Building), building, HexCoord),
+                        SignalDirection.Local);
 
                     foreach (var kv in building.YieldFromBuilding)
                     {
@@ -413,25 +403,14 @@ namespace Infinity.PlanetPop
 
         PlanetStatus IPlanet.GetPlanetStatus() => _pops.Count > 0 ? PlanetStatus.Colonized : PlanetStatus.Inhabitable;
 
-        public bool IsValidCoord(HexTileCoord coord) => _tileMap.IsValidCoord(coord);
-
-        public HexTile GetHexTile(HexTileCoord coord) => _tileMap.GetHexTile(coord);
-
-        public T GetTileObject<T>(HexTileCoord coord) where T : IOnHexTileObject =>
-            _tileMap.GetTileObject<T>(coord);
-
-        public IReadOnlyList<T> GetTileObjectList<T>() where T : IOnHexTileObject =>
-            _tileMap.GetTileObjectList<T>();
-
         public IReadOnlyDictionary<Building, int> GetAroundBuildings(HexTileCoord coord)
         {
             var result = new Dictionary<Building, int>();
 
-            foreach (var c in _tileMap.GetRing(1, coord))
+            foreach (var building in TileMap.GetRing(1, coord)
+                .Select(c => TileMap.GetTileObject<Building>(c))
+                .Where(building => building != null))
             {
-                var building = GetTileObject<Building>(c);
-                if (building == null) continue;
-
                 if (result.ContainsKey(building))
                     result[building]++;
                 else
@@ -440,9 +419,5 @@ namespace Infinity.PlanetPop
 
             return result;
         }
-
-        public IEnumerator<HexTile> GetEnumerator() => _tileMap.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

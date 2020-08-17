@@ -13,12 +13,7 @@ namespace Tester
         {
             var system = new StarSystem(null);
 
-            foreach (var t in system)
-            {
-                var coord = t.Coord;
-            }
-
-            foreach (var p in system.GetTileObjectList<IPlanet>())
+            foreach (var p in system.TileMap.GetTileObjectList<IPlanet>())
             {
                 Debug.Log(p.GetPlanetStatus());
             }

@@ -1,5 +1,3 @@
-﻿using System;
-
-namespace Infinity
+﻿namespace Infinity
 {
 }

@@ -1,8 +1,4 @@
-﻿using Infinity.GalaxySystem;
-using Newtonsoft.Json;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Infinity.GameData;
 using Infinity.HexTileMap;
@@ -32,13 +28,7 @@ namespace Infinity
 
         private readonly Neuron _neuron;
 
-        private readonly TileMap _tileMap;
-
-        public int TileMapRadius => _tileMap.Radius;
-
-        public TileMapType TileMapType => TileMapType.Game;
-
-        public IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] => _tileMap[coord];
+        public TileMap TileMap { get; }
 
         private readonly HashSet<string> _availableBuildings = new HashSet<string>();
 
@@ -49,7 +39,7 @@ namespace Infinity
             _neuron = Neuron.GetNeuronForGame();
             _neuron.EventConditionPasser.SetRefiner(OnPassiveEventCheck);
 
-            _tileMap = new TileMap(6, _neuron);
+            TileMap = new TileMap(6, _neuron);
         }
 
         /// <summary>
@@ -86,26 +76,6 @@ namespace Infinity
             }
 
             return passed;
-        }
-
-        public bool IsValidCoord(HexTileCoord coord) => _tileMap.IsValidCoord(coord);
-
-        public HexTile GetHexTile(HexTileCoord coord) => _tileMap.GetHexTile(coord);
-
-        public T GetTileObject<T>(HexTileCoord coord) where T : IOnHexTileObject =>
-            _tileMap.GetTileObject<T>(coord);
-
-        public IReadOnlyList<T> GetTileObjectList<T>() where T : IOnHexTileObject =>
-            _tileMap.GetTileObjectList<T>();
-
-        public IEnumerator<HexTile> GetEnumerator()
-        {
-            return _tileMap.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 

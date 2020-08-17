@@ -26,6 +26,9 @@ namespace Infinity.HexTileMap
 
             _tileMap = new HexTile[radius * 2 + 1][];
             ConstructTileMap();
+
+            HolderNeuron.Subscribe<TileMapObjectAddSignal>(OnAddTileObject);
+            HolderNeuron.Subscribe<TileMapObjectRemoveSignal>(OnRemoveTileObject);
         }
 
         private void ConstructTileMap()
@@ -156,28 +159,30 @@ namespace Infinity.HexTileMap
             return result;
         }
 
-        public void AddTileObject<T>(HexTileCoord coord, T onHexTileObject) where T : IOnHexTileObject
+        private void OnAddTileObject(ISignal s)
         {
-            var type = typeof(T);
-            if (!_onTileMapObjects.TryGetValue(coord, out var typeObjectDict))
+            if (!(s is TileMapObjectAddSignal tmoas)) return;
+
+            if (!_onTileMapObjects.TryGetValue(tmoas.Coord, out var typeObjectDict))
             {
-                _onTileMapObjects.Add(coord, new Dictionary<Type, IOnHexTileObject>());
-                typeObjectDict = _onTileMapObjects[coord];
+                _onTileMapObjects.Add(tmoas.Coord, new Dictionary<Type, IOnHexTileObject>());
+                typeObjectDict = _onTileMapObjects[tmoas.Coord];
             }
 
-            if (typeObjectDict.ContainsKey(type))
-                throw new InvalidOperationException($"There are already {nameof(type)} on the coordinate!");
+            if (typeObjectDict.ContainsKey(tmoas.Type))
+                throw new InvalidOperationException($"There are already {nameof(tmoas.Type)} on the coordinate!");
 
-            typeObjectDict[type] = onHexTileObject;
+            typeObjectDict[tmoas.Type] = tmoas.TileObject;
         }
 
-        public void RemoveTileObject<T>(HexTileCoord coord)
+        private void OnRemoveTileObject(ISignal s)
         {
-            var type = typeof(T);
-            if (!_onTileMapObjects.TryGetValue(coord, out var typeObjectDict)) return;
+            if (!(s is TileMapObjectRemoveSignal tmors)) return;
 
-            if (typeObjectDict.Remove(type) && typeObjectDict.Count == 0)
-                _onTileMapObjects.Remove(coord);
+            if (!_onTileMapObjects.TryGetValue(tmors.Coord, out var typeObjectDict)) return;
+
+            if (typeObjectDict.Remove(tmors.Type) && typeObjectDict.Count == 0)
+                _onTileMapObjects.Remove(tmors.Coord);
         }
 
         public IEnumerator<HexTile> GetEnumerator()
@@ -188,6 +193,41 @@ namespace Infinity.HexTileMap
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+    }
+
+    public class TileMapObjectAddSignal : ISignal
+    {
+        public Neuron FromNeuron { get; }
+
+        public readonly Type Type;
+
+        public readonly IOnHexTileObject TileObject;
+
+        public readonly HexTileCoord Coord;
+
+        public TileMapObjectAddSignal(Neuron fromNeuron, Type type, IOnHexTileObject tileObject, HexTileCoord coord)
+        {
+            FromNeuron = fromNeuron;
+            Type = type;
+            TileObject = tileObject;
+            Coord = coord;
+        }
+    }
+
+    public class TileMapObjectRemoveSignal : ISignal
+    {
+        public Neuron FromNeuron { get; }
+
+        public readonly Type Type;
+
+        public readonly HexTileCoord Coord;
+
+        public TileMapObjectRemoveSignal(Neuron fromNeuron, Type type, HexTileCoord coord)
+        {
+            FromNeuron = fromNeuron;
+            Type = type;
+            Coord = coord;
         }
     }
 }

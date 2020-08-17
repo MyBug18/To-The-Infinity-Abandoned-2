@@ -74,13 +74,13 @@ namespace Infinity.GameData
         }
 
         public bool CheckWholeCondition(Planet planet, HexTileCoord coord) =>
-            CheckResource(planet) && CheckPopNumber(planet) && CheckTileState(planet.GetHexTile(coord)) &&
+            CheckResource(planet) && CheckPopNumber(planet) && CheckTileState(planet.TileMap.GetHexTile(coord)) &&
             CheckAroundBuildings(planet, coord);
 
         public List<HexTileCoord> GetBuildableTile(Planet planet) =>
-            (from t in planet
+            (from t in planet.TileMap
                 where CheckTileState(t)
-                where planet.GetTileObject<Building>(t.Coord) == null
+                where planet.TileMap.GetTileObject<Building>(t.Coord) == null
                 where CheckAroundBuildings(planet, t.Coord)
                 select t.Coord).ToList();
 
