@@ -7,7 +7,7 @@ using Infinity.Modifiers;
 
 namespace Infinity.PlanetPop.BuildingCore
 {
-    public class Building : IOnHexTileObject, ISignalDispatcherHolder, IModifierHolder
+    public class Building : IOnHexTileObject, IModifierHolder
     {
         public string Name { get; }
 
@@ -92,7 +92,7 @@ namespace Infinity.PlanetPop.BuildingCore
         public Building(Neuron parentNeuron, BuildingPrototype prototype, Planet planet, HexTileCoord coord,
             IReadOnlyList<Modifier> modifiers = null)
         {
-            _neuron = parentNeuron.GetChildNeuron(this);
+            _neuron = parentNeuron.GetChildNeuron();
 
             Name = prototype.Name;
             HexCoord = coord;
@@ -176,7 +176,7 @@ namespace Infinity.PlanetPop.BuildingCore
 
         private void AddRemoveModifier(Modifier m, bool isAdding)
         {
-            _neuron.SendSignal(new ModifierSignal(this, m, isAdding), SignalDirection.Local);
+            _neuron.SendSignal(new ModifierSignal(_neuron, m, isAdding), SignalDirection.Local);
         }
 
         private void OnModifierSignal(ISignal s)
@@ -251,15 +251,15 @@ namespace Infinity.PlanetPop.BuildingCore
 
     public class BuildingConstructedSignal : ISignal
     {
-        public ISignalDispatcherHolder SignalSender { get; }
+        public Neuron FromNeuron { get; }
 
         public readonly string BuildingName;
 
         public readonly HexTileCoord Coord;
 
-        public BuildingConstructedSignal(ISignalDispatcherHolder sender, string buildingName, HexTileCoord coord)
+        public BuildingConstructedSignal(Neuron neuron, string buildingName, HexTileCoord coord)
         {
-            SignalSender = sender;
+            FromNeuron = neuron;
             BuildingName = buildingName;
             Coord = coord;
         }

@@ -56,7 +56,7 @@ namespace Infinity.PlanetPop
             if (destinationSlot.CurrentState != PopSlotState.Empty)
                 throw new InvalidOperationException();
 
-            _planetNeuron.SendSignal(new PopToTrainingCenterSignal(_planetNeuron.Holder, this, destinationSlot),
+            _planetNeuron.SendSignal(new PopToTrainingCenterSignal(_planetNeuron, this, destinationSlot),
                 SignalDirection.Local);
         }
 

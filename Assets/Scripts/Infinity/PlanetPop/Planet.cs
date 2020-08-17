@@ -26,8 +26,6 @@ namespace Infinity.PlanetPop
 
         private readonly Neuron _neuron;
 
-        Type ISignalDispatcherHolder.HolderType => typeof(Planet);
-
         #region ITileMapHolder
 
         private readonly TileMap _tileMap;
@@ -98,7 +96,7 @@ namespace Infinity.PlanetPop
 
         public Planet(Neuron parentNeuron, string name, HexTileCoord coord, int size)
         {
-            _neuron = parentNeuron.GetChildNeuron(this);
+            _neuron = parentNeuron.GetChildNeuron();
 
             BuildingFactory = new PlanetBuildingFactory(_neuron, this);
 
@@ -127,7 +125,7 @@ namespace Infinity.PlanetPop
 
         private void AddRemoveModifier(Modifier m, bool isAdding)
         {
-            _neuron.SendSignal(new ModifierSignal(this, m, isAdding), SignalDirection.Downward);
+            _neuron.SendSignal(new ModifierSignal(_neuron, m, isAdding), SignalDirection.Downward);
         }
 
         private void OnModifierSignal(ISignal s)
@@ -290,7 +288,7 @@ namespace Infinity.PlanetPop
             if (CurrentPopGrowth < 100) return;
 
             var newPop = new Pop(this, _neuron, "TestPop", new HexTileCoord(_tileMap.Radius, _tileMap.Radius));
-            _neuron.SendSignal(new PopBirthSignal(this, newPop), SignalDirection.Upward);
+            _neuron.SendSignal(new PopBirthSignal(_neuron, newPop), SignalDirection.Upward);
             _unemployedPops.Add(newPop);
         }
 
@@ -307,7 +305,7 @@ namespace Infinity.PlanetPop
 
                 trainFinishedIdx.Add(i);
 
-                _neuron.SendSignal(new PopSlotAssignedSignal(this, pop, slot), SignalDirection.Downward);
+                _neuron.SendSignal(new PopSlotAssignedSignal(_neuron, pop, slot), SignalDirection.Downward);
             }
 
             if (trainFinishedIdx.Count == 0) return;
@@ -333,7 +331,7 @@ namespace Infinity.PlanetPop
                 .GetTrainingTime(pttcs.Pop.Aptitude, pttcs.DestinationSlot.Name);
 
             _trainingCenter.Add((pttcs.Pop, pttcs.DestinationSlot, trainingTime));
-            _neuron.SendSignal(new PopTrainingStatusChangeSignal(this, pttcs.DestinationSlot, false),
+            _neuron.SendSignal(new PopTrainingStatusChangeSignal(_neuron, pttcs.DestinationSlot, false),
                 SignalDirection.Downward);
 
             // Because a pop from pop slot has been emptied
@@ -405,7 +403,7 @@ namespace Infinity.PlanetPop
                     // Because adjacency bonus may have been changed
                     RecalculateJobResources();
 
-                    _neuron.SendSignal(new BuildingConstructedSignal(this, building.Name, coord), SignalDirection.Downward);
+                    _neuron.SendSignal(new BuildingConstructedSignal(_neuron, building.Name, coord), SignalDirection.Downward);
 
                     break;
                 default:

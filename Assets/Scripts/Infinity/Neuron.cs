@@ -16,12 +16,7 @@ namespace Infinity
         /// <summary>
         /// Who had sent this signal?
         /// </summary>
-        ISignalDispatcherHolder SignalSender { get; }
-    }
-
-    public interface ISignalDispatcherHolder
-    {
-        Type HolderType { get; }
+        Neuron FromNeuron { get; }
     }
 
     public class Neuron
@@ -31,13 +26,10 @@ namespace Infinity
         private readonly Neuron _parentNeuron;
         private readonly List<Neuron> _childNeurons = new List<Neuron>();
 
-        public readonly ISignalDispatcherHolder Holder;
-
         public readonly EventConditionPasser EventConditionPasser;
 
-        private Neuron(ISignalDispatcherHolder holder)
+        private Neuron()
         {
-            Holder = holder;
             _parentNeuron = null;
             EventConditionPasser = new EventConditionPasser(_childNeurons);
         }
@@ -45,18 +37,17 @@ namespace Infinity
         /// <summary>
         /// Only for the top-level Neuron holder, which is Game class
         /// </summary>
-        public static Neuron GetNeuronForGame(ISignalDispatcherHolder holder) => new Neuron(holder);
+        public static Neuron GetNeuronForGame() => new Neuron();
 
-        private Neuron(ISignalDispatcherHolder holder, Neuron parentNeuron)
+        private Neuron(Neuron parentNeuron)
         {
-            Holder = holder;
             _parentNeuron = parentNeuron;
             EventConditionPasser = new EventConditionPasser(_childNeurons);
         }
 
-        public Neuron GetChildNeuron(ISignalDispatcherHolder childHolder)
+        public Neuron GetChildNeuron()
         {
-            var newNeuron = new Neuron(childHolder, this);
+            var newNeuron = new Neuron(this);
             _childNeurons.Add(newNeuron);
             return newNeuron;
         }
@@ -110,11 +101,6 @@ namespace Infinity
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
-        }
-
-        public void RemoveChild(ISignalDispatcherHolder holder)
-        {
-            _childNeurons.RemoveAll(x => x.Holder == holder);
         }
     }
 

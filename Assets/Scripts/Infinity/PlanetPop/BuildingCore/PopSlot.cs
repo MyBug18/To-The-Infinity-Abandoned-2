@@ -109,22 +109,4 @@ namespace Infinity.PlanetPop.BuildingCore
             CurrentState = ptscs.IsQuiting ? PopSlotState.Empty : PopSlotState.TrainingForHere;
         }
     }
-
-    public class PopSlotStateChangeSignal : ISignal
-    {
-        public ISignalDispatcherHolder SignalSender { get; }
-
-        public readonly PopSlot Slot;
-
-        public readonly IReadOnlyDictionary<string, float> YieldDiff, UpkeepDiff;
-
-        public PopSlotStateChangeSignal(ISignalDispatcherHolder sender, PopSlot slot,
-            IReadOnlyDictionary<string, float> yieldDiff, IReadOnlyDictionary<string, float> upkeepDiff)
-        {
-            SignalSender = sender;
-            Slot = slot;
-            YieldDiff = yieldDiff;
-            UpkeepDiff = upkeepDiff;
-        }
-    }
 }

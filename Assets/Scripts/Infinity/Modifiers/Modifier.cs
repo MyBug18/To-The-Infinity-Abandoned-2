@@ -62,7 +62,7 @@ namespace Infinity.Modifiers
 
     public class ModifierSignal : ISignal
     {
-        public ISignalDispatcherHolder SignalSender { get; }
+        public Neuron FromNeuron { get; }
 
         public readonly Modifier Modifier;
 
@@ -70,9 +70,9 @@ namespace Infinity.Modifiers
 
         public bool IsForTile => Modifier.AffectedTiles != null;
 
-        public ModifierSignal(ISignalDispatcherHolder sender, Modifier modifier, bool isAdding)
+        public ModifierSignal(Neuron neuron, Modifier modifier, bool isAdding)
         {
-            SignalSender = sender;
+            FromNeuron = neuron;
             Modifier = modifier;
             IsAdding = isAdding;
         }

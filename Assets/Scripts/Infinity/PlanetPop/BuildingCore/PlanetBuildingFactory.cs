@@ -43,7 +43,8 @@ namespace Infinity.PlanetPop.BuildingCore
             var newElement = new BuildingQueueElement(prototype, coord);
             _constructionQueue.Add((newElement, prototype.BaseConstructTime));
 
-            _planetNeuron.SendSignal(new BuildingQueueChangeSignal(_planet, newElement, BuildingQueueChangeType.Added),
+            _planetNeuron.SendSignal(
+                new BuildingQueueChangeSignal(_planetNeuron, newElement, BuildingQueueChangeType.Added),
                 SignalDirection.Local);
         }
 
@@ -55,7 +56,8 @@ namespace Infinity.PlanetPop.BuildingCore
             var (element, _) = _constructionQueue[index];
             _constructionQueue.RemoveAt(index);
 
-            _planetNeuron.SendSignal(new BuildingQueueChangeSignal(_planet, element, BuildingQueueChangeType.Canceled),
+            _planetNeuron.SendSignal(
+                new BuildingQueueChangeSignal(_planetNeuron, element, BuildingQueueChangeType.Canceled),
                 SignalDirection.Local);
         }
 
@@ -81,7 +83,8 @@ namespace Infinity.PlanetPop.BuildingCore
 
             _constructionQueue.RemoveAt(walker);
 
-            _planetNeuron.SendSignal(new BuildingQueueChangeSignal(_planet, element, BuildingQueueChangeType.Canceled),
+            _planetNeuron.SendSignal(
+                new BuildingQueueChangeSignal(_planetNeuron, element, BuildingQueueChangeType.Canceled),
                 SignalDirection.Local);
         }
 
@@ -99,7 +102,8 @@ namespace Infinity.PlanetPop.BuildingCore
         {
             var (element, _) = _constructionQueue[0];
             _constructionQueue.RemoveAt(0);
-            _planetNeuron.SendSignal(new BuildingQueueChangeSignal(_planet, element, BuildingQueueChangeType.Ended),
+            _planetNeuron.SendSignal(
+                new BuildingQueueChangeSignal(_planetNeuron, element, BuildingQueueChangeType.Ended),
                 SignalDirection.Local);
         }
 
@@ -142,16 +146,15 @@ namespace Infinity.PlanetPop.BuildingCore
 
     public class BuildingQueueChangeSignal : ISignal
     {
-        public ISignalDispatcherHolder SignalSender { get; }
+        public Neuron FromNeuron { get; }
 
         public readonly BuildingQueueElement QueueElement;
 
         public readonly BuildingQueueChangeType Type;
 
-        public BuildingQueueChangeSignal(ISignalDispatcherHolder sender, BuildingQueueElement building,
-            BuildingQueueChangeType type)
+        public BuildingQueueChangeSignal(Neuron neuron, BuildingQueueElement building, BuildingQueueChangeType type)
         {
-            SignalSender = sender;
+            FromNeuron = neuron;
             QueueElement = building;
             Type = type;
         }

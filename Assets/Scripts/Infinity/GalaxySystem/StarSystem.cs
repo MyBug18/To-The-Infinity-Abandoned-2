@@ -31,13 +31,11 @@ namespace Infinity.GalaxySystem
 
         public IReadOnlyList<IOnHexTileObject> this[HexTileCoord coord] => _tileMap[coord];
 
-        Type ISignalDispatcherHolder.HolderType => typeof(StarSystem);
-
         private readonly Neuron _neuron;
 
         public StarSystem(Neuron parentNeuron)
         {
-            _neuron = parentNeuron.GetChildNeuron(this);
+            _neuron = parentNeuron.GetChildNeuron();
 
             Size = 6;
             Name = "TestSystem";

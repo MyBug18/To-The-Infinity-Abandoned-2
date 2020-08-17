@@ -32,8 +32,6 @@ namespace Infinity
 
         private readonly Neuron _neuron;
 
-        Type ISignalDispatcherHolder.HolderType => typeof(Game);
-
         private readonly TileMap _tileMap;
 
         public int TileMapRadius => _tileMap.Radius;
@@ -48,7 +46,7 @@ namespace Infinity
 
         public Game(string dataPath)
         {
-            _neuron = Neuron.GetNeuronForGame(this);
+            _neuron = Neuron.GetNeuronForGame();
             _neuron.EventConditionPasser.SetRefiner(OnPassiveEventCheck);
 
             _tileMap = new TileMap(6, _neuron);
@@ -66,7 +64,7 @@ namespace Infinity
         /// </summary>
         public void StartNewTurn()
         {
-            _neuron.SendSignal(new GameCommandSignal(this, GameCommandType.StartNewTurn), SignalDirection.Downward);
+            _neuron.SendSignal(new GameCommandSignal(_neuron, GameCommandType.StartNewTurn), SignalDirection.Downward);
             //TODO: Check events
             MonthsPassed += GameSpeed;
         }
@@ -75,8 +73,7 @@ namespace Infinity
         {
             var passed = new List<PassiveEventPrototype>();
 
-            foreach (var prototype in events.Where(prototype =>
-                prototype.GameConditionChecker?.Invoke(this) ?? true))
+            foreach (var prototype in events.Where(prototype => prototype.GameConditionChecker?.Invoke(this) ?? true))
             {
                 if (prototype.EventOwnerType == "Game" && Utils.GetBoolFromChance(prototype.Chance))
                 {
@@ -117,13 +114,13 @@ namespace Infinity
     /// </summary>
     public class GameCommandSignal : ISignal
     {
-        public ISignalDispatcherHolder SignalSender { get; }
+        public Neuron FromNeuron { get; }
 
         public readonly GameCommandType CommandType;
 
-        public GameCommandSignal(ISignalDispatcherHolder holder, GameCommandType type)
+        public GameCommandSignal(Neuron neuron, GameCommandType type)
         {
-            SignalSender = holder;
+            FromNeuron = neuron;
             CommandType = type;
         }
     }

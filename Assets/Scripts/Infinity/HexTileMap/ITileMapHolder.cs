@@ -9,7 +9,7 @@ namespace Infinity.HexTileMap
         Game,
     }
 
-    public interface ITileMapHolder : IEnumerable<HexTile>, ISignalDispatcherHolder
+    public interface ITileMapHolder : IEnumerable<HexTile>
     {
         int TileMapRadius { get; }
 

@@ -4,28 +4,28 @@ namespace Infinity.PlanetPop
 {
     public class PopBirthSignal : ISignal
     {
-        public ISignalDispatcherHolder SignalSender { get; }
+        public Neuron FromNeuron { get; }
 
         public readonly Pop BornPop;
 
-        public PopBirthSignal(ISignalDispatcherHolder sender, Pop pop)
+        public PopBirthSignal(Neuron neuron, Pop pop)
         {
-            SignalSender = sender;
+            FromNeuron = neuron;
             BornPop = pop;
         }
     }
 
     public class PopToTrainingCenterSignal : ISignal
     {
-        public ISignalDispatcherHolder SignalSender { get; }
+        public Neuron FromNeuron { get; }
 
         public readonly Pop Pop;
 
         public readonly PopSlot DestinationSlot;
 
-        public PopToTrainingCenterSignal(ISignalDispatcherHolder sender, Pop pop, PopSlot destinationSlot)
+        public PopToTrainingCenterSignal(Neuron neuron, Pop pop, PopSlot destinationSlot)
         {
-            SignalSender = sender;
+            FromNeuron = neuron;
             Pop = pop;
             DestinationSlot = destinationSlot;
         }
@@ -33,15 +33,15 @@ namespace Infinity.PlanetPop
 
     public class PopTrainingStatusChangeSignal : ISignal
     {
-        public ISignalDispatcherHolder SignalSender { get; }
+        public Neuron FromNeuron { get; }
 
         public readonly PopSlot DestinationSlot;
 
         public readonly bool IsQuiting;
 
-        public PopTrainingStatusChangeSignal(ISignalDispatcherHolder sender, PopSlot destinationSlot, bool isQuiting)
+        public PopTrainingStatusChangeSignal(Neuron neuron, PopSlot destinationSlot, bool isQuiting)
         {
-            SignalSender = sender;
+            FromNeuron = neuron;
             DestinationSlot = destinationSlot;
             IsQuiting = isQuiting;
         }
@@ -49,15 +49,15 @@ namespace Infinity.PlanetPop
 
     public class PopSlotAssignedSignal : ISignal
     {
-        public ISignalDispatcherHolder SignalSender { get; }
+        public Neuron FromNeuron { get; }
 
         public readonly Pop Pop;
 
         public readonly PopSlot AssignedSlot;
 
-        public PopSlotAssignedSignal(ISignalDispatcherHolder sender, Pop pop, PopSlot slot)
+        public PopSlotAssignedSignal(Neuron neuron, Pop pop, PopSlot slot)
         {
-            SignalSender = sender;
+            FromNeuron = neuron;
             Pop = pop;
             AssignedSlot = slot;
         }
