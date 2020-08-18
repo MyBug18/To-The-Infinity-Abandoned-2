@@ -92,7 +92,7 @@ namespace Infinity.PlanetPop.BuildingCore
         public Building(Neuron parentNeuron, BuildingPrototype prototype, Planet planet, HexTileCoord coord,
             IReadOnlyList<Modifier> modifiers = null)
         {
-            _neuron = parentNeuron.GetChildNeuron();
+            _neuron = parentNeuron.LinkNewChildNeuron();
 
             Name = prototype.Name;
             HexCoord = coord;

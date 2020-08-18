@@ -26,7 +26,7 @@ namespace Infinity.GalaxySystem
 
         public StarSystem(Neuron parentNeuron)
         {
-            _neuron = parentNeuron.GetChildNeuron();
+            _neuron = parentNeuron.LinkNewChildNeuron();
 
             Size = 6;
             Name = "TestSystem";

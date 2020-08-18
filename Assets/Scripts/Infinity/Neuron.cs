@@ -45,11 +45,16 @@ namespace Infinity
             EventConditionPasser = new EventConditionPasser(_childNeurons);
         }
 
-        public Neuron GetChildNeuron()
+        public Neuron LinkNewChildNeuron()
         {
             var newNeuron = new Neuron(this);
             _childNeurons.Add(newNeuron);
             return newNeuron;
+        }
+
+        public void UnlinkChildNeuron(Neuron neuron)
+        {
+            _childNeurons.Remove(neuron);
         }
 
         public void Subscribe<T>(Action<ISignal> callBack) where T : ISignal

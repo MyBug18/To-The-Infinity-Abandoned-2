@@ -85,7 +85,7 @@ namespace Infinity.PlanetPop
 
         public Planet(Neuron parentNeuron, string name, HexTileCoord coord, int size)
         {
-            _neuron = parentNeuron.GetChildNeuron();
+            _neuron = parentNeuron.LinkNewChildNeuron();
 
             BuildingFactory = new PlanetBuildingFactory(_neuron, this);
 
