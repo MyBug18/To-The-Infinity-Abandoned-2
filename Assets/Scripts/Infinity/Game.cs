@@ -19,6 +19,8 @@ namespace Infinity
         /// </summary>
         public int GameSpeed { get; private set; } = 2;
 
+        public static bool IsMyTurn { get; private set; } = true;
+
         /// <summary>
         /// How many Months has passed
         /// </summary>
@@ -47,6 +49,7 @@ namespace Infinity
         /// </summary>
         public void EndTurn()
         {
+            IsMyTurn = false;
         }
 
         /// <summary>
@@ -54,6 +57,7 @@ namespace Infinity
         /// </summary>
         public void StartNewTurn()
         {
+            IsMyTurn = true;
             _neuron.SendSignal(new GameCommandSignal(_neuron, GameCommandType.StartNewTurn), SignalDirection.Downward);
             //TODO: Check events
             MonthsPassed += GameSpeed;

@@ -12,7 +12,13 @@ namespace Infinity.HexTileMap.Units.SpecialAction
 
         public bool IsVisible() => true;
 
-        public bool IsAvailable(HexTileCoord coord) => _unit.RemainMovePoint >= _unit.HexCoord.GetDistance(coord);
+        public bool IsAvailable(HexTileCoord coord)
+        {
+            var side = _unit.OwnerType == OwnerType.Me && Game.IsMyTurn ||
+                       _unit.OwnerType == OwnerType.Enemy && !Game.IsMyTurn;
+
+            return side && _unit.RemainMovePoint >= _unit.HexCoord.GetDistance(coord);
+        }
 
         public void DoSpecialAction(HexTileCoord coord) => _moveAction(coord);
 
