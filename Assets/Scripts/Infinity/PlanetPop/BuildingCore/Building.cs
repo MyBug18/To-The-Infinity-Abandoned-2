@@ -74,6 +74,8 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public readonly IReadOnlyDictionary<string, float> UpkeepFromBuilding;
 
+        public int WorkingPopHappinessAdder { get; private set; }
+
         #region AdjacencyBonus
 
         public int AdjacencyBonusLevel { get; private set; }
@@ -118,7 +120,9 @@ namespace Infinity.PlanetPop.BuildingCore
             if (modifiers != null)
                 foreach (var m in modifiers)
                 {
-                    if (!m.ModifierInfo.GameFactorAmount.Keys.Any(x => x == "AnyResource" || yieldKind.Contains(x)))
+                    if (!m.ModifierInfo.GameFactorAmount.Keys.Any(x =>
+                        x == "Happiness" && m.ModifierInfo.TopHolder == ModifierHolderKind.Building ||
+                        x == "AnyResource" || yieldKind.Contains(x)))
                         continue;
                     _modifiers.Add(m);
                     ApplyModifierChange(m, true);
@@ -143,12 +147,6 @@ namespace Infinity.PlanetPop.BuildingCore
 
             _neuron.Subscribe<BuildingConstructedSignal>(OnBuildingConstructedSignal);
             _neuron.Subscribe<GameCommandSignal>(OnGameCommandSignal);
-        }
-
-        private void BeforeDestruction()
-        {
-            _neuron.UnSubscribe<BuildingConstructedSignal>(OnBuildingConstructedSignal);
-            _neuron.UnSubscribe<GameCommandSignal>(OnGameCommandSignal);
         }
 
         private void OnBuildingConstructedSignal(ISignal s)
@@ -225,6 +223,12 @@ namespace Infinity.PlanetPop.BuildingCore
         {
             foreach (var kv in m.ModifierInfo.GameFactorAmount)
             {
+                if (kv.Key == "Happiness")
+                {
+                    WorkingPopHappinessAdder += kv.Value;
+                    continue;
+                }
+
                 // Ignore game factor and irrelevant resources
                 if (kv.Key != "AnyResource" && !YieldResourceKind.Contains(kv.Key)) continue;
 

@@ -37,6 +37,10 @@ namespace Infinity.PlanetPop.BuildingCore
 
         public IReadOnlyList<GameFactorChange> Upkeep => _upkeep;
 
+        private readonly Building _building;
+
+        public int HappinessAdder => _building.WorkingPopHappinessAdder;
+
         public PopSlot(Neuron buildingNeuron, Building building, PopSlotPrototype prototype)
         {
             buildingNeuron.Subscribe<PopSlotAssignedSignal>(OnPopSlotAssignedSignal);
@@ -45,10 +49,12 @@ namespace Infinity.PlanetPop.BuildingCore
             Name = prototype.Name;
             Group = prototype.Group;
 
+            _building = building;
+
             var resourceData = GameDataStorage.Instance.GetGameData<GameFactorResourceData>();
 
-            var yieldModifierMultiplier = building.JobYieldMultiplierFromModifier;
-            var yieldAdjacencyMultiplier = building.AdjacencyBonusLevel * building.AdjacencyBonusPerLevel;
+            var yieldModifierMultiplier = _building.JobYieldMultiplierFromModifier;
+            var yieldAdjacencyMultiplier = _building.AdjacencyBonusLevel * _building.AdjacencyBonusPerLevel;
 
             foreach (var y in prototype.Yield)
             {

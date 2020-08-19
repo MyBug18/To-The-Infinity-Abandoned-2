@@ -8,6 +8,7 @@ namespace Infinity.Modifiers
         None,
         Game,
         Planet,
+        Building,
         IndividualTile,
         IndividualPop,
     }

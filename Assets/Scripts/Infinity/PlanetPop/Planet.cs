@@ -276,7 +276,7 @@ namespace Infinity.PlanetPop
 
             if (CurrentPopGrowth < 100) return;
 
-            var newPop = new Pop(this, _neuron, "TestPop", new HexTileCoord(TileMap.Radius, TileMap.Radius));
+            var newPop = new Pop(this, _neuron, "TestPop");
             _neuron.SendSignal(new PopBirthSignal(_neuron, newPop), SignalDirection.Upward);
             _unemployedPops.Add(newPop);
         }

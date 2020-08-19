@@ -20,7 +20,7 @@ namespace Infinity.PlanetPop
 
         public readonly string Aptitude;
 
-        public string CurrentJob { get; private set; }
+        public PopSlot CurrentWorkingSlot { get; private set; }
 
         public HexTileCoord CurrentCoord { get; private set; }
 
@@ -31,8 +31,9 @@ namespace Infinity.PlanetPop
             get
             {
                 var fromPlanetAmenity = _planet.Amenity / (_planet.Pops.Count / 5f);
+                var fromSlot = CurrentWorkingSlot?.HappinessAdder ?? -20;
 
-                return (int) fromPlanetAmenity;
+                return (int) fromPlanetAmenity + fromSlot;
             }
         }
 
@@ -40,13 +41,12 @@ namespace Infinity.PlanetPop
 
         public int YieldMultiplier => 0;
 
-        public Pop(Planet planet, Neuron planetNeuron, string name, HexTileCoord initialCoord)
+        public Pop(Planet planet, Neuron planetNeuron, string name)
         {
             _planet = planet;
             _planetNeuron = planetNeuron;
 
             Name = name;
-            CurrentCoord = initialCoord;
 
             _planetNeuron.Subscribe<PopSlotAssignedSignal>(OnPopSlotAssignedSignal);
         }
@@ -64,7 +64,7 @@ namespace Infinity.PlanetPop
         {
             if (!(s is PopSlotAssignedSignal psas)) return;
             if (psas.Pop != this) return;
-            CurrentJob = psas.AssignedSlot.Name;
+            CurrentWorkingSlot = psas.AssignedSlot;
         }
     }
 }
